@@ -2,7 +2,7 @@ package gr.pchasapis.moviedb.common
 
 object Definitions {
 
-    const val API_KEY                                                              = ""
+    const val API_KEY                                                              = "api-key"
     const val VIDEOS                                                               ="videos"
     const val PAGINATION_SIZE                                                      = 6
     const val FIRST_POSITION                                                       = 0
