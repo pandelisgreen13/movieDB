@@ -4,6 +4,9 @@ We use Retrofit to consume the MovieDb Api. We choose the MVVM Architechure with
 We have the Home activity where the user can find any movie or tv-series by typing at the search editext.
 The user can add a movie/tv-series as a favourite to his/her Watchlist. The favourite are stored locally at the database.
 
+If you like to run this project, you have to get an api key from https://developers.themoviedb.org/3/getting-started/introduction
+and replace at Definitions class the variable API_KEY with yours api key.
+
 <br><b>Home Activity</b><br>
 ![alt tag](https://user-images.githubusercontent.com/21217572/65449578-f076bf80-de43-11e9-8ef7-e2c0fe9f99d8.png)
 
