@@ -1,0 +1,24 @@
+<resources>
+    <!-- Common Density-independent Pixels-->
+
+    <dimen name="common_zero_dp">0dp</dimen>
+    <dimen name="common_one_dp">1dp</dimen>
+    <dimen name="common_two_dp">2dp</dimen>
+    <dimen name="common_four_dp">4dp</dimen>
+    <dimen name="common_six_dp">6dp</dimen>
+    <dimen name="common_eight_dp">8dp</dimen>
+    <dimen name="common_ten_dp">10dp</dimen>
+    <dimen name="common_fourteen_dp">14dp</dimen>
+    <dimen name="common_twenty_dp">20dp</dimen>
+    <dimen name="common_fifty_dp">50dp</dimen>
+    <dimen name="common_one_hundred_dp">100dp</dimen>
+    <dimen name="common_one_hundred_and_twenty_dp">120dp</dimen>
+    <dimen name="common_one_hundred_and_sixty_dp">160dp</dimen>
+
+    <!-- Common Text Scale-independent Pixels -->
+    <dimen name="common_text_twelve_sp">12sp</dimen>
+    <dimen name="common_text_fourteen_sp">14sp</dimen>
+    <dimen name="common_text_sixteen_sp">16sp</dimen>
+    <dimen name="common_text_eighteen_sp">18sp</dimen>
+    <dimen name="common_text_twenty_four_sp">24sp</dimen>
+</resources>

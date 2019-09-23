@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    android:paddingStart="@dimen/common_four_dp"
+    android:paddingEnd="@dimen/common_four_dp"
+    android:paddingBottom="@dimen/common_six_dp"
+    app:cardCornerRadius="@dimen/common_eight_dp"
+    app:cardElevation="@dimen/common_eight_dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/parentLinear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/common_ten_dp"
+            android:weightSum="2">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/verticalGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.45" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/thumbnailImageView"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/common_one_hundred_and_sixty_dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/verticalGuideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/common_ten_dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/verticalGuideline"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:minLines="2"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/common_text_eighteen_sp"
+                    android:textStyle="bold"
+                    app:autoSizeMaxTextSize="@dimen/common_text_eighteen_sp"
+                    app:autoSizeMinTextSize="@dimen/common_text_sixteen_sp"
+                    app:autoSizeStepGranularity="@dimen/common_one_dp"
+                    app:autoSizeTextType="uniform"
+                    tools:text="MARVEL AVENGERS THE END GAME" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_four_dp"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/releaseDateTitleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/common_ten_dp"
+                        android:layout_marginBottom="@dimen/common_two_dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/home_release_data"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/common_text_sixteen_sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/releaseDateTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/common_two_dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/common_text_sixteen_sp"
+                        tools:text="28-12-2019" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/ratingTitleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/common_ten_dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/home_rating"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/common_text_sixteen_sp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/ratingTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/common_text_sixteen_sp"
+                        tools:text="3.5" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

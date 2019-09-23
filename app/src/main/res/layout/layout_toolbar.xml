@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/colorPrimary"
+    app:contentInsetEnd="@dimen/common_zero_dp"
+    app:contentInsetLeft="@dimen/common_zero_dp"
+    app:contentInsetRight="@dimen/common_zero_dp"
+    app:contentInsetStart="@dimen/common_zero_dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/backButtonImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/common_ten_dp"
+            android:src="@drawable/ic_arrow_back"
+            android:visibility="invisible" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/toolbarTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/actionButtonImageView"
+            android:layout_toEndOf="@+id/backButtonImageView"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/common_text_eighteen_sp"
+            android:textStyle="bold"
+            tools:text="MovieDb" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/actionButtonImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/common_ten_dp"
+            android:src="@drawable/drawable_favourite_selector"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+</androidx.appcompat.widget.Toolbar>

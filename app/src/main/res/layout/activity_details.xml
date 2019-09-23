@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context=".ui.activity.details.DetailsActivity">
+
+    <include
+        android:id="@+id/toolbarLayout"
+        layout="@layout/layout_toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbarLayout"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:ignore="ScrollViewSize">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/parentLinear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/common_ten_dp"
+                    android:weightSum="2">
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/verticalGuideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.35" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/thumbnailImageView"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/common_one_hundred_and_twenty_dp"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/ic_launcher"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/verticalGuideline"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:id="@+id/detailsLinearLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/common_ten_dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/verticalGuideline"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/summaryTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/common_two_dp"
+                            android:ellipsize="end"
+                            android:maxLines="6"
+                            android:text="@string/general_dash"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/common_text_twelve_sp"
+                            tools:text="MARVEL AVENGERS THE END GAME AVENGERS THE END GAME" />
+
+                        <LinearLayout
+                            android:id="@+id/genreLinearLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/common_fourteen_dp"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/genreTitleTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="@dimen/common_four_dp"
+                                android:layout_marginBottom="@dimen/common_two_dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="@string/details_genre"
+                                android:textColor="@android:color/white"
+                                android:textSize="@dimen/common_text_twelve_sp"
+                                android:textStyle="bold" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/genreTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/common_two_dp"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                android:text="@string/general_dash"
+                                android:textColor="@android:color/white"
+                                android:textSize="@dimen/common_text_twelve_sp"
+                                tools:text="Comedy" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <WebView
+                android:id="@+id/trailerWebView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/colorPrimary" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/layout_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarLayout" />
+
+    <include
+        layout="@layout/layout_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarLayout" />
+
+</RelativeLayout>

@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MovieDB</string>
+
+    <!-- Common -->
+    <string name="no_data">Δεν βρέθηκαν αποτέλεσματα</string>
+    <string name="ok">OK</string>
+    <string name="generic_error">Παρουσιάστηκε πρόβλημα</string>
+    <string name="dialog_title">Oops</string>
+    <string name="no_internet">Δεν βρέθηκε σύνδεση στο διαδίκτυο</string>
+    <string name="general_dash">-</string>
+
+    <!-- Home -->
+    <string name="home_search_title">Search:</string>
+    <string name="home_toolbar_title">MovieDB</string>
+    <string name="home_rating">Rating:</string>
+    <string name="home_release_data">Release Date:</string>
+    <string name="home_watch_list">WatchList</string>
+
+    <!-- Details -->
+    <string name="details_genre">Genre:</string>
+    <string name="home_empty_field">Παρακαλώ συμπληρώστε το πεδίο</string>
+</resources>
