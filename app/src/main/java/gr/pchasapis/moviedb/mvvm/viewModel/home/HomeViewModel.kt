@@ -85,7 +85,7 @@ class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel(
                 loadingLiveData.value = true
             }
             page++
-            val response = withContext(bgDispatcher) { homeInteractor.onRetrieveSearchResult(queryText, page) }
+            val response = homeInteractor.onRetrieveSearchResult(queryText, page)
             response.data?.let {
                 emptyLiveData.value = false
                 finishPaginationLiveData.value = isPaginationFinished(it.firstOrNull()?.page

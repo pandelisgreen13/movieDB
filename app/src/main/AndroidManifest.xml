@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.activity.theatre.TheatreActivity"></activity>
         <activity
             android:name=".ui.activity.details.DetailsActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />

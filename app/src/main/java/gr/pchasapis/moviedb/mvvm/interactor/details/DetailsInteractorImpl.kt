@@ -17,9 +17,9 @@ class DetailsInteractorImpl(private var movieClient: MovieClient, private val mo
         return try {
             val response = when (homeDataModel.mediaType) {
                 Definitions.IS_MOVIE -> movieToHomeDataModel(homeDataModel, movieClient.getMovieDetailsAsync(homeDataModel.id
-                        ?: 0).await())
+                        ?: 0))
                 else -> tvShowToHomeDataModel(homeDataModel, movieClient.getTvShowDetailsAsync(homeDataModel.id
-                        ?: 0).await())
+                        ?: 0))
             }
             DataResult(response)
         } catch (t: Throwable) {

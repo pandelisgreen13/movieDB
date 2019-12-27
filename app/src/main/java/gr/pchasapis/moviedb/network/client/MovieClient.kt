@@ -1,6 +1,5 @@
 package gr.pchasapis.moviedb.network.client
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.common.DefinitionsApi
 import gr.pchasapis.moviedb.model.parsers.movie.MovieResponse
@@ -26,7 +25,6 @@ class MovieClient {
         return Retrofit.Builder()
                 .baseUrl(DefinitionsApi.DOMAIN)
                 .client(getOkHttpClient())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
     }
@@ -38,16 +36,15 @@ class MovieClient {
             .writeTimeout(60L, TimeUnit.SECONDS)
             .build()
 
-    fun getSearchAsync(queryText: String, page: Int): Deferred<SearchResponse> {
+    suspend fun getSearchAsync(queryText: String, page: Int): SearchResponse {
         return movieApi.getSearchAsync(Definitions.API_KEY, queryText, page)
     }
 
-    fun getMovieDetailsAsync(movieId: Int): Deferred<MovieResponse> {
+    suspend fun getMovieDetailsAsync(movieId: Int): MovieResponse {
         return movieApi.getMovieDetailsAsync(movieId, Definitions.API_KEY, Definitions.VIDEOS)
     }
 
-    fun getTvShowDetailsAsync(tvId: Int): Deferred<TvShowResponse> {
+    suspend fun getTvShowDetailsAsync(tvId: Int): TvShowResponse {
         return movieApi.getTvShowDetailsAsync(tvId, Definitions.API_KEY, Definitions.VIDEOS)
     }
-
 }

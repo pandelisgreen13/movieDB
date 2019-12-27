@@ -12,20 +12,25 @@ import retrofit2.http.Query
 interface MovieApi {
 
     @GET("search/multi")
-    fun getSearchAsync(@Query("api_key") apiKey: String,
-                       @Query("query") query: String,
-                       @Query("page") page: Int): Deferred<SearchResponse>
+    suspend fun getSearchAsync(@Query("api_key") apiKey: String,
+                               @Query("query") query: String,
+                               @Query("page") page: Int): SearchResponse
 
 
     @GET("movie/{movieId}")
-    fun getMovieDetailsAsync(@Path("movieId") movieId: Int,
-                             @Query("api_key") apiKey: String,
-                             @Query("append_to_response") appendToResponse: String): Deferred<MovieResponse>
+    suspend fun getMovieDetailsAsync(@Path("movieId") movieId: Int,
+                                     @Query("api_key") apiKey: String,
+                                     @Query("append_to_response") appendToResponse: String): MovieResponse
 
 
     @GET("tv/{tvId}")
-    fun getTvShowDetailsAsync(@Path("tvId") movieId: Int,
-                              @Query("api_key") apiKey: String,
-                              @Query("append_to_response") appendToResponse: String): Deferred<TvShowResponse>
+    suspend fun getTvShowDetailsAsync(@Path("tvId") movieId: Int,
+                                      @Query("api_key") apiKey: String,
+                                      @Query("append_to_response") appendToResponse: String): TvShowResponse
 
+    @GET("discover/movie")
+    suspend fun getMovieTheatreAsync(@Path("primary_release_date.gte") startDate: Int,
+                                     @Path("primary_release_date.lte") endDate: Int,
+                                     @Query("api_key") apiKey: String,
+                                     @Query("append_to_response") appendToResponse: String): MovieResponse
 }

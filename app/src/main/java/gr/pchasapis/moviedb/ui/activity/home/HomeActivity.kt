@@ -9,17 +9,17 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
 import gr.pchasapis.moviedb.R
-import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
+import gr.pchasapis.moviedb.common.RESULT
 import gr.pchasapis.moviedb.common.application.MovieApplication
 import gr.pchasapis.moviedb.database.MovieDbDatabase
-import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModelFactory
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
@@ -46,8 +46,8 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == ACTIVITY_RESULT.DETAILS && resultCode == Activity.RESULT_OK) {
-            viewModel?.updateModel(data?.getParcelableExtra<HomeDataModel>(BUNDLE.MOVIE_DETAILS))
+        if (requestCode == RESULT.DETAILS && resultCode == Activity.RESULT_OK) {
+            viewModel?.updateModel(data?.getParcelableExtra(BUNDLE.MOVIE_DETAILS))
             viewModel?.readWatchListFromDatabase()
         }
     }
@@ -88,7 +88,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
 
         viewModel?.getPaginationLoader()?.observe(this, Observer { value ->
             value?.let { show ->
-                moreProgressView?.visibility = if(show) View.VISIBLE else View.GONE
+                moreProgressView?.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 
@@ -107,7 +107,13 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     private fun initLayout() {
         toolbarTitleTextView.text = getString(R.string.home_toolbar_title)
         backButtonImageView.visibility = View.INVISIBLE
-        actionButtonImageView.visibility = View.INVISIBLE
+        actionButtonImageView.visibility = View.VISIBLE
+        actionButtonImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_theatre))
+
+        actionButtonImageView.setOnClickListener {
+
+        }
+
         searchImageButton.setOnClickListener {
             if (searchEditText.text.toString().isEmpty() && viewModel?.isWatchListMode == false) {
                 showErrorDialog(getString(R.string.home_empty_field), closeListener = { dialog ->
@@ -147,7 +153,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
                 onItemClicked = { homeDataModel ->
                     val intent = Intent(this, DetailsActivity::class.java)
                     intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
-                    startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
+                    startActivityForResult(intent, RESULT.DETAILS)
                 })
 
         paginationScrollListener = PaginationScrollListener(

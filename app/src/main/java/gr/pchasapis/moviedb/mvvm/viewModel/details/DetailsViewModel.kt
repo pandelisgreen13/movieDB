@@ -36,7 +36,7 @@ class DetailsViewModel(private val detailsInteractor: DetailsInteractor, var hom
 
         uiScope.launch {
             loadingLiveData.value = true
-            val response = withContext(bgDispatcher) { detailsInteractor.onRetrieveDetails(homeDataModel!!) }
+            val response = detailsInteractor.onRetrieveDetails(homeDataModel!!)
             response.data?.let {
                 homeDataModelLiveData.value = it
             } ?: response.throwable?.let {

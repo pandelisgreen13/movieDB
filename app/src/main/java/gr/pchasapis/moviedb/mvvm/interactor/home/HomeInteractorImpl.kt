@@ -25,7 +25,7 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
 
     override suspend fun onRetrieveSearchResult(queryText: String, page: Int): DataResult<List<HomeDataModel>> {
         return try {
-            val response = movieClient.getSearchAsync(queryText, page).await()
+            val response = movieClient.getSearchAsync(queryText, page)
             DataResult(toHomeDataModel(response))
         } catch (t: Throwable) {
             Timber.d(t)
