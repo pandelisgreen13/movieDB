@@ -19,4 +19,8 @@
     <!-- Details -->
     <string name="details_genre">Genre:</string>
     <string name="home_empty_field">Παρακαλώ συμπληρώστε το πεδίο</string>
+
+    <!-- Theatre -->
+    <string name="theatre_in_movies">Movies In Theatre</string>
+
 </resources>

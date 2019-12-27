@@ -3,7 +3,7 @@ package gr.pchasapis.moviedb.common
 object Definitions {
 
     const val API_KEY                                                              = "api-key"
-    const val VIDEOS                                                               ="videos"
+    const val VIDEOS                                                               = "videos"
     const val PAGINATION_SIZE                                                      = 6
     const val FIRST_POSITION                                                       = 0
     const val IS_MOVIE                                                             = "movie"
@@ -13,6 +13,7 @@ object Definitions {
 
 object BUNDLE{
     const val MOVIE_DETAILS                                                           = "movieDetails"
+    const val MOVIE_THEATRE                                                           = "movieInTheatre"
 }
 
 object ACTIVITY_RESULT {

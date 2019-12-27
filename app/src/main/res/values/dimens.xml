@@ -10,6 +10,7 @@
     <dimen name="common_ten_dp">10dp</dimen>
     <dimen name="common_fourteen_dp">14dp</dimen>
     <dimen name="common_twenty_dp">20dp</dimen>
+    <dimen name="common_thirty_dp">30dp</dimen>
     <dimen name="common_fifty_dp">50dp</dimen>
     <dimen name="common_one_hundred_dp">100dp</dimen>
     <dimen name="common_one_hundred_and_twenty_dp">120dp</dimen>

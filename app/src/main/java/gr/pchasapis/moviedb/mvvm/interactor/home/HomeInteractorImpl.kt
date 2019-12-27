@@ -5,7 +5,9 @@ import gr.pchasapis.moviedb.database.MovieDbDatabase
 import gr.pchasapis.moviedb.database.dao.MovieDbTable
 import gr.pchasapis.moviedb.model.common.DataResult
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
+import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
 import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
 import gr.pchasapis.moviedb.network.client.MovieClient
 import timber.log.Timber
@@ -33,6 +35,16 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
         }
     }
 
+    override suspend fun getMoviesInTheatres(): DataResult<List<MovieDataModel>> {
+        return try {
+            val response = movieClient.getMovieTheatre(DATE_FROM, DATE_TO)
+            DataResult(toMovieDataModel(response))
+        } catch (t: Throwable) {
+            Timber.d(t)
+            DataResult(throwable = t)
+        }
+    }
+
     private fun toHomeDataModel(searchResponse: SearchResponse): List<HomeDataModel> {
         return (searchResponse.searchResultsList?.map { searchItem ->
             return@map HomeDataModel(
@@ -46,6 +58,17 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
                     page = searchResponse.page ?: 0,
                     totalPage = searchResponse.totalPages ?: 0,
                     isFavorite = movieDbDatabase.movieDbTableDao().isFavourite(searchItem.id ?: 0))
+        } ?: arrayListOf())
+    }
+
+    private fun toMovieDataModel(theatreResponse: TheatreResponse): List<MovieDataModel> {
+        return (theatreResponse.searchResultsList?.map { movieItem ->
+            return@map MovieDataModel(
+                    id = movieItem.id,
+                    title = movieItem.title ?: "-",
+                    summary = movieItem.overview ?: "-",
+                    thumbnail = "${Definitions.IMAGE_URL_W300}${movieItem.posterPath}",
+                    releaseDate = movieItem.releaseDate ?: "-")
         } ?: arrayListOf())
     }
 
@@ -67,5 +90,10 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
         }
     }
 
+    companion object{
+
+        const val DATE_FROM = "2019-12-22"
+        const val DATE_TO = "2019-12-31"
+    }
 
 }

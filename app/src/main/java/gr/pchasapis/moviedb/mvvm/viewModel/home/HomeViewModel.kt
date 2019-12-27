@@ -3,6 +3,7 @@ package gr.pchasapis.moviedb.mvvm.viewModel.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractor
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel(
 
     private lateinit var searchMutableLiveData: MutableLiveData<MutableList<HomeDataModel>>
     private lateinit var watchListLiveData: MutableLiveData<Boolean>
+    private var theatreMutableLiveData: MutableLiveData<MutableList<MovieDataModel>> = MutableLiveData()
     private var finishPaginationLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var toolbarTitleLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var paginationLoaderLiveData: MutableLiveData<Boolean> = MutableLiveData()
@@ -37,6 +39,10 @@ class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel(
             fetchSearchResult()
         }
         return searchMutableLiveData
+    }
+
+    fun getMovieInTheatre(): LiveData<MutableList<MovieDataModel>> {
+        return theatreMutableLiveData
     }
 
     fun getPaginationStatus(): LiveData<Boolean> {
@@ -171,5 +177,21 @@ class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel(
             it.title?.toLowerCase()?.contains(queryText.toLowerCase(), true) ?: false
         }
         searchMutableLiveData.value = queryList.toMutableList()
+    }
+
+    fun fetchMovieInTheatre() {
+        loadingLiveData.value = true
+        uiScope.launch {
+            val response = homeInteractor.getMoviesInTheatres()
+            loadingLiveData.value = false
+            response.data?.let {
+                theatreMutableLiveData.value = it.toMutableList()
+            } ?: response.throwable?.let {
+                Timber.e(it.toString())
+                searchMutableLiveData.value = searchList
+            } ?: run {
+                searchMutableLiveData.value = searchList
+            }
+        }
     }
 }

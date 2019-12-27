@@ -3,6 +3,7 @@ package gr.pchasapis.moviedb.ui.activity.home
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -15,9 +16,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
 import gr.pchasapis.moviedb.R
+import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
-import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.application.MovieApplication
 import gr.pchasapis.moviedb.database.MovieDbDatabase
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
@@ -25,12 +26,14 @@ import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModelFactory
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
 import gr.pchasapis.moviedb.ui.activity.details.DetailsActivity
+import gr.pchasapis.moviedb.ui.activity.theatre.TheatreActivity
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.layout_empty.*
 import kotlinx.android.synthetic.main.layout_pagination_recyclerview.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
+import java.util.*
 
 
 class HomeActivity : BaseActivity<HomeViewModel>() {
@@ -46,6 +49,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ACTIVITY_RESULT.DETAILS && resultCode == Activity.RESULT_OK) {
             viewModel?.updateModel(data?.getParcelableExtra(BUNDLE.MOVIE_DETAILS))
             viewModel?.readWatchListFromDatabase()
@@ -102,6 +106,14 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
                 }
             }
         })
+
+        viewModel?.getMovieInTheatre()?.observe(this, Observer { value ->
+            value?.let { moviesInTheatre ->
+                val intent = Intent(this, TheatreActivity::class.java)
+                intent.putParcelableArrayListExtra(BUNDLE.MOVIE_THEATRE, moviesInTheatre as ArrayList<out Parcelable>)
+                startActivity(intent)
+            }
+        })
     }
 
     private fun initLayout() {
@@ -111,7 +123,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
         actionButtonImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_theatre))
 
         actionButtonImageView.setOnClickListener {
-
+            viewModel?.fetchMovieInTheatre()
         }
 
         searchImageButton.setOnClickListener {
