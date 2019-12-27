@@ -17,7 +17,7 @@ import closeSoftKeyboard
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
-import gr.pchasapis.moviedb.common.RESULT
+import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.application.MovieApplication
 import gr.pchasapis.moviedb.database.MovieDbDatabase
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
@@ -46,7 +46,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RESULT.DETAILS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == ACTIVITY_RESULT.DETAILS && resultCode == Activity.RESULT_OK) {
             viewModel?.updateModel(data?.getParcelableExtra(BUNDLE.MOVIE_DETAILS))
             viewModel?.readWatchListFromDatabase()
         }
@@ -153,7 +153,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
                 onItemClicked = { homeDataModel ->
                     val intent = Intent(this, DetailsActivity::class.java)
                     intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
-                    startActivityForResult(intent, RESULT.DETAILS)
+                    startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
                 })
 
         paginationScrollListener = PaginationScrollListener(
