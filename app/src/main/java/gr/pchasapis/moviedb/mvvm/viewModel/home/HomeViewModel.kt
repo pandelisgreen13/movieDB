@@ -174,7 +174,7 @@ class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel(
             return
         }
         val queryList = databaseList.filter {
-            it.title?.toLowerCase()?.contains(queryText.toLowerCase(), true) ?: false
+            it.title?.toLowerCase(Locale.getDefault())?.contains(queryText.toLowerCase(Locale.getDefault()), true) ?: false
         }
         searchMutableLiveData.value = queryList.toMutableList()
     }

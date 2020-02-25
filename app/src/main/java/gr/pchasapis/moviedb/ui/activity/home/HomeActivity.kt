@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
@@ -67,7 +68,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     private fun initViewModel() {
         val dashboardViewModelFactory = BaseViewModelFactory { HomeViewModel(HomeInteractorImpl(MovieApplication.get()?.movieClient!!, MovieDbDatabase.get(this))) }
 
-        viewModel = ViewModelProviders.of(this, dashboardViewModelFactory).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this, dashboardViewModelFactory).get(HomeViewModel::class.java)
         initViewModelState()
         viewModel?.getSearchList()?.observe(this, Observer { resultList ->
             resultList?.let {
