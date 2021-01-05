@@ -6,7 +6,9 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_toolbar" />
+    <include
+        android:id="@+id/toolbarLayout"
+        layout="@layout/layout_toolbar" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

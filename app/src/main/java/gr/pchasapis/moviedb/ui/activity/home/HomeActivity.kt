@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
 import gr.pchasapis.moviedb.R
@@ -22,6 +21,7 @@ import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.common.application.MovieApplication
 import gr.pchasapis.moviedb.database.MovieDbDatabase
+import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModelFactory
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
@@ -30,10 +30,6 @@ import gr.pchasapis.moviedb.ui.activity.details.DetailsActivity
 import gr.pchasapis.moviedb.ui.activity.theatre.TheatreActivity
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.layout_empty.*
-import kotlinx.android.synthetic.main.layout_pagination_recyclerview.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
 import java.util.*
 
 
@@ -41,12 +37,14 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
 
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
     private var paginationScrollListener: PaginationScrollListener? = null
+    private lateinit var binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initLayout()
-        initViewModel()
+        initViewModel(binding)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -65,20 +63,22 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
         super.onBackPressed()
     }
 
-    private fun initViewModel() {
+    private fun initViewModel(binding: ActivityHomeBinding) {
         val dashboardViewModelFactory = BaseViewModelFactory { HomeViewModel(HomeInteractorImpl(MovieApplication.get()?.movieClient!!, MovieDbDatabase.get(this))) }
 
         viewModel = ViewModelProvider(this, dashboardViewModelFactory).get(HomeViewModel::class.java)
-        initViewModelState()
+        initViewModelState(binding.loadingLayout, binding.emptyLayout)
         viewModel?.getSearchList()?.observe(this, Observer { resultList ->
             resultList?.let {
                 homeRecyclerViewAdapter?.setSearchList(it)
-            } ?: run { emptyView.visibility = View.VISIBLE }
+            } ?: run {
+                binding.emptyLayout.root.visibility = View.VISIBLE
+            }
         })
 
         viewModel?.getToolbarTitle()?.observe(this, Observer { value ->
             value?.let { isWatchlistMode ->
-                toolbarTitleTextView.text = when {
+                binding.toolbarLayout.toolbarTitleTextView.text = when {
                     isWatchlistMode -> getString(R.string.home_watch_list)
                     else -> getString(R.string.home_toolbar_title)
                 }
@@ -93,17 +93,17 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
 
         viewModel?.getPaginationLoader()?.observe(this, Observer { value ->
             value?.let { show ->
-                moreProgressView?.visibility = if (show) View.VISIBLE else View.GONE
+                binding.recyclerViewLayout.moreProgressView.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 
         viewModel?.getWatchListLiveData()?.observe(this, Observer { value ->
             value?.let { hasWatchListItems ->
                 if (hasWatchListItems) {
-                    watchListButton.show()
+                    this.binding.watchListButton.show()
                 } else {
-                    watchListButton.hide()
-                    toolbarTitleTextView.text = getString(R.string.home_toolbar_title)
+                    this.binding.watchListButton.hide()
+                    this.binding.toolbarLayout.toolbarTitleTextView.text = getString(R.string.home_toolbar_title)
                 }
             }
         })
@@ -118,79 +118,82 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     }
 
     private fun initLayout() {
-        toolbarTitleTextView.text = getString(R.string.home_toolbar_title)
-        backButtonImageView.visibility = View.INVISIBLE
-        actionButtonImageView.visibility = View.VISIBLE
-        actionButtonImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_theatre))
+        binding.apply {
+            toolbarLayout.toolbarTitleTextView.text = getString(R.string.home_toolbar_title)
 
-        actionButtonImageView.setOnClickListener {
-            viewModel?.fetchMovieInTheatre()
-        }
+            toolbarLayout.backButtonImageView.visibility = View.INVISIBLE
+            toolbarLayout.actionButtonImageView.visibility = View.VISIBLE
+            toolbarLayout.actionButtonImageView.setImageDrawable(ContextCompat.getDrawable(this@HomeActivity, R.drawable.ic_theatre))
 
-        searchImageButton.setOnClickListener {
-            if (searchEditText.text.toString().isEmpty() && viewModel?.isWatchListMode == false) {
-                showErrorDialog(getString(R.string.home_empty_field), closeListener = { dialog ->
-                    dialog.dismiss()
-                    viewModel?.genericErrorLiveData?.value = false
-                })
-            }
-            handleClickSearch()
-        }
-        watchListButton.setOnClickListener {
-            searchEditText.setText("")
-            viewModel?.showWatchList()
-        }
-
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(charSequence: CharSequence, arg1: Int, arg2: Int, arg3: Int) {
-                viewModel?.setQueryText(searchEditText.text?.trim().toString())
+            toolbarLayout.actionButtonImageView.setOnClickListener {
+                viewModel?.fetchMovieInTheatre()
             }
 
-            override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3: Int) {}
-            override fun afterTextChanged(arg0: Editable) {}
-        })
-
-        searchEditText.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    handleClickSearch()
-                    return true
+            searchImageButton.setOnClickListener {
+                if (searchEditText.text.toString().isEmpty() && viewModel?.isWatchListMode == false) {
+                    showErrorDialog(getString(R.string.home_empty_field), closeListener = { dialog ->
+                        dialog.dismiss()
+                        viewModel?.genericErrorLiveData?.value = false
+                    })
                 }
-                return false
+                handleClickSearch()
             }
-        })
+            watchListButton.setOnClickListener {
+                searchEditText.setText("")
+                viewModel?.showWatchList()
+            }
 
-        val linearLayoutManager = LinearLayoutManager(this)
-        homeRecyclerView.layoutManager = linearLayoutManager
-        homeRecyclerViewAdapter = HomeRecyclerViewAdapter(
-                onItemClicked = { homeDataModel ->
-                    val intent = Intent(this, DetailsActivity::class.java)
-                    intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
-                    startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
-                })
+            searchEditText.addTextChangedListener(object : TextWatcher {
+                override fun onTextChanged(charSequence: CharSequence, arg1: Int, arg2: Int, arg3: Int) {
+                    viewModel?.setQueryText(searchEditText.text?.trim().toString())
+                }
 
-        paginationScrollListener = PaginationScrollListener(
-                linearLayoutManager,
-                {
-                    if (viewModel?.isWatchListMode == true) {
-                        return@PaginationScrollListener
+                override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3: Int) {}
+                override fun afterTextChanged(arg0: Editable) {}
+            })
+
+            searchEditText.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+                override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        handleClickSearch()
+                        return true
                     }
-                    if (searchEditText.text.toString().isNotEmpty()) {
-                        moreProgressView?.visibility = View.VISIBLE
-                    }
-                    viewModel?.fetchSearchResult()
-                },
-                Definitions.PAGINATION_SIZE
-        )
-        paginationScrollListener?.let {
-            homeRecyclerView.addOnScrollListener(it)
+                    return false
+                }
+            })
+
+            val linearLayoutManager = LinearLayoutManager(this@HomeActivity)
+            binding.recyclerViewLayout.homeRecyclerView.layoutManager = linearLayoutManager
+            homeRecyclerViewAdapter = HomeRecyclerViewAdapter(
+                    onItemClicked = { homeDataModel ->
+                        val intent = Intent(this@HomeActivity, DetailsActivity::class.java)
+                        intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
+                        startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
+                    })
+
+            paginationScrollListener = PaginationScrollListener(
+                    linearLayoutManager,
+                    {
+                        if (viewModel?.isWatchListMode == true) {
+                            return@PaginationScrollListener
+                        }
+                        if (searchEditText.text.toString().isNotEmpty()) {
+                            binding.recyclerViewLayout.moreProgressView.visibility = View.VISIBLE
+                        }
+                        viewModel?.fetchSearchResult()
+                    },
+                    Definitions.PAGINATION_SIZE
+            )
+            paginationScrollListener?.let {
+                binding.recyclerViewLayout.homeRecyclerView.addOnScrollListener(it)
+            }
+            binding.recyclerViewLayout.homeRecyclerView.adapter = homeRecyclerViewAdapter
         }
-        homeRecyclerView.adapter = homeRecyclerViewAdapter
     }
 
     private fun handleClickSearch() {
-        homeRecyclerView.smoothScrollToPosition(Definitions.FIRST_POSITION)
-        searchEditText.clearFocus()
+        binding.recyclerViewLayout.homeRecyclerView.smoothScrollToPosition(Definitions.FIRST_POSITION)
+        binding.searchEditText.clearFocus()
         closeSoftKeyboard(this)
         viewModel?.searchForResults()
     }

@@ -7,9 +7,9 @@ import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import gr.pchasapis.moviedb.R
+import gr.pchasapis.moviedb.databinding.LayoutEmptyBinding
+import gr.pchasapis.moviedb.databinding.LayoutLoadingBinding
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
-import kotlinx.android.synthetic.main.layout_empty.*
-import kotlinx.android.synthetic.main.layout_loading.*
 
 @SuppressLint("Registered")
 open class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
@@ -23,16 +23,16 @@ open class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
         materialDialog = null
     }
 
-    fun initViewModelState() {
+    fun initViewModelState(loadingLayout: LayoutLoadingBinding?, emptyLayout: LayoutEmptyBinding?) {
         viewModel?.showLoadingView()?.observe(this, Observer { value ->
             value?.let { show ->
-                loadingView.visibility = if (show) View.VISIBLE else View.GONE
+                loadingLayout?.root?.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 
         viewModel?.showEmptyView()?.observe(this, Observer { value ->
             value?.let { show ->
-                emptyView.visibility = if (show) View.VISIBLE else View.GONE
+                emptyLayout?.root?.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 

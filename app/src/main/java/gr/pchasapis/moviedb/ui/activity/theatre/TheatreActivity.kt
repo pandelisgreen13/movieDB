@@ -6,19 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.extensions.setMargins
+import gr.pchasapis.moviedb.databinding.ActivityTheatreBinding
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.ui.adapter.theatre.TheatrePagerAdapter
-import kotlinx.android.synthetic.main.activity_theatre.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
-
 
 class TheatreActivity : AppCompatActivity() {
 
     private lateinit var moviesList: List<MovieDataModel>
+    private lateinit var binding: ActivityTheatreBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_theatre)
+        binding = ActivityTheatreBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         getExtras()
         initLayout()
     }
@@ -28,15 +28,15 @@ class TheatreActivity : AppCompatActivity() {
     }
 
     private fun initLayout() {
-        toolbarTitleTextView.text = getString(R.string.theatre_in_movies)
-        backButtonImageView.visibility = View.VISIBLE
-        actionButtonImageView.visibility = View.INVISIBLE
-        backButtonImageView.setOnClickListener { onBackPressed() }
+        binding.toolbarLayout.toolbarTitleTextView.text = getString(R.string.theatre_in_movies)
+        binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
+        binding.toolbarLayout. actionButtonImageView.visibility = View.INVISIBLE
+        binding.toolbarLayout. backButtonImageView.setOnClickListener { onBackPressed() }
 
         val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.common_twenty_dp)
         val offsetPx = resources.getDimensionPixelOffset(R.dimen.common_thirty_dp)
 
-        viewPager.apply {
+       binding.viewPager.apply {
             adapter = TheatrePagerAdapter(moviesList)
             clipToPadding = false
             clipChildren = false

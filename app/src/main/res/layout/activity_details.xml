@@ -124,15 +124,19 @@
     </ScrollView>
 
     <include
+        android:id="@+id/loadingLayout"
         layout="@layout/layout_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbarLayout" />
+        android:layout_below="@id/toolbarLayout"
+        android:visibility="gone" />
 
     <include
+        android:id="@+id/emptyLayout"
         layout="@layout/layout_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbarLayout" />
+        android:layout_below="@id/toolbarLayout"
+        android:visibility="gone" />
 
 </RelativeLayout>

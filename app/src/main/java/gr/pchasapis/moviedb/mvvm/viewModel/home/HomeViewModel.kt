@@ -9,6 +9,7 @@ import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
 
 class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel() {
 

@@ -7,37 +7,35 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import gr.pchasapis.moviedb.R
+import androidx.lifecycle.ViewModelProvider
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.application.MovieApplication
 import gr.pchasapis.moviedb.common.extensions.loadUrl
 import gr.pchasapis.moviedb.database.MovieDbDatabase
+import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModelFactory
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_details.*
-import kotlinx.android.synthetic.main.layout_empty.*
-import kotlinx.android.synthetic.main.layout_loading.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
 
 
 class DetailsActivity : BaseActivity<DetailsViewModel>() {
 
+    private lateinit var binding: ActivityDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_details)
+        binding = ActivityDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initLayout()
         initViewModel()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        trailerWebView?.stopLoading()
-        trailerWebView?.onPause()
+        binding.trailerWebView.stopLoading()
+        binding.trailerWebView.onPause()
     }
 
     override fun onBackPressed() {
@@ -52,9 +50,9 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
     }
 
     private fun initLayout() {
-        backButtonImageView.visibility = View.VISIBLE
-        backButtonImageView.setOnClickListener { onBackPressed() }
-        actionButtonImageView.setOnClickListener { viewModel?.toggleFavourite() }
+        binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
+        binding.toolbarLayout.backButtonImageView.setOnClickListener { onBackPressed() }
+        binding.toolbarLayout.actionButtonImageView.setOnClickListener { viewModel?.toggleFavourite() }
     }
 
     private fun initViewModel() {
@@ -64,39 +62,43 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
                     intent?.extras?.getParcelable(BUNDLE.MOVIE_DETAILS))
         }
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailsViewModel::class.java)
-        initViewModelState()
-        viewModel?.getDetailsList()?.observe(this, Observer { resultList ->
+        viewModel = ViewModelProvider(this, viewModelFactory).get(DetailsViewModel::class.java)
+        initViewModelState(binding.loadingLayout, binding.emptyLayout)
+        viewModel?.getDetailsList()?.observe(this, { resultList ->
             resultList?.let {
                 updateUi(it)
-            } ?: run { emptyView.visibility = View.VISIBLE }
+            } ?: run {
+                binding.emptyLayout?.root?.visibility = View.VISIBLE
+            }
         })
 
-        viewModel?.getFavourite()?.observe(this, Observer { value ->
+        viewModel?.getFavourite()?.observe(this, { value ->
             value?.let { isFavourite ->
-                actionButtonImageView.isSelected = isFavourite
+                binding.toolbarLayout.actionButtonImageView.isSelected = isFavourite
             }
         })
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun updateUi(homeDataModel: HomeDataModel) {
-        actionButtonImageView.visibility = View.VISIBLE
-        thumbnailImageView.loadUrl(homeDataModel.thumbnail)
-        toolbarTitleTextView.text = homeDataModel.title
-        summaryTextView.text = homeDataModel.summary
-        genreTextView.text = homeDataModel.genresName
-        actionButtonImageView.isSelected = homeDataModel.isFavorite
+        binding.apply {
+            toolbarLayout.actionButtonImageView.visibility = View.VISIBLE
+            thumbnailImageView.loadUrl(homeDataModel.thumbnail)
+            toolbarLayout.toolbarTitleTextView.text = homeDataModel.title
+            summaryTextView.text = homeDataModel.summary
+            genreTextView.text = homeDataModel.genresName
+            toolbarLayout.actionButtonImageView.isSelected = homeDataModel.isFavorite
 
-        trailerWebView.settings.javaScriptEnabled = true
+            trailerWebView.settings.javaScriptEnabled = true
 
-        trailerWebView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                return false
+            trailerWebView.webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                    return false
+                }
             }
+            val webSettings = trailerWebView.settings
+            webSettings.javaScriptEnabled = true
+            trailerWebView.loadData(homeDataModel.videoUrl, "text/html", "utf-8")
         }
-        val webSettings = trailerWebView.settings
-        webSettings.javaScriptEnabled = true
-        trailerWebView.loadData(homeDataModel.videoUrl, "text/html", "utf-8")
     }
 }

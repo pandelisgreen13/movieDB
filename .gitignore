@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/.idea/jarRepositories.xml
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -11,3 +12,5 @@
 /build
 /captures
 .externalNativeBuild
+.idea
+/.idea/

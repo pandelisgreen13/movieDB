@@ -1,7 +1,7 @@
 package gr.pchasapis.moviedb.model.data
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class HomeDataModel(val id: Int? = null,

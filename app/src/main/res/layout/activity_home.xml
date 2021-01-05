@@ -60,11 +60,19 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/searchLinearLayout">
 
-        <include layout="@layout/layout_pagination_recyclerview" />
+        <include
+            android:id="@+id/recyclerViewLayout"
+            layout="@layout/layout_pagination_recyclerview" />
 
-        <include layout="@layout/layout_loading" />
+        <include
+            android:id="@+id/loadingLayout"
+            layout="@layout/layout_loading"
+            android:visibility="gone" />
 
-        <include layout="@layout/layout_empty" />
+        <include
+            android:id="@+id/emptyLayout"
+            layout="@layout/layout_empty"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
