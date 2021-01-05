@@ -6,6 +6,7 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractor
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -92,21 +93,24 @@ class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel(
                 loadingLiveData.value = true
             }
             page++
-            val response = homeInteractor.onRetrieveSearchResult(queryText, page)
-            response.data?.let {
-                emptyLiveData.value = false
-                finishPaginationLiveData.value = isPaginationFinished(it.firstOrNull()?.page
-                        ?: 0, it.firstOrNull()?.totalPage ?: 0)
-                searchList.addAll(it)
-                searchMutableLiveData.value = searchList
-            } ?: run {
-                Timber.e(response.throwable.toString())
-                onErrorThrowable(response.throwable)
-                finishPaginationLiveData.value = true
+
+            homeInteractor.onRetrieveSearchResult(queryText, page).collect { response ->
+
+                response.data?.let {
+                    emptyLiveData.value = false
+                    finishPaginationLiveData.value = isPaginationFinished(it.firstOrNull()?.page
+                            ?: 0, it.firstOrNull()?.totalPage ?: 0)
+                    searchList.addAll(it)
+                    searchMutableLiveData.value = searchList
+                } ?: run {
+                    Timber.e(response.throwable.toString())
+                    onErrorThrowable(response.throwable)
+                    finishPaginationLiveData.value = true
+                }
+                paginationLoaderLiveData.value = false
+                loadingLiveData.value = false
+                setFetching(false)
             }
-            paginationLoaderLiveData.value = false
-            loadingLiveData.value = false
-            setFetching(false)
         }
     }
 

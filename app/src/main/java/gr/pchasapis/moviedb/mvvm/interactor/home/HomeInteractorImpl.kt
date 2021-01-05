@@ -10,6 +10,8 @@ import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
 import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
 import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
 import gr.pchasapis.moviedb.network.client.MovieClient
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 
 
@@ -25,13 +27,13 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
         }
     }
 
-    override suspend fun onRetrieveSearchResult(queryText: String, page: Int): DataResult<List<HomeDataModel>> {
+    override suspend fun onRetrieveSearchResult(queryText: String, page: Int): Flow<DataResult<List<HomeDataModel>>> {
         return try {
             val response = movieClient.getSearchAsync(queryText, page)
-            DataResult(toHomeDataModel(response))
+            flow { emit(DataResult(toHomeDataModel(response))) }
         } catch (t: Throwable) {
             Timber.d(t)
-            DataResult(throwable = t)
+            flow { DataResult(null, throwable = t) }
         }
     }
 
@@ -90,7 +92,7 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
         }
     }
 
-    companion object{
+    companion object {
 
         const val DATE_FROM = "2019-12-22"
         const val DATE_TO = "2019-12-31"
