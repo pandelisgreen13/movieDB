@@ -7,6 +7,7 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.application.MovieApplication
 import gr.pchasapis.moviedb.common.extensions.loadUrl
@@ -17,11 +18,14 @@ import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModelFactory
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class DetailsActivity : BaseActivity<DetailsViewModel>() {
 
     private lateinit var binding: ActivityDetailsBinding
+    @Inject
+    lateinit var detailsInteractorImpl :DetailsInteractorImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +61,7 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
     private fun initViewModel() {
         val viewModelFactory = BaseViewModelFactory {
             DetailsViewModel(
-                    DetailsInteractorImpl(MovieApplication.get()?.movieClient!!, MovieDbDatabase.get(this)),
+                    detailsInteractorImpl,
                     intent?.extras?.getParcelable(BUNDLE.MOVIE_DETAILS))
         }
 
