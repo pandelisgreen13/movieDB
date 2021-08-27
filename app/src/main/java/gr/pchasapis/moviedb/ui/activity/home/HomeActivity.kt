@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
+import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
@@ -31,10 +32,14 @@ import gr.pchasapis.moviedb.ui.activity.theatre.TheatreActivity
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 import java.util.*
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class HomeActivity : BaseActivity<HomeViewModel>() {
 
+    @Inject
+    lateinit var homeInteractorImpl : HomeInteractorImpl
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
     private var paginationScrollListener: PaginationScrollListener? = null
     private lateinit var binding: ActivityHomeBinding
@@ -64,7 +69,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     }
 
     private fun initViewModel(binding: ActivityHomeBinding) {
-        val dashboardViewModelFactory = BaseViewModelFactory { HomeViewModel(HomeInteractorImpl(MovieApplication.get()?.movieClient!!, MovieDbDatabase.get(this))) }
+        val dashboardViewModelFactory = BaseViewModelFactory { HomeViewModel(homeInteractorImpl) }
 
         viewModel = ViewModelProvider(this, dashboardViewModelFactory).get(HomeViewModel::class.java)
         initViewModelState(binding.loadingLayout, binding.emptyLayout)

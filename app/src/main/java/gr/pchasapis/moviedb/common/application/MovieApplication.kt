@@ -1,12 +1,13 @@
 package gr.pchasapis.moviedb.common.application
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 import gr.pchasapis.moviedb.BuildConfig
 import gr.pchasapis.moviedb.network.client.MovieClient
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-
+@HiltAndroidApp
 class MovieApplication : Application() {
 
     companion object {
