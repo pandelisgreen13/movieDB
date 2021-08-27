@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.application.MovieApplication
@@ -98,7 +97,7 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
             }
             val webSettings = trailerWebView.settings
             webSettings.javaScriptEnabled = true
-            trailerWebView.loadData(homeDataModel.videoUrl, "text/html", "utf-8")
+            trailerWebView.loadData(homeDataModel.videoUrl ?: "", "text/html", "utf-8")
         }
     }
 }
