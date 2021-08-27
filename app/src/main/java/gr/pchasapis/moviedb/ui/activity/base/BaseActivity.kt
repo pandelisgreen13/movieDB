@@ -3,7 +3,6 @@ package gr.pchasapis.moviedb.ui.activity.base
 import android.annotation.SuppressLint
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import gr.pchasapis.moviedb.R
@@ -24,19 +23,19 @@ open class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     }
 
     fun initViewModelState(loadingLayout: LayoutLoadingBinding?, emptyLayout: LayoutEmptyBinding?) {
-        viewModel?.showLoadingView()?.observe(this, Observer { value ->
+        viewModel?.showLoadingView()?.observe(this, { value ->
             value?.let { show ->
                 loadingLayout?.root?.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 
-        viewModel?.showEmptyView()?.observe(this, Observer { value ->
+        viewModel?.showEmptyView()?.observe(this, { value ->
             value?.let { show ->
                 emptyLayout?.root?.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 
-        viewModel?.showInternetError()?.observe(this, Observer { value ->
+        viewModel?.showInternetError()?.observe(this, { value ->
             value?.let { showError ->
                 if (showError) {
                     showNoInternetError()
@@ -44,7 +43,7 @@ open class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
             }
         })
 
-        viewModel?.showGenericError()?.observe(this, Observer { value ->
+        viewModel?.showGenericError()?.observe(this, { value ->
             value?.let { showError ->
                 if (showError) {
                     showGenericError()

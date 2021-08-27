@@ -6,23 +6,25 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.common.BUNDLE
-import gr.pchasapis.moviedb.common.application.MovieApplication
 import gr.pchasapis.moviedb.common.extensions.loadUrl
-import gr.pchasapis.moviedb.database.MovieDbDatabase
 import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
-import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModelFactory
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class DetailsActivity : BaseActivity<DetailsViewModel>() {
 
     private lateinit var binding: ActivityDetailsBinding
+
+    @Inject
+    lateinit var detailsInteractorImpl: DetailsInteractorImpl
+    private val detailsViewModel: DetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,13 +58,10 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
     }
 
     private fun initViewModel() {
-        val viewModelFactory = BaseViewModelFactory {
-            DetailsViewModel(
-                    DetailsInteractorImpl(MovieApplication.get()?.movieClient!!, MovieDbDatabase.get(this)),
-                    intent?.extras?.getParcelable(BUNDLE.MOVIE_DETAILS))
+        viewModel = detailsViewModel
+        viewModel?.setUIModel(intent?.extras?.getParcelable(BUNDLE.MOVIE_DETAILS)) ?: kotlin.run {
+            binding.emptyLayout?.root?.visibility = View.VISIBLE
         }
-
-        viewModel = ViewModelProvider(this, viewModelFactory).get(DetailsViewModel::class.java)
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
         viewModel?.getDetailsList()?.observe(this, { resultList ->
             resultList?.let {
@@ -98,7 +97,7 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
             }
             val webSettings = trailerWebView.settings
             webSettings.javaScriptEnabled = true
-            trailerWebView.loadData(homeDataModel.videoUrl, "text/html", "utf-8")
+            trailerWebView.loadData(homeDataModel.videoUrl ?: "", "text/html", "utf-8")
         }
     }
 }
