@@ -2,17 +2,21 @@ package gr.pchasapis.moviedb.mvvm.viewModel.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractor
+import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
-class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteractorImpl) : BaseViewModel() {
 
     private lateinit var searchMutableLiveData: MutableLiveData<MutableList<HomeDataModel>>
     private lateinit var watchListLiveData: MutableLiveData<Boolean>
@@ -179,7 +183,8 @@ class HomeViewModel(private val homeInteractor: HomeInteractor) : BaseViewModel(
             return
         }
         val queryList = databaseList.filter {
-            it.title?.toLowerCase(Locale.getDefault())?.contains(queryText.toLowerCase(Locale.getDefault()), true) ?: false
+            it.title?.lowercase(Locale.getDefault())?.contains(queryText.toLowerCase(Locale.getDefault()), true)
+                    ?: false
         }
         searchMutableLiveData.value = queryList.toMutableList()
     }

@@ -10,9 +10,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,11 +19,7 @@ import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
-import gr.pchasapis.moviedb.common.application.MovieApplication
-import gr.pchasapis.moviedb.database.MovieDbDatabase
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
-import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
-import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModelFactory
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
 import gr.pchasapis.moviedb.ui.activity.details.DetailsActivity
@@ -32,14 +27,12 @@ import gr.pchasapis.moviedb.ui.activity.theatre.TheatreActivity
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 import java.util.*
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class HomeActivity : BaseActivity<HomeViewModel>() {
 
-    @Inject
-    lateinit var homeInteractorImpl : HomeInteractorImpl
+    private val homeViewModel: HomeViewModel by viewModels()
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
     private var paginationScrollListener: PaginationScrollListener? = null
     private lateinit var binding: ActivityHomeBinding
@@ -69,11 +62,9 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
     }
 
     private fun initViewModel(binding: ActivityHomeBinding) {
-        val dashboardViewModelFactory = BaseViewModelFactory { HomeViewModel(homeInteractorImpl) }
-
-        viewModel = ViewModelProvider(this, dashboardViewModelFactory).get(HomeViewModel::class.java)
+        viewModel = homeViewModel
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
-        viewModel?.getSearchList()?.observe(this, Observer { resultList ->
+        viewModel?.getSearchList()?.observe(this, { resultList ->
             resultList?.let {
                 homeRecyclerViewAdapter?.setSearchList(it)
             } ?: run {
@@ -81,7 +72,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
             }
         })
 
-        viewModel?.getToolbarTitle()?.observe(this, Observer { value ->
+        viewModel?.getToolbarTitle()?.observe(this, { value ->
             value?.let { isWatchlistMode ->
                 binding.toolbarLayout.toolbarTitleTextView.text = when {
                     isWatchlistMode -> getString(R.string.home_watch_list)
@@ -90,19 +81,19 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
             }
         })
 
-        viewModel?.getPaginationStatus()?.observe(this, Observer { value ->
+        viewModel?.getPaginationStatus()?.observe(this, { value ->
             value?.let { isPaginationFinished ->
                 paginationScrollListener?.finishedPagination(isPaginationFinished)
             }
         })
 
-        viewModel?.getPaginationLoader()?.observe(this, Observer { value ->
+        viewModel?.getPaginationLoader()?.observe(this, { value ->
             value?.let { show ->
                 binding.recyclerViewLayout.moreProgressView.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 
-        viewModel?.getWatchListLiveData()?.observe(this, Observer { value ->
+        viewModel?.getWatchListLiveData()?.observe(this, { value ->
             value?.let { hasWatchListItems ->
                 if (hasWatchListItems) {
                     this.binding.watchListButton.show()
@@ -113,7 +104,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
             }
         })
 
-        viewModel?.getMovieInTheatre()?.observe(this, Observer { value ->
+        viewModel?.getMovieInTheatre()?.observe(this, { value ->
             value?.let { moviesInTheatre ->
                 val intent = Intent(this, TheatreActivity::class.java)
                 intent.putParcelableArrayListExtra(BUNDLE.MOVIE_THEATRE, moviesInTheatre as ArrayList<out Parcelable>)
