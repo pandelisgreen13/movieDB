@@ -1,5 +1,6 @@
 ###  movieDB
 We use Retrofit to consume the MovieDb Api. We choose the MVVM Architechure with ViewModel, LiveData, Coroutines and Room Database.
+For Dependency Injection we are using [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 
 We have the Home activity where the user can find any movie or tv-series by typing at the search editext.
 The user can add a movie/tv-series as a favourite to his/her Watchlist. The favourite are stored locally at the database.
