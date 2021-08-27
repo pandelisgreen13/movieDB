@@ -2,15 +2,19 @@ package gr.pchasapis.moviedb.mvvm.viewModel.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.model.data.HomeDataModel
-import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractor
+import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import javax.inject.Inject
 
-class DetailsViewModel(private val detailsInteractor: DetailsInteractor, var homeDataModel: HomeDataModel?) : BaseViewModel() {
+@HiltViewModel
+class DetailsViewModel @Inject constructor(private val detailsInteractor: DetailsInteractorImpl) : BaseViewModel() {
 
+    var homeDataModel: HomeDataModel? = null
     private lateinit var homeDataModelLiveData: MutableLiveData<HomeDataModel>
     private var isFavouriteLiveData: MutableLiveData<Boolean> = MutableLiveData()
     var hasUserChangeFavourite: Boolean? = false
@@ -70,5 +74,9 @@ class DetailsViewModel(private val detailsInteractor: DetailsInteractor, var hom
             }
             loadingLiveData.value = false
         }
+    }
+
+    fun setUIModel(homeDataModel: HomeDataModel?) {
+        this.homeDataModel = homeDataModel
     }
 }

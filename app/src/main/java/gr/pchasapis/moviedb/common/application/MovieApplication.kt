@@ -7,7 +7,7 @@ import timber.log.Timber
 
 @HiltAndroidApp
 class MovieApplication : Application() {
-    
+
     override fun onCreate() {
         super.onCreate()
         initTimberLogging()

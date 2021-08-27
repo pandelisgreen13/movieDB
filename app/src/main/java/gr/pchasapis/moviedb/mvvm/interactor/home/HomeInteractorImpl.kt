@@ -16,7 +16,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class HomeInteractorImpl @Inject constructor(private var movieClient: MovieClient, private val movieDbDatabase: MovieDbDatabase) : BaseInteractor(), HomeInteractor {
+class HomeInteractorImpl (private var movieClient: MovieClient, private val movieDbDatabase: MovieDbDatabase) : BaseInteractor(), HomeInteractor {
 
     override suspend fun getWatchList(): DataResult<List<HomeDataModel>> {
         return try {
