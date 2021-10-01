@@ -13,12 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activity.theatre.TheatreActivity"></activity>
+        <activity
+            android:name=".ui.activity.navigation.NavigationActivity"
+            android:exported="true" />
+        <activity android:name=".ui.activity.theatre.TheatreActivity" />
         <activity
             android:name=".ui.activity.details.DetailsActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name=".ui.activity.home.HomeActivity"
+            android:name=".ui.activity.home.HomeFragment"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".ui.activity.splash.SplashActivity"

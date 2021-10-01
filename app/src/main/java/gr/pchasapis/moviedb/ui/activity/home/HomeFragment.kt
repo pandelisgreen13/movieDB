@@ -3,15 +3,16 @@ package gr.pchasapis.moviedb.ui.activity.home
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +22,7 @@ import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
-import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
+import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
 import gr.pchasapis.moviedb.ui.activity.details.DetailsActivity
 import gr.pchasapis.moviedb.ui.activity.theatre.TheatreActivity
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
@@ -30,19 +31,35 @@ import java.util.*
 
 
 @AndroidEntryPoint
-class HomeActivity : BaseActivity<HomeViewModel>() {
+class HomeFragment : BaseFragment<HomeViewModel>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
     private var paginationScrollListener: PaginationScrollListener? = null
-    private lateinit var binding: ActivityHomeBinding
+    private var binding: ActivityHomeBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = ActivityHomeBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initLayout()
-        initViewModel(binding)
+        binding?.let {
+            initViewModel(it)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -52,19 +69,19 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
             viewModel?.readWatchListFromDatabase()
         }
     }
-
-    override fun onBackPressed() {
-        if (viewModel?.isWatchListMode == true) {
-            viewModel?.showWatchList()
-            return
-        }
-        super.onBackPressed()
-    }
+//
+//    override fun onBackPressed() {
+//        if (viewModel?.isWatchListMode == true) {
+//            viewModel?.showWatchList()
+//            return
+//        }
+//        super.onBackPressed()
+//    }
 
     private fun initViewModel(binding: ActivityHomeBinding) {
         viewModel = homeViewModel
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
-        viewModel?.getSearchList()?.observe(this, { resultList ->
+        viewModel?.getSearchList()?.observe(viewLifecycleOwner, { resultList ->
             resultList?.let {
                 homeRecyclerViewAdapter?.setSearchList(it)
             } ?: run {
@@ -72,7 +89,7 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
             }
         })
 
-        viewModel?.getToolbarTitle()?.observe(this, { value ->
+        viewModel?.getToolbarTitle()?.observe(viewLifecycleOwner, { value ->
             value?.let { isWatchlistMode ->
                 binding.toolbarLayout.toolbarTitleTextView.text = when {
                     isWatchlistMode -> getString(R.string.home_watch_list)
@@ -81,45 +98,45 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
             }
         })
 
-        viewModel?.getPaginationStatus()?.observe(this, { value ->
+        viewModel?.getPaginationStatus()?.observe(viewLifecycleOwner, { value ->
             value?.let { isPaginationFinished ->
                 paginationScrollListener?.finishedPagination(isPaginationFinished)
             }
         })
 
-        viewModel?.getPaginationLoader()?.observe(this, { value ->
+        viewModel?.getPaginationLoader()?.observe(viewLifecycleOwner, { value ->
             value?.let { show ->
                 binding.recyclerViewLayout.moreProgressView.visibility = if (show) View.VISIBLE else View.GONE
             }
         })
 
-        viewModel?.getWatchListLiveData()?.observe(this, { value ->
+        viewModel?.getWatchListLiveData()?.observe(viewLifecycleOwner, { value ->
             value?.let { hasWatchListItems ->
                 if (hasWatchListItems) {
-                    this.binding.watchListButton.show()
+                    this.binding?.watchListButton?.show()
                 } else {
-                    this.binding.watchListButton.hide()
-                    this.binding.toolbarLayout.toolbarTitleTextView.text = getString(R.string.home_toolbar_title)
+                    this.binding?.watchListButton?.hide()
+                    this.binding?.toolbarLayout?.toolbarTitleTextView?.text = getString(R.string.home_toolbar_title)
                 }
             }
         })
 
-        viewModel?.getMovieInTheatre()?.observe(this, { value ->
+        viewModel?.getMovieInTheatre()?.observe(viewLifecycleOwner, { value ->
             value?.let { moviesInTheatre ->
-                val intent = Intent(this, TheatreActivity::class.java)
-                intent.putParcelableArrayListExtra(BUNDLE.MOVIE_THEATRE, moviesInTheatre as ArrayList<out Parcelable>)
-                startActivity(intent)
+//                val intent = Intent(this, TheatreActivity::class.java)
+//                intent.putParcelableArrayListExtra(BUNDLE.MOVIE_THEATRE, moviesInTheatre as ArrayList<out Parcelable>)
+//                startActivity(intent)
             }
         })
     }
 
     private fun initLayout() {
-        binding.apply {
+        binding?.apply {
             toolbarLayout.toolbarTitleTextView.text = getString(R.string.home_toolbar_title)
 
             toolbarLayout.backButtonImageView.visibility = View.INVISIBLE
             toolbarLayout.actionButtonImageView.visibility = View.VISIBLE
-            toolbarLayout.actionButtonImageView.setImageDrawable(ContextCompat.getDrawable(this@HomeActivity, R.drawable.ic_theatre))
+            toolbarLayout.actionButtonImageView.setImageDrawable(activity?.let { ContextCompat.getDrawable(it, R.drawable.ic_theatre) })
 
             toolbarLayout.actionButtonImageView.setOnClickListener {
                 viewModel?.fetchMovieInTheatre()
@@ -158,13 +175,13 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
                 }
             })
 
-            val linearLayoutManager = LinearLayoutManager(this@HomeActivity)
-            binding.recyclerViewLayout.homeRecyclerView.layoutManager = linearLayoutManager
+            val linearLayoutManager = LinearLayoutManager(activity)
+            binding?.recyclerViewLayout?.homeRecyclerView?.layoutManager = linearLayoutManager
             homeRecyclerViewAdapter = HomeRecyclerViewAdapter(
                     onItemClicked = { homeDataModel ->
-                        val intent = Intent(this@HomeActivity, DetailsActivity::class.java)
-                        intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
-                        startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
+//                        val intent = Intent(this@HomeFragment, DetailsActivity::class.java)
+//                        intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
+//                        startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
                     })
 
             paginationScrollListener = PaginationScrollListener(
@@ -174,23 +191,23 @@ class HomeActivity : BaseActivity<HomeViewModel>() {
                             return@PaginationScrollListener
                         }
                         if (searchEditText.text.toString().isNotEmpty()) {
-                            binding.recyclerViewLayout.moreProgressView.visibility = View.VISIBLE
+                            binding?.recyclerViewLayout?.moreProgressView?.visibility = View.VISIBLE
                         }
                         viewModel?.fetchSearchResult()
                     },
                     Definitions.PAGINATION_SIZE
             )
             paginationScrollListener?.let {
-                binding.recyclerViewLayout.homeRecyclerView.addOnScrollListener(it)
+                binding?.recyclerViewLayout?.homeRecyclerView?.addOnScrollListener(it)
             }
-            binding.recyclerViewLayout.homeRecyclerView.adapter = homeRecyclerViewAdapter
+            binding?.recyclerViewLayout?.homeRecyclerView?.adapter = homeRecyclerViewAdapter
         }
     }
 
     private fun handleClickSearch() {
-        binding.recyclerViewLayout.homeRecyclerView.smoothScrollToPosition(Definitions.FIRST_POSITION)
-        binding.searchEditText.clearFocus()
-        closeSoftKeyboard(this)
+        binding?.recyclerViewLayout?.homeRecyclerView?.smoothScrollToPosition(Definitions.FIRST_POSITION)
+        binding?.searchEditText?.clearFocus()
+        activity?.let { closeSoftKeyboard(it) }
         viewModel?.searchForResults()
     }
 }
