@@ -13,10 +13,9 @@ import gr.pchasapis.moviedb.network.client.MovieClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
-import javax.inject.Inject
 
 
-class HomeInteractorImpl (private var movieClient: MovieClient, private val movieDbDatabase: MovieDbDatabase) : BaseInteractor(), HomeInteractor {
+class HomeInteractorImpl(private var movieClient: MovieClient, private val movieDbDatabase: MovieDbDatabase) : BaseInteractor(), HomeInteractor {
 
     override suspend fun getWatchList(): DataResult<List<HomeDataModel>> {
         return try {
@@ -34,7 +33,7 @@ class HomeInteractorImpl (private var movieClient: MovieClient, private val movi
             flow { emit(DataResult(toHomeDataModel(response))) }
         } catch (t: Throwable) {
             Timber.d(t)
-            flow { emit(DataResult(null, throwable = t)) }
+            flow { DataResult(null, throwable = t) }
         }
     }
 
@@ -50,7 +49,7 @@ class HomeInteractorImpl (private var movieClient: MovieClient, private val movi
 
     private fun toHomeDataModel(searchResponse: SearchResponse): List<HomeDataModel> {
         return (searchResponse.searchResultsList?.map { searchItem ->
-            return@map HomeDataModel(
+            HomeDataModel(
                     id = searchItem.id,
                     title = searchItem.title ?: searchItem.name ?: searchItem.originalName ?: "-",
                     mediaType = searchItem.mediaType ?: "-",
@@ -66,7 +65,7 @@ class HomeInteractorImpl (private var movieClient: MovieClient, private val movi
 
     private fun toMovieDataModel(theatreResponse: TheatreResponse): List<MovieDataModel> {
         return (theatreResponse.searchResultsList?.map { movieItem ->
-            return@map MovieDataModel(
+            MovieDataModel(
                     id = movieItem.id,
                     title = movieItem.title ?: "-",
                     summary = movieItem.overview ?: "-",
@@ -75,9 +74,9 @@ class HomeInteractorImpl (private var movieClient: MovieClient, private val movi
         } ?: arrayListOf())
     }
 
-    private fun toHomeDataModelFromTable(databaseList: List<MovieDbTable>): List<HomeDataModel>? {
+    private fun toHomeDataModelFromTable(databaseList: List<MovieDbTable>): List<HomeDataModel> {
         return databaseList.map { databaseItem ->
-            return@map HomeDataModel(
+            HomeDataModel(
                     id = databaseItem.id,
                     title = databaseItem.title,
                     mediaType = databaseItem.mediaType,
