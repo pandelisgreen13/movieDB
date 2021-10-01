@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import gr.pchasapis.moviedb.R
-import gr.pchasapis.moviedb.ui.activity.home.HomeActivity
+import gr.pchasapis.moviedb.ui.activity.navigation.NavigationActivity
 
 class SplashActivity : AppCompatActivity() {
 
@@ -22,7 +22,7 @@ class SplashActivity : AppCompatActivity() {
     }
     private val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
-            startActivity(Intent(applicationContext, HomeActivity::class.java))
+            startActivity(Intent(applicationContext, NavigationActivity::class.java))
             finish()
         }
     }

@@ -3,6 +3,7 @@ package gr.pchasapis.moviedb.mvvm.viewModel.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import gr.pchasapis.moviedb.common.SingleLiveEvent
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractor
@@ -20,7 +21,7 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
 
     private lateinit var searchMutableLiveData: MutableLiveData<MutableList<HomeDataModel>>
     private lateinit var watchListLiveData: MutableLiveData<Boolean>
-    private var theatreMutableLiveData: MutableLiveData<MutableList<MovieDataModel>> = MutableLiveData()
+    private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> = SingleLiveEvent()
     private var finishPaginationLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var toolbarTitleLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var paginationLoaderLiveData: MutableLiveData<Boolean> = MutableLiveData()
@@ -47,7 +48,7 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
         return searchMutableLiveData
     }
 
-    fun getMovieInTheatre(): LiveData<MutableList<MovieDataModel>> {
+    fun getMovieInTheatre(): SingleLiveEvent<MutableList<MovieDataModel>> {
         return theatreMutableLiveData
     }
 
@@ -149,8 +150,8 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
             return
         }
         searchList.map {
-            return@map when {
-                it.id == updatedHomeDataModel.id -> it.isFavorite = updatedHomeDataModel.isFavorite
+            return@map when (it.id) {
+                updatedHomeDataModel.id -> it.isFavorite = updatedHomeDataModel.isFavorite
                 else -> it
             }
         }
