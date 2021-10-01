@@ -11,10 +11,17 @@
         android:label="HomeFragment">
         <action
             android:id="@+id/action_homeFragment_to_detailsActivity"
-            app:destination="@id/detailsActivity" />
+            app:destination="@id/detailsActivity"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_homeFragment_to_theatreFragment"
-            app:destination="@id/theatreFragment" />
+            app:destination="@id/theatreFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment

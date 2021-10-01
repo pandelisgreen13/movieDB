@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
+import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
+import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.extensions.loadUrl
 import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
@@ -22,7 +25,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
-    private val args : DetailsFragmentArgs by navArgs()
+    private val args: DetailsFragmentArgs by navArgs()
 
     private lateinit var binding: ActivityDetailsBinding
 
@@ -47,21 +50,20 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
         binding.trailerWebView.onPause()
     }
 
-//    override fun onBackPressed() {
-//        if (viewModel?.hasUserChangeFavourite == true && viewModel?.homeDataModel != null) {
-//            val intent = Intent()
-//            intent.putExtra(BUNDLE.MOVIE_DETAILS, viewModel?.homeDataModel)
-//            setResult(RESULT_OK, intent)
-//        } else {
-//            setResult(RESULT_CANCELED)
-//        }
-//        finish()
-//    }
+    private fun onBackPressed() {
+        if (viewModel?.hasUserChangeFavourite == true && viewModel?.homeDataModel != null) {
+            val bundle = Bundle().apply {
+                putParcelable(BUNDLE.MOVIE_DETAILS, viewModel?.homeDataModel)
+            }
+            setFragmentResult(ACTIVITY_RESULT.DETAILS, bundle)
+        }
+        findNavController().navigateUp()
+    }
 
     private fun initLayout() {
         binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
         binding.toolbarLayout.backButtonImageView.setOnClickListener {
-            findNavController().navigateUp()
+            onBackPressed()
         }
         binding.toolbarLayout.actionButtonImageView.setOnClickListener { viewModel?.toggleFavourite() }
     }

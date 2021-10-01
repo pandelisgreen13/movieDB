@@ -1,7 +1,5 @@
 package gr.pchasapis.moviedb.ui.fragment.home
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,8 +23,8 @@ import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
 import gr.pchasapis.moviedb.model.data.TheatreDataModel
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
-import gr.pchasapis.moviedb.ui.base.BaseFragment
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
+import gr.pchasapis.moviedb.ui.base.BaseFragment
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 import java.util.*
 
@@ -37,6 +36,11 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
     private var paginationScrollListener: PaginationScrollListener? = null
     private var binding: ActivityHomeBinding? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fragmentResult()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = ActivityHomeBinding.inflate(inflater, container, false)
@@ -54,14 +58,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     override fun onDestroy() {
         super.onDestroy()
         binding = null
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == ACTIVITY_RESULT.DETAILS && resultCode == Activity.RESULT_OK) {
-            viewModel?.updateModel(data?.getParcelableExtra(BUNDLE.MOVIE_DETAILS))
-            viewModel?.readWatchListFromDatabase()
-        }
     }
 
     private fun initViewModel(binding: ActivityHomeBinding) {
@@ -109,9 +105,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
         viewModel?.getMovieInTheatre()?.observe(viewLifecycleOwner, { value ->
             value?.let { moviesInTheatre ->
-//                val intent = Intent(this, TheatreActivity::class.java)
-//                intent.putParcelableArrayListExtra(BUNDLE.MOVIE_THEATRE, moviesInTheatre as ArrayList<out Parcelable>)
-//                startActivity(intent)
                 val action = HomeFragmentDirections.actionHomeFragmentToTheatreFragment(TheatreDataModel(moviesInTheatre))
                 findNavController().navigate(action)
             }
@@ -167,9 +160,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             binding?.recyclerViewLayout?.homeRecyclerView?.layoutManager = linearLayoutManager
             homeRecyclerViewAdapter = HomeRecyclerViewAdapter(
                     onItemClicked = { homeDataModel ->
-//                        val intent = Intent(this@HomeFragment, DetailsActivity::class.java)
-//                        intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
-//                        startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
                         val action = HomeFragmentDirections.actionHomeFragmentToDetailsActivity(homeDataModel)
                         findNavController().navigate(action)
                     })
@@ -199,5 +189,12 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         binding?.searchEditText?.clearFocus()
         activity?.let { closeSoftKeyboard(it) }
         viewModel?.searchForResults()
+    }
+
+    private fun fragmentResult() {
+        setFragmentResultListener(ACTIVITY_RESULT.DETAILS) { _: String, bundle: Bundle ->
+            viewModel?.updateModel(bundle.getParcelable(BUNDLE.MOVIE_DETAILS))
+            viewModel?.readWatchListFromDatabase()
+        }
     }
 }
