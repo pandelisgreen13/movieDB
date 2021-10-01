@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.extensions.setMargins
@@ -38,7 +39,7 @@ class TheatreFragment : Fragment() {
         binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
         binding.toolbarLayout.actionButtonImageView.visibility = View.INVISIBLE
         binding.toolbarLayout.backButtonImageView.setOnClickListener {
-            //onBackPressed()
+           findNavController().navigateUp()
         }
 
         val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.common_twenty_dp)

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.common.extensions.loadUrl
@@ -59,7 +60,9 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
     private fun initLayout() {
         binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
-        binding.toolbarLayout.backButtonImageView.setOnClickListener {  }
+        binding.toolbarLayout.backButtonImageView.setOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.toolbarLayout.actionButtonImageView.setOnClickListener { viewModel?.toggleFavourite() }
     }
 
