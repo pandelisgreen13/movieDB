@@ -1,4 +1,4 @@
-package gr.pchasapis.moviedb.ui.activity.home
+package gr.pchasapis.moviedb.ui.fragment.home
 
 import android.app.Activity
 import android.content.Intent
@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,8 +24,6 @@ import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
-import gr.pchasapis.moviedb.ui.activity.details.DetailsActivity
-import gr.pchasapis.moviedb.ui.activity.theatre.TheatreActivity
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 import java.util.*
@@ -37,12 +36,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
     private var paginationScrollListener: PaginationScrollListener? = null
     private var binding: ActivityHomeBinding? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = ActivityHomeBinding.inflate(inflater, container, false)
@@ -182,6 +175,8 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 //                        val intent = Intent(this@HomeFragment, DetailsActivity::class.java)
 //                        intent.putExtra(BUNDLE.MOVIE_DETAILS, homeDataModel)
 //                        startActivityForResult(intent, ACTIVITY_RESULT.DETAILS)
+                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsActivity(homeDataModel)
+                        findNavController().navigate(action)
                     })
 
             paginationScrollListener = PaginationScrollListener(

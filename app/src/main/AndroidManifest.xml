@@ -21,7 +21,7 @@
             android:name=".ui.activity.details.DetailsActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name=".ui.activity.home.HomeFragment"
+            android:name="gr.pchasapis.moviedb.ui.fragment.home.HomeFragment"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".ui.activity.splash.SplashActivity"

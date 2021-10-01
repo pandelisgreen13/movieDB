@@ -3,10 +3,14 @@ package gr.pchasapis.moviedb.ui.activity.details
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.extensions.loadUrl
@@ -15,10 +19,13 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
+import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DetailsActivity : BaseActivity<DetailsViewModel>() {
+class DetailsActivity : BaseFragment<DetailsViewModel>() {
+
+    val args : DetailsActivityArgs by navArgs()
 
     private lateinit var binding: ActivityDetailsBinding
 
@@ -26,10 +33,13 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
     lateinit var detailsInteractorImpl: DetailsInteractorImpl
     private val detailsViewModel: DetailsViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityDetailsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = ActivityDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initLayout()
         initViewModel()
     }
@@ -40,30 +50,31 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
         binding.trailerWebView.onPause()
     }
 
-    override fun onBackPressed() {
-        if (viewModel?.hasUserChangeFavourite == true && viewModel?.homeDataModel != null) {
-            val intent = Intent()
-            intent.putExtra(BUNDLE.MOVIE_DETAILS, viewModel?.homeDataModel)
-            setResult(RESULT_OK, intent)
-        } else {
-            setResult(RESULT_CANCELED)
-        }
-        finish()
-    }
+//    override fun onBackPressed() {
+//        if (viewModel?.hasUserChangeFavourite == true && viewModel?.homeDataModel != null) {
+//            val intent = Intent()
+//            intent.putExtra(BUNDLE.MOVIE_DETAILS, viewModel?.homeDataModel)
+//            setResult(RESULT_OK, intent)
+//        } else {
+//            setResult(RESULT_CANCELED)
+//        }
+//        finish()
+//    }
 
     private fun initLayout() {
         binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
-        binding.toolbarLayout.backButtonImageView.setOnClickListener { onBackPressed() }
+        binding.toolbarLayout.backButtonImageView.setOnClickListener {  }
         binding.toolbarLayout.actionButtonImageView.setOnClickListener { viewModel?.toggleFavourite() }
     }
 
     private fun initViewModel() {
         viewModel = detailsViewModel
-        viewModel?.setUIModel(intent?.extras?.getParcelable(BUNDLE.MOVIE_DETAILS)) ?: kotlin.run {
+        val n = args.homeDataModel
+        viewModel?.setUIModel(n) ?: kotlin.run {
             binding.emptyLayout?.root?.visibility = View.VISIBLE
         }
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
-        viewModel?.getDetailsList()?.observe(this, { resultList ->
+        viewModel?.getDetailsList()?.observe(viewLifecycleOwner, { resultList ->
             resultList?.let {
                 updateUi(it)
             } ?: run {
@@ -71,7 +82,7 @@ class DetailsActivity : BaseActivity<DetailsViewModel>() {
             }
         })
 
-        viewModel?.getFavourite()?.observe(this, { value ->
+        viewModel?.getFavourite()?.observe(viewLifecycleOwner, { value ->
             value?.let { isFavourite ->
                 binding.toolbarLayout.actionButtonImageView.isSelected = isFavourite
             }

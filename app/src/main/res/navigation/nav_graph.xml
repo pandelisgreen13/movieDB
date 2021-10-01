@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="gr.pchasapis.moviedb.ui.activity.home.HomeFragment"
-        android:label="HomeFragment" />
+        android:name="gr.pchasapis.moviedb.ui.fragment.home.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_detailsActivity"
+            app:destination="@id/detailsActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsActivity"
+        android:name="gr.pchasapis.moviedb.ui.activity.details.DetailsActivity"
+        android:label="activity_details"
+        tools:layout="@layout/activity_details" >
+        <argument
+            android:name="homeDataModel"
+            app:argType="gr.pchasapis.moviedb.model.data.HomeDataModel" />
+    </fragment>
 </navigation>

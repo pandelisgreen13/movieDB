@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import gr.pchasapis.moviedb.R
-import gr.pchasapis.moviedb.ui.activity.home.HomeFragment
 import gr.pchasapis.moviedb.ui.activity.navigation.NavigationActivity
 
 class SplashActivity : AppCompatActivity() {

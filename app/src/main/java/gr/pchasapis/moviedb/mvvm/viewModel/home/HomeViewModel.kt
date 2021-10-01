@@ -149,8 +149,8 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
             return
         }
         searchList.map {
-            return@map when {
-                it.id == updatedHomeDataModel.id -> it.isFavorite = updatedHomeDataModel.isFavorite
+            return@map when (it.id) {
+                updatedHomeDataModel.id -> it.isFavorite = updatedHomeDataModel.isFavorite
                 else -> it
             }
         }
