@@ -34,18 +34,18 @@ class TheatreFragment : Fragment() {
         moviesList = args.movieDataModel.list
     }
 
-    private fun initLayout() {
-        binding.toolbarLayout.toolbarTitleTextView.text = getString(R.string.theatre_in_movies)
-        binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
-        binding.toolbarLayout.actionButtonImageView.visibility = View.INVISIBLE
-        binding.toolbarLayout.backButtonImageView.setOnClickListener {
-           findNavController().navigateUp()
+    private fun initLayout() = with(binding) {
+        toolbarLayout.toolbarTitleTextView.text = getString(R.string.theatre_in_movies)
+        toolbarLayout.backButtonImageView.visibility = View.VISIBLE
+        toolbarLayout.actionButtonImageView.visibility = View.INVISIBLE
+        toolbarLayout.backButtonImageView.setOnClickListener {
+            findNavController().navigateUp()
         }
 
         val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.common_twenty_dp)
         val offsetPx = resources.getDimensionPixelOffset(R.dimen.common_thirty_dp)
 
-        binding.viewPager.apply {
+        viewPager.apply {
             adapter = TheatrePagerAdapter(moviesList)
             clipToPadding = false
             clipChildren = false

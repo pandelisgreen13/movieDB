@@ -65,18 +65,17 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
         findNavController().navigateUp()
     }
 
-    private fun initLayout() {
-        binding.toolbarLayout.backButtonImageView.visibility = View.VISIBLE
-        binding.toolbarLayout.backButtonImageView.setOnClickListener {
+    private fun initLayout() = with(binding.toolbarLayout) {
+        backButtonImageView.visibility = View.VISIBLE
+        backButtonImageView.setOnClickListener {
             onBackPressed()
         }
-        binding.toolbarLayout.actionButtonImageView.setOnClickListener { viewModel?.toggleFavourite() }
+        actionButtonImageView.setOnClickListener { viewModel?.toggleFavourite() }
     }
 
     private fun initViewModel() {
         viewModel = detailsViewModel
-        val n = args.homeDataModel
-        viewModel?.setUIModel(n) ?: kotlin.run {
+        viewModel?.setUIModel(args.homeDataModel) ?: kotlin.run {
             binding.emptyLayout?.root?.visibility = View.VISIBLE
         }
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
