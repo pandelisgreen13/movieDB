@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.addCallback
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -33,7 +34,7 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
     lateinit var detailsInteractorImpl: DetailsInteractorImpl
     private val detailsViewModel: DetailsViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = ActivityDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,6 +43,10 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
         super.onViewCreated(view, savedInstanceState)
         initLayout()
         initViewModel()
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            onBackPressed()
+        }
     }
 
     override fun onDestroy() {
