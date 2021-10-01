@@ -23,9 +23,9 @@ import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DetailsActivity : BaseFragment<DetailsViewModel>() {
+class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
-    val args : DetailsActivityArgs by navArgs()
+    val args : DetailsFragmentArgs by navArgs()
 
     private lateinit var binding: ActivityDetailsBinding
 

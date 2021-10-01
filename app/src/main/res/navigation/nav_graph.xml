@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsActivity"
-        android:name="gr.pchasapis.moviedb.ui.activity.details.DetailsActivity"
+        android:name="gr.pchasapis.moviedb.ui.activity.details.DetailsFragment"
         android:label="activity_details"
         tools:layout="@layout/activity_details" >
         <argument

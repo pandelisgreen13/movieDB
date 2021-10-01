@@ -18,7 +18,7 @@
             android:exported="true" />
         <activity android:name=".ui.activity.theatre.TheatreActivity" />
         <activity
-            android:name=".ui.activity.details.DetailsActivity"
+            android:name=".ui.activity.details.DetailsFragment"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name="gr.pchasapis.moviedb.ui.fragment.home.HomeFragment"
