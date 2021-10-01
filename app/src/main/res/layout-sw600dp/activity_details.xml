@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".ui.activity.details.DetailsFragment">
+    tools:context=".ui.fragment.details.DetailsFragment">
 
     <include
         android:id="@+id/toolbarLayout"

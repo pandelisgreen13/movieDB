@@ -1,24 +1,20 @@
-package gr.pchasapis.moviedb.ui.activity.details
+package gr.pchasapis.moviedb.ui.fragment.details
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import dagger.hilt.android.AndroidEntryPoint
-import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.extensions.loadUrl
 import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
-import gr.pchasapis.moviedb.ui.activity.base.BaseActivity
 import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
 import javax.inject.Inject
 
