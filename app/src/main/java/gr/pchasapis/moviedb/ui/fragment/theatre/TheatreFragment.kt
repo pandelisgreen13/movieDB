@@ -1,4 +1,4 @@
-package gr.pchasapis.moviedb.ui.activity.theatre
+package gr.pchasapis.moviedb.ui.fragment.theatre
 
 import android.os.Bundle
 import android.view.LayoutInflater

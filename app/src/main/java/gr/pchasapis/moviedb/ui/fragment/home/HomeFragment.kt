@@ -24,7 +24,7 @@ import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
 import gr.pchasapis.moviedb.model.data.TheatreDataModel
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
-import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
+import gr.pchasapis.moviedb.ui.base.BaseFragment
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 import java.util.*
@@ -63,14 +63,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             viewModel?.readWatchListFromDatabase()
         }
     }
-//
-//    override fun onBackPressed() {
-//        if (viewModel?.isWatchListMode == true) {
-//            viewModel?.showWatchList()
-//            return
-//        }
-//        super.onBackPressed()
-//    }
 
     private fun initViewModel(binding: ActivityHomeBinding) {
         viewModel = homeViewModel

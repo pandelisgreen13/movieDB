@@ -1,8 +1,8 @@
-package gr.pchasapis.moviedb.ui.activity.base
+package gr.pchasapis.moviedb.ui.base
 
 import android.annotation.SuppressLint
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.afollestad.materialdialogs.DialogCallback
 import com.afollestad.materialdialogs.MaterialDialog
 import gr.pchasapis.moviedb.R
@@ -11,7 +11,7 @@ import gr.pchasapis.moviedb.databinding.LayoutLoadingBinding
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 
 @SuppressLint("Registered")
-open class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
+open class BaseFragment<T : BaseViewModel> : Fragment() {
 
     private var materialDialog: MaterialDialog? = null
     protected var viewModel: T? = null
@@ -67,7 +67,10 @@ open class BaseActivity<T : BaseViewModel> : AppCompatActivity() {
     }
 
     fun showErrorDialog(errorDescription: String = "", closeListener: DialogCallback) {
-        materialDialog = MaterialDialog(this).show {
+        if (context == null) {
+            return
+        }
+        materialDialog = MaterialDialog(requireContext()).show {
             title(text = getString(R.string.dialog_title))
             message(text = errorDescription)
             positiveButton(text = getString(R.string.ok), click = closeListener)

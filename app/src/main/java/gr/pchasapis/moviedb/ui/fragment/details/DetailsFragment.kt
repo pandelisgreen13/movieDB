@@ -16,7 +16,7 @@ import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
-import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
+import gr.pchasapis.moviedb.ui.base.BaseFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
