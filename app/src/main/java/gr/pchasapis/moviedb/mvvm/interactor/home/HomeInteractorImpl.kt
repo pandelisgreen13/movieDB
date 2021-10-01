@@ -34,7 +34,7 @@ class HomeInteractorImpl (private var movieClient: MovieClient, private val movi
             flow { emit(DataResult(toHomeDataModel(response))) }
         } catch (t: Throwable) {
             Timber.d(t)
-            flow { DataResult(null, throwable = t) }
+            flow { emit(DataResult(null, throwable = t)) }
         }
     }
 

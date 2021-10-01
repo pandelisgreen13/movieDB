@@ -17,5 +17,5 @@ object BUNDLE{
 }
 
 object ACTIVITY_RESULT {
-    const val DETAILS = 1
+    const val DETAILS = "details"
 }
