@@ -8,18 +8,33 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="gr.pchasapis.moviedb.ui.fragment.home.HomeFragment"
-        android:label="HomeFragment" >
+        android:label="HomeFragment">
         <action
             android:id="@+id/action_homeFragment_to_detailsActivity"
             app:destination="@id/detailsActivity" />
+        <action
+            android:id="@+id/action_homeFragment_to_theatreFragment"
+            app:destination="@id/theatreFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/detailsActivity"
         android:name="gr.pchasapis.moviedb.ui.fragment.details.DetailsFragment"
         android:label="activity_details"
-        tools:layout="@layout/activity_details" >
+        tools:layout="@layout/activity_details">
         <argument
             android:name="homeDataModel"
             app:argType="gr.pchasapis.moviedb.model.data.HomeDataModel" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/theatreFragment"
+        android:name="gr.pchasapis.moviedb.ui.activity.theatre.TheatreFragment"
+        android:label="TheatreFragment">
+
+        <argument
+            android:name="movieDataModel"
+            app:argType="gr.pchasapis.moviedb.model.data.TheatreDataModel" />
+
     </fragment>
 </navigation>

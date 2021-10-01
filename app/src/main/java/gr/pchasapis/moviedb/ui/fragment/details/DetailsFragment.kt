@@ -21,7 +21,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
-    val args : DetailsFragmentArgs by navArgs()
+    private val args : DetailsFragmentArgs by navArgs()
 
     private lateinit var binding: ActivityDetailsBinding
 

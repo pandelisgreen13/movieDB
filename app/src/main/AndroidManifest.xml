@@ -16,7 +16,7 @@
         <activity
             android:name=".ui.activity.navigation.NavigationActivity"
             android:exported="true" />
-        <activity android:name=".ui.activity.theatre.TheatreActivity" />
+        <activity android:name=".ui.activity.theatre.TheatreFragment" />
         <activity
             android:name=".ui.fragment.details.DetailsFragment"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />

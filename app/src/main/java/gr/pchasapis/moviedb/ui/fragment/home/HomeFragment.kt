@@ -22,6 +22,7 @@ import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
+import gr.pchasapis.moviedb.model.data.TheatreDataModel
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.activity.base.BaseFragment
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
@@ -119,6 +120,8 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 //                val intent = Intent(this, TheatreActivity::class.java)
 //                intent.putParcelableArrayListExtra(BUNDLE.MOVIE_THEATRE, moviesInTheatre as ArrayList<out Parcelable>)
 //                startActivity(intent)
+                val action = HomeFragmentDirections.actionHomeFragmentToTheatreFragment(TheatreDataModel(moviesInTheatre))
+                findNavController().navigate(action)
             }
         })
     }
