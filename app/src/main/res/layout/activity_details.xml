@@ -65,17 +65,10 @@
                         app:layout_constraintStart_toEndOf="@+id/verticalGuideline"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <androidx.compose.ui.platform.ComposeView
                             android:id="@+id/summaryTextView"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/common_two_dp"
-                            android:ellipsize="end"
-                            android:maxLines="6"
-                            android:text="@string/general_dash"
-                            android:textColor="@android:color/white"
-                            android:textSize="@dimen/common_text_twelve_sp"
-                            tools:text="MARVEL AVENGERS THE END GAME AVENGERS THE END GAME" />
+                            android:layout_height="wrap_content" />
 
                         <LinearLayout
                             android:id="@+id/genreLinearLayout"

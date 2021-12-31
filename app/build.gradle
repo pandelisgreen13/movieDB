@@ -77,6 +77,8 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.3.0'
     //Image Handling
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation("io.coil-kt:coil-compose:1.4.0")
+
     //ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     //hilt

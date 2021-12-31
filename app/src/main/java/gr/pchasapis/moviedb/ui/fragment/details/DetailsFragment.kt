@@ -8,10 +8,20 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.addCallback
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.composethemeadapter.MdcTheme
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
@@ -100,7 +110,12 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             toolbarLayout.actionButtonImageView.visibility = View.VISIBLE
             thumbnailImageView.loadUrl(homeDataModel.thumbnail)
             toolbarLayout.toolbarTitleTextView.text = homeDataModel.title
-            summaryTextView.text = homeDataModel.summary
+            summaryTextView.setContent {
+                MdcTheme {
+                    SummaryComposeText(homeDataModel.summary ?: "-")
+                }
+            }
+            // summaryTextView.text = homeDataModel.summary
             genreTextView.text = homeDataModel.genresName
             toolbarLayout.actionButtonImageView.isSelected = homeDataModel.isFavorite
 
@@ -115,5 +130,18 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             webSettings.javaScriptEnabled = true
             trailerWebView.loadData(homeDataModel.videoUrl ?: "", "text/html", "utf-8")
         }
+    }
+
+    @Preview
+    @Composable
+    private fun SummaryComposeText(summary: String = "-") {
+        Text(
+                text = summary,
+                color = Color.White,
+                fontSize = 12.sp,
+                maxLines = 6,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(bottom = 2.dp)
+        )
     }
 }
