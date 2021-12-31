@@ -8,11 +8,15 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.addCallback
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -21,12 +25,12 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import coil.compose.rememberImagePainter
 import com.google.android.material.composethemeadapter.MdcTheme
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
-import gr.pchasapis.moviedb.common.extensions.loadUrl
 import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
@@ -109,7 +113,17 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
     private fun updateUi(homeDataModel: HomeDataModel) {
         binding.apply {
             toolbarLayout.actionButtonImageView.visibility = View.VISIBLE
-            thumbnailImageView.loadUrl(homeDataModel.thumbnail)
+
+            thumbnailImageView.setContent {
+                MdcTheme {
+                    Image(
+                            painter = getImage(homeDataModel.thumbnail),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                    )
+                }
+            }
+
             toolbarLayout.toolbarTitleTextView.text = homeDataModel.title
             summaryTextView.setContent {
                 MdcTheme {
@@ -124,7 +138,7 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
                 }
             }
 
-            genreTitleTextView.setContent {
+            genreTextView.setContent {
                 MdcTheme {
                     ComposeText(
                             text = homeDataModel.genresName ?: "-",
@@ -132,7 +146,7 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
                             modifier = Modifier.padding(bottom = 2.dp))
                 }
             }
-            //   genreTextView.text = homeDataModel.genresName
+
             toolbarLayout.actionButtonImageView.isSelected = homeDataModel.isFavorite
 
             trailerWebView.settings.javaScriptEnabled = true
@@ -145,6 +159,15 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             val webSettings = trailerWebView.settings
             webSettings.javaScriptEnabled = true
             trailerWebView.loadData(homeDataModel.videoUrl ?: "", "text/html", "utf-8")
+        }
+    }
+
+    @Composable
+    private fun getImage(thumbnail: String?): Painter {
+        return if (thumbnail != null && thumbnail.contains("null")) {
+            painterResource(id = R.mipmap.ic_launcher)
+        } else {
+            rememberImagePainter(thumbnail)
         }
     }
 
