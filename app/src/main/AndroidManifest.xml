@@ -16,12 +16,12 @@
         <activity
             android:name=".ui.activity.navigation.NavigationActivity"
             android:exported="true" />
-        <activity android:name="gr.pchasapis.moviedb.ui.fragment.theatre.TheatreFragment" />
+        <activity android:name=".ui.fragment.theatre.TheatreFragment" />
         <activity
             android:name=".ui.fragment.details.DetailsFragment"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name="gr.pchasapis.moviedb.ui.fragment.home.HomeFragment"
+            android:name=".ui.fragment.home.HomeFragment"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".ui.activity.splash.SplashActivity"
