@@ -13,8 +13,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.setFragmentResult
@@ -23,6 +23,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.composethemeadapter.MdcTheme
 import dagger.hilt.android.AndroidEntryPoint
+import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.extensions.loadUrl
@@ -112,11 +113,26 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             toolbarLayout.toolbarTitleTextView.text = homeDataModel.title
             summaryTextView.setContent {
                 MdcTheme {
-                    SummaryComposeText(homeDataModel.summary ?: "-")
+                    ComposeText(homeDataModel.summary ?: "-", 6, Modifier.padding(bottom = 2.dp))
                 }
             }
-            // summaryTextView.text = homeDataModel.summary
-            genreTextView.text = homeDataModel.genresName
+            genreTitleTextView.setContent {
+                MdcTheme {
+                    ComposeText(
+                            text = stringResource(R.string.details_genre),
+                            modifier = Modifier.padding(bottom = 2.dp, end = 4.dp))
+                }
+            }
+
+            genreTitleTextView.setContent {
+                MdcTheme {
+                    ComposeText(
+                            text = homeDataModel.genresName ?: "-",
+                            maxLines = 2,
+                            modifier = Modifier.padding(bottom = 2.dp))
+                }
+            }
+            //   genreTextView.text = homeDataModel.genresName
             toolbarLayout.actionButtonImageView.isSelected = homeDataModel.isFavorite
 
             trailerWebView.settings.javaScriptEnabled = true
@@ -132,16 +148,17 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
         }
     }
 
-    @Preview
     @Composable
-    private fun SummaryComposeText(summary: String = "-") {
+    private fun ComposeText(text: String = "-",
+                            maxLines: Int = 1,
+                            modifier: Modifier) {
         Text(
-                text = summary,
+                text = text,
                 color = Color.White,
                 fontSize = 12.sp,
-                maxLines = 6,
+                maxLines = maxLines,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(bottom = 2.dp)
+                modifier = modifier
         )
     }
 }

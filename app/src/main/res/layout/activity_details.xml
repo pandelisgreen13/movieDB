@@ -77,30 +77,15 @@
                             android:layout_marginTop="@dimen/common_fourteen_dp"
                             android:orientation="horizontal">
 
-                            <androidx.appcompat.widget.AppCompatTextView
+                            <androidx.compose.ui.platform.ComposeView
                                 android:id="@+id/genreTitleTextView"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/common_four_dp"
-                                android:layout_marginBottom="@dimen/common_two_dp"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:text="@string/details_genre"
-                                android:textColor="@android:color/white"
-                                android:textSize="@dimen/common_text_twelve_sp"
-                                android:textStyle="bold" />
+                                android:layout_height="wrap_content" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
+                            <androidx.compose.ui.platform.ComposeView
                                 android:id="@+id/genreTextView"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/common_two_dp"
-                                android:ellipsize="end"
-                                android:maxLines="2"
-                                android:text="@string/general_dash"
-                                android:textColor="@android:color/white"
-                                android:textSize="@dimen/common_text_twelve_sp"
-                                tools:text="Comedy" />
+                                android:layout_height="wrap_content"/>
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
