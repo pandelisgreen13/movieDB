@@ -44,12 +44,10 @@
                         android:orientation="vertical"
                         app:layout_constraintGuide_percent="0.35" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <androidx.compose.ui.platform.ComposeView
                         android:id="@+id/thumbnailImageView"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/common_one_hundred_and_twenty_dp"
-                        android:scaleType="centerCrop"
-                        android:src="@mipmap/ic_launcher"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/verticalGuideline"
                         app:layout_constraintStart_toStartOf="parent"
@@ -65,17 +63,10 @@
                         app:layout_constraintStart_toEndOf="@+id/verticalGuideline"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <androidx.compose.ui.platform.ComposeView
                             android:id="@+id/summaryTextView"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/common_two_dp"
-                            android:ellipsize="end"
-                            android:maxLines="6"
-                            android:text="@string/general_dash"
-                            android:textColor="@android:color/white"
-                            android:textSize="@dimen/common_text_twelve_sp"
-                            tools:text="MARVEL AVENGERS THE END GAME AVENGERS THE END GAME" />
+                            android:layout_height="wrap_content" />
 
                         <LinearLayout
                             android:id="@+id/genreLinearLayout"
@@ -84,30 +75,15 @@
                             android:layout_marginTop="@dimen/common_fourteen_dp"
                             android:orientation="horizontal">
 
-                            <androidx.appcompat.widget.AppCompatTextView
+                            <androidx.compose.ui.platform.ComposeView
                                 android:id="@+id/genreTitleTextView"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/common_four_dp"
-                                android:layout_marginBottom="@dimen/common_two_dp"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:text="@string/details_genre"
-                                android:textColor="@android:color/white"
-                                android:textSize="@dimen/common_text_twelve_sp"
-                                android:textStyle="bold" />
+                                android:layout_height="wrap_content" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
+                            <androidx.compose.ui.platform.ComposeView
                                 android:id="@+id/genreTextView"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/common_two_dp"
-                                android:ellipsize="end"
-                                android:maxLines="2"
-                                android:text="@string/general_dash"
-                                android:textColor="@android:color/white"
-                                android:textSize="@dimen/common_text_twelve_sp"
-                                tools:text="Comedy" />
+                                android:layout_height="wrap_content" />
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
