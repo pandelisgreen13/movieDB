@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -160,8 +161,10 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             binding?.recyclerViewLayout?.homeRecyclerView?.layoutManager = linearLayoutManager
             homeRecyclerViewAdapter = HomeRecyclerViewAdapter(
                     onItemClicked = { homeDataModel ->
-                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsActivity(homeDataModel)
+//                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsActivity(homeDataModel)
+                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsComposeFragment2(homeDataModel)
                         findNavController().navigate(action)
+
                     })
 
             paginationScrollListener = PaginationScrollListener(
