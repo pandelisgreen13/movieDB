@@ -15,5 +15,7 @@
 .idea
 /.idea/
 /.idea
+\.idea
+\.idea\
 build
 /node_modules
