@@ -23,6 +23,11 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
+            android:id="@+id/action_homeFragment_to_detailsComposeFragment2"
+            app:destination="@id/detailsComposeFragment2" />
+
+            
+        <action
             android:id="@+id/action_homeFragment_to_favouriteFragment"
             app:destination="@id/favouriteFragment" />
     </fragment>
@@ -48,8 +53,21 @@
 
     </fragment>
     <fragment
+        android:id="@+id/detailsComposeFragment2"
+        android:name="gr.pchasapis.moviedb.ui.fragment.details.DetailsComposeFragment"
+        android:label="DetailsComposeFragment">
+
+        <argument
+            android:name="homeDataModel"
+            app:argType="gr.pchasapis.moviedb.model.data.HomeDataModel" />
+
+    </fragment>
+
+    
+    <fragment
         android:id="@+id/favouriteFragment"
         android:name="gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteFragment"
         android:label="favourite_fragment"
         tools:layout="@layout/favourite_fragment" />
+
 </navigation>

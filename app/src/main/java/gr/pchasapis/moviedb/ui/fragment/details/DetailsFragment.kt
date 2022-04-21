@@ -45,8 +45,6 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
     private lateinit var binding: ActivityDetailsBinding
 
-    @Inject
-    lateinit var detailsInteractorImpl: DetailsInteractorImpl
     private val detailsViewModel: DetailsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

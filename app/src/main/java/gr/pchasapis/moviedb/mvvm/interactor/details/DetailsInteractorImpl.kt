@@ -9,10 +9,18 @@ import gr.pchasapis.moviedb.model.parsers.movie.MovieResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
 import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
 import gr.pchasapis.moviedb.network.client.MovieClient
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
 
 class DetailsInteractorImpl @Inject constructor(private var movieClient: MovieClient, private val movieDbDatabase: MovieDbDatabase) : BaseInteractor(), DetailsInteractor {
+
+    override suspend fun onRetrieveFlowDetails(homeDataModel: HomeDataModel): Flow<DataResult<HomeDataModel>> {
+        return flow {
+            emit(onRetrieveDetails(homeDataModel))
+        }
+    }
 
     override suspend fun onRetrieveDetails(homeDataModel: HomeDataModel): DataResult<HomeDataModel> {
         return try {
