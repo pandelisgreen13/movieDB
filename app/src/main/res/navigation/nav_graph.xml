@@ -22,6 +22,9 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_homeFragment_to_favouriteFragment"
+            app:destination="@id/favouriteFragment" />
     </fragment>
 
     <fragment
@@ -44,4 +47,9 @@
             app:argType="gr.pchasapis.moviedb.model.data.TheatreDataModel" />
 
     </fragment>
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteFragment"
+        android:label="favourite_fragment"
+        tools:layout="@layout/favourite_fragment" />
 </navigation>

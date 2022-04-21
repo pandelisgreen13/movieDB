@@ -63,52 +63,32 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     private fun initViewModel(binding: ActivityHomeBinding) {
         viewModel = homeViewModel
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
-        viewModel?.getSearchList()?.observe(viewLifecycleOwner, { resultList ->
+        viewModel?.getSearchList()?.observe(viewLifecycleOwner) { resultList ->
             resultList?.let {
                 homeRecyclerViewAdapter?.setSearchList(it)
             } ?: run {
                 binding.emptyLayout.root.visibility = View.VISIBLE
             }
-        })
+        }
 
-        viewModel?.getToolbarTitle()?.observe(viewLifecycleOwner, { value ->
-            value?.let { isWatchlistMode ->
-                binding.toolbarLayout.toolbarTitleTextView.text = when {
-                    isWatchlistMode -> getString(R.string.home_watch_list)
-                    else -> getString(R.string.home_toolbar_title)
-                }
-            }
-        })
-
-        viewModel?.getPaginationStatus()?.observe(viewLifecycleOwner, { value ->
+        viewModel?.getPaginationStatus()?.observe(viewLifecycleOwner) { value ->
             value?.let { isPaginationFinished ->
                 paginationScrollListener?.finishedPagination(isPaginationFinished)
             }
-        })
+        }
 
-        viewModel?.getPaginationLoader()?.observe(viewLifecycleOwner, { value ->
+        viewModel?.getPaginationLoader()?.observe(viewLifecycleOwner) { value ->
             value?.let { show ->
                 binding.recyclerViewLayout.moreProgressView.visibility = if (show) View.VISIBLE else View.GONE
             }
-        })
+        }
 
-        viewModel?.getWatchListLiveData()?.observe(viewLifecycleOwner, { value ->
-            value?.let { hasWatchListItems ->
-                if (hasWatchListItems) {
-                    this.binding?.watchListButton?.show()
-                } else {
-                    this.binding?.watchListButton?.hide()
-                    this.binding?.toolbarLayout?.toolbarTitleTextView?.text = getString(R.string.home_toolbar_title)
-                }
-            }
-        })
-
-        viewModel?.getMovieInTheatre()?.observe(viewLifecycleOwner, { value ->
+        viewModel?.getMovieInTheatre()?.observe(viewLifecycleOwner) { value ->
             value?.let { moviesInTheatre ->
                 val action = HomeFragmentDirections.actionHomeFragmentToTheatreFragment(TheatreDataModel(moviesInTheatre))
                 findNavController().navigate(action)
             }
-        })
+        }
     }
 
     private fun initLayout() {
@@ -124,7 +104,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             }
 
             searchImageButton.setOnClickListener {
-                if (searchEditText.text.toString().isEmpty() && viewModel?.isWatchListMode == false) {
+                if (searchEditText.text.toString().isEmpty()) {
                     showErrorDialog(getString(R.string.home_empty_field), closeListener = { dialog ->
                         dialog.dismiss()
                         viewModel?.genericErrorLiveData?.value = false
@@ -133,8 +113,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
                 handleClickSearch()
             }
             watchListButton.setOnClickListener {
-                searchEditText.setText("")
-                viewModel?.showWatchList()
+                findNavController().navigate(R.id.action_homeFragment_to_favouriteFragment)
             }
 
             searchEditText.addTextChangedListener(object : TextWatcher {
@@ -167,9 +146,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             paginationScrollListener = PaginationScrollListener(
                     linearLayoutManager,
                     {
-                        if (viewModel?.isWatchListMode == true) {
-                            return@PaginationScrollListener
-                        }
                         if (searchEditText.text.toString().isNotEmpty()) {
                             binding?.recyclerViewLayout?.moreProgressView?.visibility = View.VISIBLE
                         }
@@ -194,7 +170,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     private fun fragmentResult() {
         setFragmentResultListener(ACTIVITY_RESULT.DETAILS) { _: String, bundle: Bundle ->
             viewModel?.updateModel(bundle.getParcelable(BUNDLE.MOVIE_DETAILS))
-            viewModel?.readWatchListFromDatabase()
         }
     }
 }

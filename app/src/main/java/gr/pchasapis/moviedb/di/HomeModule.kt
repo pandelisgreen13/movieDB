@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import gr.pchasapis.moviedb.database.MovieDbDatabase
+import gr.pchasapis.moviedb.mvvm.interactor.favourite.FavouriteInteractorImp
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.network.client.MovieClient
 
