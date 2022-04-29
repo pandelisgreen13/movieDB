@@ -5,10 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
-    android:paddingStart="@dimen/common_four_dp"
-    android:paddingEnd="@dimen/common_four_dp"
-    android:paddingBottom="@dimen/common_six_dp"
-    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardBackgroundColor="@color/colorPrimaryDark"
     app:cardCornerRadius="@dimen/common_eight_dp"
     app:cardElevation="@dimen/common_eight_dp"
     app:cardPreventCornerOverlap="true"
@@ -19,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/common_ten_dp"
         android:weightSum="2">
 
         <androidx.constraintlayout.widget.Guideline
@@ -43,6 +39,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/common_six_dp"
             android:layout_marginStart="@dimen/common_ten_dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"

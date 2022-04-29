@@ -35,8 +35,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
@@ -47,14 +49,14 @@ import androidx.navigation.fragment.navArgs
 import coil.compose.rememberImagePainter
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
-import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
+import gr.pchasapis.moviedb.common.ActivityResult
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsComposeViewModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
-import gr.pchasapis.moviedb.ui.fragment.details.ui.theme.MovieDBTheme
-import gr.pchasapis.moviedb.ui.fragment.details.ui.theme.Primary
-import gr.pchasapis.moviedb.ui.fragment.details.ui.theme.PrimaryDark
+import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
+import gr.pchasapis.moviedb.ui.compose.Primary
+import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 
 @AndroidEntryPoint
 class DetailsComposeFragment : Fragment() {
@@ -93,7 +95,7 @@ class DetailsComposeFragment : Fragment() {
             val bundle = Bundle().apply {
                 putParcelable(BUNDLE.MOVIE_DETAILS, detailsViewModel.homeDataModel)
             }
-            setFragmentResult(ACTIVITY_RESULT.DETAILS, bundle)
+            setFragmentResult(ActivityResult.DETAILS, bundle)
         }
         findNavController().navigateUp()
     }
@@ -101,7 +103,7 @@ class DetailsComposeFragment : Fragment() {
 
 @Preview(showBackground = true)
 @Composable
-private fun LoadingCompose() {
+fun LoadingCompose() {
     Surface(
             color = PrimaryDark,
             modifier = Modifier.fillMaxSize()
@@ -143,13 +145,8 @@ fun ContentCompose(homeDataModel: HomeDataModel?) {
 
     Row {
 
-        Image(
-                painter = getImage(homeDataModel?.thumbnail),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .size(120.dp)
+        MovieImage(
+                homeDataModel?.thumbnail
         )
 
         Column(
@@ -179,6 +176,23 @@ fun ContentCompose(homeDataModel: HomeDataModel?) {
 
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun test(){
+    MovieImage(null)
+}
+
+@Composable
+fun MovieImage(thumbnail: String?) {
+    Image(
+            painter = getImage(thumbnail),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                    .size(120.dp)
+    )
 }
 
 @Composable
@@ -222,7 +236,7 @@ fun DefaultPreview() {
 
 @Composable
 private fun getImage(thumbnail: String?): Painter {
-    return if (thumbnail != null && thumbnail.contains("null")) {
+    return if (thumbnail.isNullOrEmpty() || thumbnail.contains("null")) {
         painterResource(id = R.mipmap.ic_launcher)
     } else {
         rememberImagePainter(thumbnail)
@@ -230,16 +244,19 @@ private fun getImage(thumbnail: String?): Painter {
 }
 
 @Composable
-private fun ComposeText(text: String = "-",
-                        maxLines: Int = 1,
-                        modifier: Modifier) {
+fun ComposeText(text: String = "-",
+                fontSize: TextUnit = 12.sp,
+                maxLines: Int = 1,
+                modifier: Modifier = Modifier,
+                fontWeight: FontWeight? = null) {
     Text(
             text = text,
             color = Color.White,
-            fontSize = 12.sp,
+            fontSize = fontSize,
             maxLines = maxLines,
             overflow = TextOverflow.Ellipsis,
-            modifier = modifier
+            modifier = modifier,
+            fontWeight = fontWeight
     )
 }
 

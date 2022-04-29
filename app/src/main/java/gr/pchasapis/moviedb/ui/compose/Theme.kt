@@ -13,9 +13,9 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-        primary = Purple500,
-        primaryVariant = Purple700,
-        secondary = Teal200
+        primary = Primary,
+        primaryVariant = PrimaryDark,
+        secondary = ColorAccent
 
         /* Other default colors to override
     background = Color.White,
@@ -29,7 +29,7 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun MovieDBTheme(darkTheme: Boolean = isSystemInDarkTheme(),
-                 content: @Composable() () -> Unit) {
+                 content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

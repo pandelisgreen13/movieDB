@@ -5,47 +5,43 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import gr.pchasapis.moviedb.R
-import gr.pchasapis.moviedb.ui.compose.CardContent
+import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
+import gr.pchasapis.moviedb.ui.compose.PrimaryDark
+import gr.pchasapis.moviedb.ui.fragment.details.ComposeText
+import gr.pchasapis.moviedb.ui.fragment.details.MovieImage
 
 @Composable
-private fun Favourite(name: String) {
+fun FavouriteRow(homeDataModel: HomeDataModel) {
     Card(
-            backgroundColor = MaterialTheme.colors.primary,
+            backgroundColor = PrimaryDark,
             shape = RoundedCornerShape(8.dp),
+            elevation = 8.dp,
             modifier = Modifier
                     .padding(vertical = 6.dp, horizontal = 4.dp)
     ) {
-        FavouriteContent(name)
+        FavouriteContent(homeDataModel = homeDataModel)
     }
 }
 
 @Composable
-fun FavouriteContent(name: String) {
-    var expanded by rememberSaveable { mutableStateOf(false) }
+fun FavouriteContent(homeDataModel: HomeDataModel) {
+   // var expanded by rememberSaveable { mutableStateOf(false) }
 
     Row(
             modifier = Modifier
-                    .padding(10.dp)
                     .animateContentSize(
                             animationSpec = spring(
                                     dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -53,42 +49,49 @@ fun FavouriteContent(name: String) {
                             )
                     )
     ) {
+
+        MovieImage(
+                homeDataModel.thumbnail
+        )
+
         Column(
                 modifier = Modifier
-                        .weight(1f)
-                        .padding(12.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp)
         ) {
 
-            Icon(
-                    imageVector =  Icons.Filled.ExpandLess,
-                    contentDescription = stringResource(id = R.string.app_name)
-
+            ComposeText(
+                    text = homeDataModel.title ?: "-",
+                    maxLines = 2,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 6.dp)
             )
-            
-            Text(text = "Hello, ")
-            Text(
-                    text = name,
-                    style = MaterialTheme.typography.h4.copy(
-                            fontWeight = FontWeight.ExtraBold
-                    )
-            )
-            if (expanded) {
-                Text(
-                        text = ("Composem ipsum color sit lazy, " +
-                                "padding theme elit, sed do bouncy. ").repeat(4),
-                )
-            }
-        }
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-                    imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                    contentDescription = if (expanded) {
-                        stringResource(R.string.show_less)
-                    } else {
-                        stringResource(R.string.show_more)
-                    }
 
+            ComposeText(
+                    text = "${stringResource(R.string.home_release_data)}  ${homeDataModel.releaseDate}",
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 10.dp)
+            )
+
+            ComposeText(
+                    text = "${stringResource(R.string.home_rating)}  ${homeDataModel.ratings}",
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun CardPreview() {
+    MovieDBTheme {
+        FavouriteRow(HomeDataModel(
+                ratings = "5",
+                title = "Avengers",
+                releaseDate = "25/5/2019"
+        ))
+    }
+}
+

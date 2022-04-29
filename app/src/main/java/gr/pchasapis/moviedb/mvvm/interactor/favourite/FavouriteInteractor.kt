@@ -14,7 +14,7 @@ interface FavouriteInteractor {
     suspend fun fetchWatchListFromDatabase(): Flow<DataResult<List<HomeDataModel>>>
 }
 
-class FavouriteInteractorImp @Inject constructor(private val movieDbDatabase: MovieDbDatabase) : FavouriteInteractor {
+class FavouriteInteractorImpl @Inject constructor(private val movieDbDatabase: MovieDbDatabase) : FavouriteInteractor {
 
     override suspend fun fetchWatchListFromDatabase(): Flow<DataResult<List<HomeDataModel>>> {
         return try {

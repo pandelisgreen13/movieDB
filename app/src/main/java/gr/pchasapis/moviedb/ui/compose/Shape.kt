@@ -1,4 +1,4 @@
-package gr.pchasapis.moviedb.ui.fragment.details.ui.theme
+package gr.pchasapis.moviedb.ui.compose
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
