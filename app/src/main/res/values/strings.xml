@@ -25,5 +25,6 @@
 
     <string name="show_less">Show less</string>
     <string name="show_more">Show more</string>
+    <string name="favourite_empty_list">No favourite at this moment</string>
 
 </resources>
