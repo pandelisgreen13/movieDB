@@ -4,6 +4,8 @@ For Dependency Injection we are using [Hilt](https://developer.android.com/train
 
 The navigation is handle by [navigation component](https://developer.android.com/guide/navigation/navigation-getting-started).
 
+Migration to [Jetpack compose](https://developer.android.com/jetpack/compose) is in progress
+
 We have the Home activity where the user can find any movie or tv-series by typing at the search editext.
 The user can add a movie/tv-series as a favourite to his/her Watchlist. The favourite are stored locally at the database.
 
