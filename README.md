@@ -1,5 +1,5 @@
 ###  movieDB
-We use Retrofit to consume the MovieDb Api. We choose the MVVM Architechure with ViewModel, LiveData, Coroutines and Room Database.
+We use Retrofit to consume the MovieDb Api. We choose the MVVM Architechure with ViewModel, LiveData/Flow, Coroutines and Room Database.
 For Dependency Injection we are using [Hilt](https://developer.android.com/training/dependency-injection/hilt-android).
 
 The navigation is handle by [navigation component](https://developer.android.com/guide/navigation/navigation-getting-started).
