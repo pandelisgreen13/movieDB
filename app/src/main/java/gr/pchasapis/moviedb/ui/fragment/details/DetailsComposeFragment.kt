@@ -65,7 +65,11 @@ class DetailsComposeFragment : Fragment() {
 
     private val args: DetailsComposeFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return ComposeView(requireContext()).apply {
             detailsViewModel.setUIModel(args.homeDataModel)
             setContent {
@@ -105,13 +109,13 @@ class DetailsComposeFragment : Fragment() {
 @Composable
 fun LoadingCompose() {
     Surface(
-            color = PrimaryDark,
-            modifier = Modifier.fillMaxSize()
+        color = PrimaryDark,
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             CircularProgressIndicator()
@@ -120,20 +124,28 @@ fun LoadingCompose() {
 }
 
 @Composable
-private fun SuccessCompose(homeDataModel: HomeDataModel? = null,
-                           viewModel: DetailsComposeViewModel? = null,
-                           onBackIconClicked: () -> Unit) {
+private fun SuccessCompose(
+    homeDataModel: HomeDataModel? = null,
+    viewModel: DetailsComposeViewModel? = null,
+    onBackIconClicked: () -> Unit
+) {
     Surface(
-            color = PrimaryDark,
-            modifier = Modifier.fillMaxSize()
+        color = PrimaryDark,
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
-                modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
 
-            ToolbarCompose(homeDataModel, viewModel) {
-                onBackIconClicked()
-            }
+            ToolbarCompose(
+                title = homeDataModel?.title ?: "",
+                isFavourite = viewModel?.showFavouriteLiveData?.value ?: false,
+                onBackIconClicked = {
+                    onBackIconClicked()
+                },
+                onFavouriteIconClicked = {
+                    viewModel?.toggleFavourite()
+                })
             Spacer(modifier = Modifier.size(14.dp))
             ContentCompose(homeDataModel)
         }
@@ -146,29 +158,30 @@ fun ContentCompose(homeDataModel: HomeDataModel?) {
     Row {
 
         MovieImage(
-                homeDataModel?.thumbnail
+            homeDataModel?.thumbnail
         )
 
         Column(
-                modifier = Modifier
-                        .height(120.dp)
-                        .padding(end = 10.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .height(120.dp)
+                .padding(end = 10.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             ComposeText(
-                    text = homeDataModel?.summary ?: "-",
-                    maxLines = 6,
-                    modifier = Modifier.padding(bottom = 2.dp))
+                text = homeDataModel?.summary ?: "-",
+                maxLines = 6,
+                modifier = Modifier.padding(bottom = 2.dp)
+            )
             Row(modifier = Modifier.fillMaxWidth()) {
                 ComposeText(
-                        text = stringResource(R.string.details_genre),
-                        modifier = Modifier.padding(bottom = 2.dp, end = 4.dp)
+                    text = stringResource(R.string.details_genre),
+                    modifier = Modifier.padding(bottom = 2.dp, end = 4.dp)
                 )
 
                 ComposeText(
-                        text = homeDataModel?.genresName ?: "-",
-                        maxLines = 2,
-                        modifier = Modifier.padding(bottom = 2.dp)
+                    text = homeDataModel?.genresName ?: "-",
+                    maxLines = 2,
+                    modifier = Modifier.padding(bottom = 2.dp)
                 )
 
             }
@@ -180,33 +193,36 @@ fun ContentCompose(homeDataModel: HomeDataModel?) {
 
 @Preview(showBackground = true)
 @Composable
-fun test(){
+fun test() {
     MovieImage(null)
 }
 
 @Composable
 fun MovieImage(thumbnail: String?) {
     Image(
-            painter = getImage(thumbnail),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                    .size(120.dp)
+        painter = getImage(thumbnail),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .size(120.dp)
     )
 }
 
 @Composable
-fun ToolbarCompose(homeDataModel: HomeDataModel?,
-                   viewModel: DetailsComposeViewModel?,
-                   onBackIconClicked: () -> Unit) {
+fun ToolbarCompose(
+    title: String,
+    isFavourite: Boolean = false,
+    onBackIconClicked: () -> Unit,
+    onFavouriteIconClicked: (() -> Unit)? = null
+) {
 
     Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .background(Primary)
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(Primary)
     ) {
 
         ToolbarIcon(R.drawable.ic_arrow_back) {
@@ -214,15 +230,15 @@ fun ToolbarCompose(homeDataModel: HomeDataModel?,
         }
 
         Text(
-                text = homeDataModel?.title ?: "",
-                color = Color.White,
-                fontSize = 18.sp,
-                maxLines = 1,
+            text = title,
+            color = Color.White,
+            fontSize = 18.sp,
+            maxLines = 1,
         )
 
-
-        IconToggleButtonComposable(viewModel)
-
+        IconToggleButtonComposable(isFavourite) {
+            onFavouriteIconClicked?.invoke()
+        }
     }
 }
 
@@ -244,51 +260,58 @@ private fun getImage(thumbnail: String?): Painter {
 }
 
 @Composable
-fun ComposeText(text: String = "-",
-                fontSize: TextUnit = 12.sp,
-                maxLines: Int = 1,
-                modifier: Modifier = Modifier,
-                fontWeight: FontWeight? = null) {
+fun ComposeText(
+    text: String = "-",
+    fontSize: TextUnit = 12.sp,
+    maxLines: Int = 1,
+    modifier: Modifier = Modifier,
+    fontWeight: FontWeight? = null
+) {
     Text(
-            text = text,
-            color = Color.White,
-            fontSize = fontSize,
-            maxLines = maxLines,
-            overflow = TextOverflow.Ellipsis,
-            modifier = modifier,
-            fontWeight = fontWeight
+        text = text,
+        color = Color.White,
+        fontSize = fontSize,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier,
+        fontWeight = fontWeight
     )
 }
 
 
 @Composable
-private fun ToolbarIcon(drawable: Int,
-                        onIconClicked: () -> Unit) {
+private fun ToolbarIcon(
+    drawable: Int,
+    onIconClicked: () -> Unit
+) {
     Icon(
-            painter = painterResource(id = drawable),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier
-                    .padding(10.dp)
-                    .clickable {
-                        onIconClicked()
-                    }
+        painter = painterResource(id = drawable),
+        contentDescription = null,
+        tint = Color.Unspecified,
+        modifier = Modifier
+            .padding(10.dp)
+            .clickable {
+                onIconClicked()
+            }
     )
 }
 
 @Composable
-private fun IconToggleButtonComposable(viewModel: DetailsComposeViewModel?) {
+private fun IconToggleButtonComposable(
+    showFavouriteLiveData: Boolean = false,
+    onCheckedChange: () -> Unit
+) {
 
     var checked by remember {
-        mutableStateOf(viewModel?.showFavouriteLiveData?.value ?: false)
+        mutableStateOf(showFavouriteLiveData)
     }
 
     IconToggleButton(
-            checked = checked,
-            onCheckedChange = {
-                viewModel?.toggleFavourite()
-                checked = it
-            }
+        checked = checked,
+        onCheckedChange = {
+            onCheckedChange.invoke()
+            checked = it
+        }
     ) {
         val icon = if (checked) {
             R.drawable.ic_favourite_selected
@@ -297,11 +320,11 @@ private fun IconToggleButtonComposable(viewModel: DetailsComposeViewModel?) {
         }
 
         Icon(
-                painter = painterResource(id = icon),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier
-                        .padding(10.dp)
+            painter = painterResource(id = icon),
+            contentDescription = null,
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .padding(10.dp)
         )
     }
 

@@ -93,7 +93,7 @@ fun FavouriteContent(homeDataModel: HomeDataModel) {
 fun FavouriteList(messages: List<HomeDataModel>) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
     ) {
         items(messages) { favourite ->
             FavouriteRow(homeDataModel = favourite)
