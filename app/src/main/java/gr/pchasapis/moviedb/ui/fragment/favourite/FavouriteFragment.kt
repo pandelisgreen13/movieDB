@@ -20,11 +20,15 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
+import gr.pchasapis.moviedb.common.ActivityResult
 import gr.pchasapis.moviedb.databinding.FavouriteFragmentBinding
+import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteList
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
@@ -33,6 +37,14 @@ import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
 class FavouriteFragment : Fragment() {
 
     private var binding: FavouriteFragmentBinding? = null
+
+
+    private val viewModel: FavouriteViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fragmentResult()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,12 +65,25 @@ class FavouriteFragment : Fragment() {
                             ToolbarView()
                         }
                     ) {
-                        FavouriteMainView(state)
+                        FavouriteMainView(state) {
+                            val action =
+                                FavouriteFragmentDirections.actionFavouriteFragmentToDetailsActivity(
+                                    it
+                                )
+                            findNavController().navigate(action)
+                        }
                     }
                 }
             }
         }
     }
+
+    private fun fragmentResult() {
+        setFragmentResultListener(ActivityResult.DETAILS) { _: String, _: Bundle ->
+          viewModel.readWatchListFromDatabase()
+        }
+    }
+
     @Composable
     private fun ToolbarView() {
         TopAppBar(
@@ -74,7 +99,10 @@ class FavouriteFragment : Fragment() {
     }
 
     @Composable
-    private fun FavouriteMainView(state: FavouriteUiState) {
+    private fun FavouriteMainView(
+        state: FavouriteUiState,
+        onItemClicked: (HomeDataModel) -> Unit
+    ) {
         val list = state.initialFavourite
 
         Surface(
@@ -84,7 +112,10 @@ class FavouriteFragment : Fragment() {
             if (state.loading || list.isEmpty()) {
                 LoadingErrorCompose(shouldShowError = state.loading.not() && list.isEmpty())
             } else {
-                FavouriteList(messages = list)
+                FavouriteList(
+                    messages = list,
+                    onItemClicked = onItemClicked
+                )
             }
         }
     }

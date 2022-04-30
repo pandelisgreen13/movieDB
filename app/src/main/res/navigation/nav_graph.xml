@@ -68,6 +68,14 @@
         android:id="@+id/favouriteFragment"
         android:name="gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteFragment"
         android:label="favourite_fragment"
-        tools:layout="@layout/favourite_fragment" />
+        tools:layout="@layout/favourite_fragment" >
+        <action
+            android:id="@+id/action_favouriteFragment_to_detailsActivity"
+            app:destination="@id/detailsActivity" />
+
+        <argument
+            android:name="homeDataModel"
+            app:argType="gr.pchasapis.moviedb.model.data.HomeDataModel" />
+    </fragment>
 
 </navigation>

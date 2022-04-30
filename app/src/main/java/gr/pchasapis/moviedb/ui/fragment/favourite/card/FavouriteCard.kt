@@ -3,6 +3,7 @@ package gr.pchasapis.moviedb.ui.fragment.favourite.card
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,18 +25,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDirections
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.details.ComposeText
 import gr.pchasapis.moviedb.ui.fragment.details.MovieImage
+import gr.pchasapis.moviedb.ui.fragment.home.HomeFragmentDirections
 
 @Composable
-fun FavouriteRow(homeDataModel: HomeDataModel) {
+fun FavouriteRow(
+    homeDataModel: HomeDataModel,
+    onRowClicked: (HomeDataModel) -> Unit
+) {
     Card(
         backgroundColor = PrimaryDark,
         shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.clickable {
+            onRowClicked(homeDataModel)
+        },
         elevation = 8.dp,
     ) {
         FavouriteContent(homeDataModel = homeDataModel)
@@ -90,13 +99,18 @@ fun FavouriteContent(homeDataModel: HomeDataModel) {
 }
 
 @Composable
-fun FavouriteList(messages: List<HomeDataModel>) {
+fun FavouriteList(
+    messages: List<HomeDataModel>,
+    onItemClicked: (HomeDataModel) -> Unit
+) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
     ) {
         items(messages) { favourite ->
-            FavouriteRow(homeDataModel = favourite)
+            FavouriteRow(homeDataModel = favourite) {
+                onItemClicked.invoke(it)
+            }
         }
     }
 }
@@ -148,7 +162,7 @@ fun ListPreview() {
                 releaseDate = "25/5/2019"
             )
         )
-        FavouriteList(list)
+        FavouriteList(list, {})
     }
 }
 
@@ -162,7 +176,7 @@ fun CardPreview() {
                 title = "Avengers",
                 releaseDate = "25/5/2019"
             )
-        )
+        ) {}
     }
 }
 

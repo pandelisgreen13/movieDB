@@ -24,7 +24,7 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
         readWatchListFromDatabase()
     }
 
-    private fun readWatchListFromDatabase() {
+    fun readWatchListFromDatabase() {
         state.loading = true
         viewModelScope.launch {
             withContext(Dispatchers.IO) { favouriteInteractorImpl.fetchWatchListFromDatabase() }.collect { response ->
@@ -33,7 +33,7 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
                 } ?: response.throwable?.let {
                     Timber.e(it.toString())
                 }
-                state.loading = false
+                state = state.copy(loading = false)
             }
         }
     }
