@@ -13,9 +13,8 @@ object Definitions {
 
 object BUNDLE{
     const val MOVIE_DETAILS                                                           = "movieDetails"
-    const val MOVIE_THEATRE                                                           = "movieInTheatre"
 }
 
-object ACTIVITY_RESULT {
+object ActivityResult {
     const val DETAILS = "details"
 }

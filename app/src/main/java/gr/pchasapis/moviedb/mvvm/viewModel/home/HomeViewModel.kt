@@ -6,12 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.common.SingleLiveEvent
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
-import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractor
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -20,7 +18,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteractorImpl) : BaseViewModel() {
 
     private lateinit var searchMutableLiveData: MutableLiveData<MutableList<HomeDataModel>>
-    private lateinit var watchListLiveData: MutableLiveData<Boolean>
     private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> = SingleLiveEvent()
     private var finishPaginationLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var toolbarTitleLiveData: MutableLiveData<Boolean> = MutableLiveData()
@@ -30,15 +27,6 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
     private var page = 0
     private var isFetching = false
     private var queryText = ""
-    var isWatchListMode = false
-
-    fun getWatchListLiveData(): LiveData<Boolean> {
-        if (!::watchListLiveData.isInitialized) {
-            watchListLiveData = MutableLiveData()
-            readWatchListFromDatabase()
-        }
-        return watchListLiveData
-    }
 
     fun getSearchList(): LiveData<MutableList<HomeDataModel>> {
         if (!::searchMutableLiveData.isInitialized) {
@@ -56,39 +44,12 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
         return finishPaginationLiveData
     }
 
-    fun getToolbarTitle(): LiveData<Boolean> {
-        return toolbarTitleLiveData
-    }
-
     fun getPaginationLoader(): LiveData<Boolean> {
         return paginationLoaderLiveData
     }
 
-    fun readWatchListFromDatabase() {
-        uiScope.launch {
-            val response = withContext(bgDispatcher) { homeInteractor.getWatchList() }
-            response.data?.let {
-                watchListLiveData.value = it.isNotEmpty()
-                databaseList = it.toMutableList()
-                if (isWatchListMode && it.isNotEmpty()) {
-                    searchMutableLiveData.value = databaseList
-                } else {
-                    isWatchListMode = false
-                    searchMutableLiveData.value = searchList
-                }
-            } ?: response.throwable?.let {
-                Timber.e(it.toString())
-                isWatchListMode = false
-                searchMutableLiveData.value = searchList
-            } ?: run {
-                isWatchListMode = false
-                searchMutableLiveData.value = searchList
-            }
-        }
-    }
-
     fun fetchSearchResult() {
-        if (isFetching() || queryText.isEmpty() || isWatchListMode) {
+        if (isFetching() || queryText.isEmpty()) {
             return
         }
         setFetching(true)
@@ -157,23 +118,7 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
         }
     }
 
-    fun showWatchList() {
-        if (databaseList.isEmpty()) {
-            return
-        }
-        isWatchListMode = !isWatchListMode
-        searchMutableLiveData.value = when {
-            isWatchListMode -> databaseList
-            else -> searchList
-        }
-        toolbarTitleLiveData.value = isWatchListMode
-    }
-
     fun searchForResults() {
-        if (isWatchListMode) {
-            filterListByQuery()
-            return
-        }
         fetchSearchResult()
         resetPagination()
     }

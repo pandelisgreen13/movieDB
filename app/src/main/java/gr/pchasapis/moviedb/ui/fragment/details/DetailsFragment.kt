@@ -29,14 +29,12 @@ import coil.compose.rememberImagePainter
 import com.google.android.material.composethemeadapter.MdcTheme
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
-import gr.pchasapis.moviedb.common.ACTIVITY_RESULT
+import gr.pchasapis.moviedb.common.ActivityResult
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
-import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.ui.base.BaseFragment
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<DetailsViewModel>() {
@@ -73,7 +71,7 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             val bundle = Bundle().apply {
                 putParcelable(BUNDLE.MOVIE_DETAILS, viewModel?.homeDataModel)
             }
-            setFragmentResult(ACTIVITY_RESULT.DETAILS, bundle)
+            setFragmentResult(ActivityResult.DETAILS, bundle)
         }
         findNavController().navigateUp()
     }

@@ -83,7 +83,5 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/common_fourteen_dp"
         android:layout_marginBottom="@dimen/common_twenty_dp"
-        android:src="@drawable/ic_watchlist"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:src="@drawable/ic_watchlist" />
 </RelativeLayout>

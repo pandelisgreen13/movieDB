@@ -23,33 +23,33 @@ open class BaseFragment<T : BaseViewModel> : Fragment() {
     }
 
     fun initViewModelState(loadingLayout: LayoutLoadingBinding?, emptyLayout: LayoutEmptyBinding?) {
-        viewModel?.showLoadingView()?.observe(this, { value ->
+        viewModel?.showLoadingView()?.observe(this) { value ->
             value?.let { show ->
                 loadingLayout?.root?.visibility = if (show) View.VISIBLE else View.GONE
             }
-        })
+        }
 
-        viewModel?.showEmptyView()?.observe(this, { value ->
+        viewModel?.showEmptyView()?.observe(this) { value ->
             value?.let { show ->
                 emptyLayout?.root?.visibility = if (show) View.VISIBLE else View.GONE
             }
-        })
+        }
 
-        viewModel?.showInternetError()?.observe(this, { value ->
+        viewModel?.showInternetError()?.observe(this) { value ->
             value?.let { showError ->
                 if (showError) {
                     showNoInternetError()
                 }
             }
-        })
+        }
 
-        viewModel?.showGenericError()?.observe(this, { value ->
+        viewModel?.showGenericError()?.observe(this) { value ->
             value?.let { showError ->
                 if (showError) {
                     showGenericError()
                 }
             }
-        })
+        }
     }
 
     private fun showGenericError() {

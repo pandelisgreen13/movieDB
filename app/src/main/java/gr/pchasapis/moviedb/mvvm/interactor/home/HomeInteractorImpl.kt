@@ -2,7 +2,6 @@ package gr.pchasapis.moviedb.mvvm.interactor.home
 
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.database.MovieDbDatabase
-import gr.pchasapis.moviedb.database.dao.MovieDbTable
 import gr.pchasapis.moviedb.model.common.DataResult
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
@@ -16,16 +15,6 @@ import timber.log.Timber
 
 
 class HomeInteractorImpl(private var movieClient: MovieClient, private val movieDbDatabase: MovieDbDatabase) : BaseInteractor(), HomeInteractor {
-
-    override suspend fun getWatchList(): DataResult<List<HomeDataModel>> {
-        return try {
-            val databaseList = movieDbDatabase.movieDbTableDao().loadAll()
-            DataResult(toHomeDataModelFromTable(databaseList))
-        } catch (t: Throwable) {
-            Timber.d(t)
-            DataResult(throwable = t)
-        }
-    }
 
     override suspend fun onRetrieveSearchResult(queryText: String, page: Int): Flow<DataResult<List<HomeDataModel>>> {
         return try {
@@ -72,24 +61,6 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
                     thumbnail = "${Definitions.IMAGE_URL_W300}${movieItem.posterPath}",
                     releaseDate = movieItem.releaseDate ?: "-")
         } ?: arrayListOf())
-    }
-
-    private fun toHomeDataModelFromTable(databaseList: List<MovieDbTable>): List<HomeDataModel> {
-        return databaseList.map { databaseItem ->
-            HomeDataModel(
-                    id = databaseItem.id,
-                    title = databaseItem.title,
-                    mediaType = databaseItem.mediaType,
-                    summary = databaseItem.summary,
-                    thumbnail = databaseItem.thumbnail,
-                    releaseDate = databaseItem.releaseDate,
-                    ratings = databaseItem.ratings,
-                    isFavorite = databaseItem.isFavourite,
-                    genresName = databaseItem.genresName,
-                    videoKey = databaseItem.videoKey,
-                    videoUrl = databaseItem.videoUrl,
-                    dateAdded = databaseItem.dateAdded)
-        }
     }
 
     companion object {
