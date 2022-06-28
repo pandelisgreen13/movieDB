@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
@@ -26,6 +27,7 @@ import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.base.BaseFragment
 import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
+import kotlinx.coroutines.flow.collectLatest
 
 
 @AndroidEntryPoint
@@ -64,9 +66,15 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
         viewModel?.getSearchList()?.observe(viewLifecycleOwner) { resultList ->
             resultList?.let {
-                homeRecyclerViewAdapter?.setSearchList(it)
+              //  homeRecyclerViewAdapter?.submitData(it)
             } ?: run {
                 binding.emptyLayout.root.visibility = View.VISIBLE
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel?.flow?.collectLatest { pagingData ->
+                homeRecyclerViewAdapter?.submitData(pagingData)
             }
         }
 
@@ -139,24 +147,25 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             homeRecyclerViewAdapter = HomeRecyclerViewAdapter(
                     onItemClicked = { homeDataModel ->
 //                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsActivity(homeDataModel)
-                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsComposeFragment2(homeDataModel)
-                        findNavController().navigate(action)
-
+                        homeDataModel?.let {
+                            val action = HomeFragmentDirections.actionHomeFragmentToDetailsComposeFragment2(homeDataModel)
+                            findNavController().navigate(action)
+                        }
                     })
 
-            paginationScrollListener = PaginationScrollListener(
-                    linearLayoutManager,
-                    {
-                        if (searchEditText.text.toString().isNotEmpty()) {
-                            binding?.recyclerViewLayout?.moreProgressView?.visibility = View.VISIBLE
-                        }
-                        viewModel?.fetchSearchResult()
-                    },
-                    Definitions.PAGINATION_SIZE
-            )
-            paginationScrollListener?.let {
-                binding?.recyclerViewLayout?.homeRecyclerView?.addOnScrollListener(it)
-            }
+//            paginationScrollListener = PaginationScrollListener(
+//                    linearLayoutManager,
+//                    {
+//                        if (searchEditText.text.toString().isNotEmpty()) {
+//                            binding?.recyclerViewLayout?.moreProgressView?.visibility = View.VISIBLE
+//                        }
+//                        viewModel?.fetchSearchResult()
+//                    },
+//                    Definitions.PAGINATION_SIZE
+//            )
+//            paginationScrollListener?.let {
+//                binding?.recyclerViewLayout?.homeRecyclerView?.addOnScrollListener(it)
+//            }
             binding?.recyclerViewLayout?.homeRecyclerView?.adapter = homeRecyclerViewAdapter
         }
     }

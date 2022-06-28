@@ -1,25 +1,37 @@
 package gr.pchasapis.moviedb.mvvm.interactor.home
 
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.database.MovieDbDatabase
 import gr.pchasapis.moviedb.model.common.DataResult
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
+import gr.pchasapis.moviedb.model.mappers.HomeDataModelMapper
+import gr.pchasapis.moviedb.model.mappers.HomeDataModelMapperImpl
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
 import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
 import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
+import gr.pchasapis.moviedb.mvvm.interactor.home.paging.SearchPagingDataSource
 import gr.pchasapis.moviedb.network.client.MovieClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 
 
-class HomeInteractorImpl(private var movieClient: MovieClient, private val movieDbDatabase: MovieDbDatabase) : BaseInteractor(), HomeInteractor {
+class HomeInteractorImpl(private var movieClient: MovieClient,
+                         private val movieDbDatabase: MovieDbDatabase,
+                         private val mapper: HomeDataModelMapperImpl) : BaseInteractor(), HomeInteractor {
 
     override suspend fun onRetrieveSearchResult(queryText: String, page: Int): Flow<DataResult<List<HomeDataModel>>> {
         return try {
             val response = movieClient.getSearchAsync(queryText, page)
-            flow { emit(DataResult(toHomeDataModel(response))) }
+            flow {
+                emit(DataResult(toHomeDataModel(response)))
+            }
         } catch (t: Throwable) {
             Timber.d(t)
             flow { DataResult(null, throwable = t) }
@@ -34,6 +46,16 @@ class HomeInteractorImpl(private var movieClient: MovieClient, private val movie
             Timber.d(t)
             DataResult(throwable = t)
         }
+    }
+
+    override fun flowPaging(queryText: String): Flow<PagingData<HomeDataModel>> {
+        return Pager(
+                // Configure how data is loaded by passing additional properties to
+                // PagingConfig, such as prefetchDistance.
+                PagingConfig(pageSize = 20)
+        ) {
+            SearchPagingDataSource(queryText, movieClient, mapper)
+        }.flow
     }
 
     private fun toHomeDataModel(searchResponse: SearchResponse): List<HomeDataModel> {

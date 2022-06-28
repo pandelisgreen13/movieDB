@@ -2,25 +2,34 @@ package gr.pchasapis.moviedb.mvvm.viewModel.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.common.SingleLiveEvent
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
+import gr.pchasapis.moviedb.model.mappers.HomeDataModelMapperImpl
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
+import gr.pchasapis.moviedb.mvvm.interactor.home.paging.SearchPagingDataSource
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
-import kotlinx.coroutines.flow.collect
+import gr.pchasapis.moviedb.network.client.MovieClient
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteractorImpl) : BaseViewModel() {
+class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteractorImpl,
+                                        private var movieClient: MovieClient,
+                                        private val mapper: HomeDataModelMapperImpl) : BaseViewModel() {
 
     private lateinit var searchMutableLiveData: MutableLiveData<MutableList<HomeDataModel>>
     private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> = SingleLiveEvent()
     private var finishPaginationLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    private var toolbarTitleLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var paginationLoaderLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var searchList = mutableListOf<HomeDataModel>()
     private var databaseList = mutableListOf<HomeDataModel>()
@@ -48,11 +57,22 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
         return paginationLoaderLiveData
     }
 
+    val flow = Pager(
+            // Configure how data is loaded by passing additional properties to
+            // PagingConfig, such as prefetchDistance.
+            PagingConfig(pageSize = 20)
+    ) {
+        SearchPagingDataSource(queryText, movieClient, mapper)
+    }.flow.cachedIn(viewModelScope)
+
+    fun pagingFetch(): Flow<PagingData<HomeDataModel>> {
+        return homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
+    }
+
     fun fetchSearchResult() {
-        if (isFetching() || queryText.isEmpty()) {
+        if (queryText.isEmpty()) {
             return
         }
-        setFetching(true)
 
         uiScope.launch {
             if (page == 0) {
