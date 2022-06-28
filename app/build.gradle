@@ -79,9 +79,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
     // Room components
-    implementation 'androidx.room:room-runtime:2.4.2'
-    implementation 'androidx.compose.animation:animation-graphics:1.1.0-rc01'
-    kapt 'androidx.room:room-compiler:2.3.0'
+    implementation "androidx.room:room-runtime:${room_version}"
+    kapt "androidx.room:room-compiler:${room_version}"
     //Image Handling
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation("io.coil-kt:coil-compose:1.4.0")
@@ -109,6 +108,7 @@ dependencies {
     implementation "com.google.android.material:compose-theme-adapter:$compose_version"
     //compose view model
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
+    implementation 'androidx.compose.animation:animation-graphics:1.1.0-rc01'
 
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
