@@ -12,28 +12,30 @@ class SearchPagingDataSource(
     private val queryText: String,
     private var movieClient: MovieClient,
     private val mapper: HomeDataModelMapperImpl
-) : PagingSource<String, HomeDataModel>() {
+) : PagingSource<Int, HomeDataModel>() {
 
-    override fun getRefreshKey(state: PagingState<String, HomeDataModel>): String? {
+    override fun getRefreshKey(state: PagingState<Int, HomeDataModel>): Int? {
         return null
     }
 
-    override suspend fun load(params: LoadParams<String>): LoadResult<String, HomeDataModel> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, HomeDataModel> {
         return try {
             // Start refresh at page 1 if undefined.
-            var nextPageNumber: Int = params.key?.toIntOrNull() ?: STARTING_PAGE_INDEX
-            val response = movieClient.getSearchAsync(queryText, nextPageNumber ?: 0)
+            var currentNumber: Int = params.key ?: STARTING_PAGE_INDEX
+            val response = movieClient.getSearchAsync(queryText, currentNumber)
 
-            nextPageNumber += 1
+            currentNumber += 1
 
-            if (nextPageNumber == 3) {
-                nextPageNumber = 0
+            val nextPage = if (currentNumber == 4) {
+                null
+            } else {
+                currentNumber
             }
 
             return LoadResult.Page(
                 data = mapper.toHomeDataModelFromResponse(response),
                 prevKey = null, // Only paging forward.
-                nextKey = nextPageNumber.toString()
+                nextKey = nextPage
             )
         } catch (exception: IOException) {
             LoadResult.Error(exception)

@@ -23,7 +23,9 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteractorImpl) : BaseViewModel() {
+class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteractorImpl,
+                                        private var movieClient: MovieClient,
+                                        private val mapper: HomeDataModelMapperImpl) : BaseViewModel() {
 
     private lateinit var searchMutableLiveData: MutableLiveData<MutableList<HomeDataModel>>
     private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> = SingleLiveEvent()
@@ -55,9 +57,16 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
         return paginationLoaderLiveData
     }
 
+    val flow = Pager(
+            // Configure how data is loaded by passing additional properties to
+            // PagingConfig, such as prefetchDistance.
+            PagingConfig(pageSize = 20)
+    ) {
+        SearchPagingDataSource(queryText, movieClient, mapper)
+    }.flow.cachedIn(viewModelScope)
 
     fun pagingFetch(): Flow<PagingData<HomeDataModel>> {
-        return homeInteractor.flowPaging("pokemon").cachedIn(viewModelScope)
+        return homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
     }
 
     fun fetchSearchResult() {
