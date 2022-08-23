@@ -9,36 +9,40 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class SearchPagingDataSource(
-        private val queryText: String,
-        private var movieClient: MovieClient,
-        private val mapper: HomeDataModelMapperImpl
+    private val queryText: String,
+    private var movieClient: MovieClient,
+    private val mapper: HomeDataModelMapperImpl
 ) : PagingSource<String, HomeDataModel>() {
 
     override fun getRefreshKey(state: PagingState<String, HomeDataModel>): String? {
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey
-        }.toString()
+        return null
     }
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, HomeDataModel> {
         return try {
             // Start refresh at page 1 if undefined.
-            val nextPageNumber: Int = params.key?.toInt() ?: STARTING_PAGE_INDEX
-            val response = movieClient.getSearchAsync(queryText, nextPageNumber)
+            var nextPageNumber: Int = params.key?.toIntOrNull() ?: STARTING_PAGE_INDEX
+            val response = movieClient.getSearchAsync(queryText, nextPageNumber ?: 0)
+
+            nextPageNumber += 1
+
+            if (nextPageNumber == 3) {
+                nextPageNumber = 0
+            }
+
             return LoadResult.Page(
-                    data = mapper.toHomeDataModelFromResponse(response),
-                    prevKey = null, // Only paging forward.
-                    nextKey = nextPageNumber.toString()
+                data = mapper.toHomeDataModelFromResponse(response),
+                prevKey = null, // Only paging forward.
+                nextKey = nextPageNumber.toString()
             )
         } catch (exception: IOException) {
-            return LoadResult.Error(exception)
+            LoadResult.Error(exception)
         } catch (exception: HttpException) {
-            return LoadResult.Error(exception)
+            LoadResult.Error(exception)
         }
     }
 
-    companion object{
+    companion object {
 
         private const val STARTING_PAGE_INDEX = 1
     }

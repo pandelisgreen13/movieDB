@@ -73,7 +73,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel?.flow?.collectLatest { pagingData ->
+            viewModel?.pagingFetch()?.collectLatest { pagingData ->
                 homeRecyclerViewAdapter?.submitData(pagingData)
             }
         }

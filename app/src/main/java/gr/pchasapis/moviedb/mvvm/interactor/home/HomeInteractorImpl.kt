@@ -52,7 +52,7 @@ class HomeInteractorImpl(private var movieClient: MovieClient,
         return Pager(
                 // Configure how data is loaded by passing additional properties to
                 // PagingConfig, such as prefetchDistance.
-                PagingConfig(pageSize = 20)
+                PagingConfig(pageSize = 1)
         ) {
             SearchPagingDataSource(queryText, movieClient, mapper)
         }.flow
