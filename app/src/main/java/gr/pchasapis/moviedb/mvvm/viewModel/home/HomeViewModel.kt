@@ -2,10 +2,10 @@ package gr.pchasapis.moviedb.mvvm.viewModel.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.common.SingleLiveEvent
@@ -16,19 +16,21 @@ import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.interactor.home.paging.SearchPagingDataSource
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 import gr.pchasapis.moviedb.network.client.MovieClient
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteractorImpl,
-                                        private var movieClient: MovieClient,
-                                        private val mapper: HomeDataModelMapperImpl) : BaseViewModel() {
+class HomeViewModel @Inject constructor(
+    private val homeInteractor: HomeInteractorImpl,
+    private var movieClient: MovieClient,
+    private val mapper: HomeDataModelMapperImpl
+) : BaseViewModel() {
 
     private lateinit var searchMutableLiveData: MutableLiveData<MutableList<HomeDataModel>>
-    private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> = SingleLiveEvent()
+    private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> =
+        SingleLiveEvent()
     private var finishPaginationLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var paginationLoaderLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var searchList = mutableListOf<HomeDataModel>()
@@ -40,7 +42,7 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
     fun getSearchList(): LiveData<MutableList<HomeDataModel>> {
         if (!::searchMutableLiveData.isInitialized) {
             searchMutableLiveData = MutableLiveData()
-            fetchSearchResult()
+            // fetchSearchResult()
         }
         return searchMutableLiveData
     }
@@ -58,15 +60,26 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
     }
 
     val flow = Pager(
-            // Configure how data is loaded by passing additional properties to
-            // PagingConfig, such as prefetchDistance.
-            PagingConfig(pageSize = 20)
+        // Configure how data is loaded by passing additional properties to
+        // PagingConfig, such as prefetchDistance.
+        PagingConfig(pageSize = 20)
     ) {
         SearchPagingDataSource(queryText, movieClient, mapper)
     }.flow.cachedIn(viewModelScope)
 
-    fun pagingFetch(): Flow<PagingData<HomeDataModel>> {
-        return homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
+    private val currentQuery = MutableLiveData("")
+
+    val movies = currentQuery.switchMap {
+        if (it.isEmpty()) {
+            MutableLiveData()
+        } else {
+            homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
+        }
+    }
+
+
+    fun searchMovies() {
+        currentQuery.value = queryText
     }
 
     fun fetchSearchResult() {
@@ -84,8 +97,10 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
 
                 response.data?.let {
                     emptyLiveData.value = false
-                    finishPaginationLiveData.value = isPaginationFinished(it.firstOrNull()?.page
-                            ?: 0, it.firstOrNull()?.totalPage ?: 0)
+                    finishPaginationLiveData.value = isPaginationFinished(
+                        it.firstOrNull()?.page
+                            ?: 0, it.firstOrNull()?.totalPage ?: 0
+                    )
                     searchList.addAll(it)
                     searchMutableLiveData.value = searchList
                 } ?: run {
@@ -149,8 +164,9 @@ class HomeViewModel @Inject constructor(private val homeInteractor: HomeInteract
             return
         }
         val queryList = databaseList.filter {
-            it.title?.lowercase(Locale.getDefault())?.contains(queryText.toLowerCase(Locale.getDefault()), true)
-                    ?: false
+            it.title?.lowercase(Locale.getDefault())
+                ?.contains(queryText.toLowerCase(Locale.getDefault()), true)
+                ?: false
         }
         searchMutableLiveData.value = queryList.toMutableList()
     }
