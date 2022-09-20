@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import gr.pchasapis.moviedb.database.MovieDbDatabase
+import gr.pchasapis.moviedb.model.mappers.HomeDataModelMapperImpl
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.network.client.MovieClient
 
@@ -13,8 +14,11 @@ import gr.pchasapis.moviedb.network.client.MovieClient
 object HomeModule {
 
     @Provides
-    fun provideHomeInteractor(movieClient: MovieClient,
-                              movieDbDatabase: MovieDbDatabase): HomeInteractorImpl {
-        return HomeInteractorImpl(movieClient, movieDbDatabase)
+    fun provideHomeInteractor(
+        movieClient: MovieClient,
+        movieDbDatabase: MovieDbDatabase,
+        mapperImpl: HomeDataModelMapperImpl
+    ): HomeInteractorImpl {
+        return HomeInteractorImpl(movieClient, movieDbDatabase, mapperImpl)
     }
 }
