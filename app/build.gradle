@@ -6,11 +6,11 @@ apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "gr.pchasapis.moviedb"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -67,14 +67,14 @@ dependencies {
     //Android Libraries
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.core:core-ktx:1.8.0'
-    implementation "com.google.android.material:material:1.6.1"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation "com.google.android.material:material:1.8.0"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation "androidx.fragment:fragment-ktx:1.4.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation "androidx.fragment:fragment-ktx:1.5.6"
     implementation "androidx.paging:paging-runtime:$paging_version"
 
     //Logging
@@ -105,16 +105,17 @@ dependencies {
 
     //Componse
     // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation 'androidx.activity:activity-compose:1.7.0'
+    implementation platform('androidx.compose:compose-bom:2023.03.00')
     // Compose Material Design
-    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material"
     // Animations
-    implementation "androidx.compose.animation:animation:$compose_version"
+    implementation "androidx.compose.animation:animation"
     // Tooling support (Previews, etc.)
-    debugImplementation  "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    debugImplementation  "androidx.compose.ui:ui-tooling"
+    implementation "androidx.compose.material:material-icons-extended"
     // When using a MDC theme
-    implementation "com.google.android.material:compose-theme-adapter:$compose_version"
+    implementation "com.google.android.material:compose-theme-adapter:1.2.1"
     //compose view model
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
     implementation 'androidx.compose.animation:animation-graphics:1.1.0-rc01'
