@@ -3,9 +3,9 @@
 buildscript {
      ext {
         compose_version = '1.5.0'
-        kotlin_version = '1.8.22'
-        nav_version = '2.5.0'
-        dagger_version = '2.47'
+        kotlin_version = '1.9.10'
+        nav_version = '2.7.1'
+        dagger_version = '2.48'
     }
 
     repositories {
