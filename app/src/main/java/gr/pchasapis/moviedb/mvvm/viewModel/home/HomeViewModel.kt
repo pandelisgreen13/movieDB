@@ -75,7 +75,7 @@ class HomeViewModel @Inject constructor(
         currentQuery.value = queryText
     }
 
-    fun fetchSearchResult() {
+    private fun fetchSearchResult() {
         if (queryText.isEmpty()) {
             return
         }

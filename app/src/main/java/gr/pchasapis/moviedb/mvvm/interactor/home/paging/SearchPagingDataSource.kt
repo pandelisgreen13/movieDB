@@ -21,20 +21,20 @@ class SearchPagingDataSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, HomeDataModel> {
         return try {
             // Start refresh at page 1 if undefined.
-            var currentNumber: Int = params.key ?: STARTING_PAGE_INDEX
+            val currentNumber: Int = params.key ?: STARTING_PAGE_INDEX
             val response = movieClient.getSearchAsync(queryText, currentNumber)
 
-            currentNumber += 1
-
-            val nextPage = if (currentNumber == 4) {
+            val nextPage = if (response.page == response.totalPages) {
                 null
             } else {
-                currentNumber
+                currentNumber + 1
             }
+
+            val prevKey = if (currentNumber <= 1) null else currentNumber - 1
 
             return LoadResult.Page(
                 data = mapper.toHomeDataModelFromResponse(response),
-                prevKey = null, // Only paging forward.
+                prevKey = prevKey, // Only paging forward.
                 nextKey = nextPage
             )
         } catch (exception: IOException) {

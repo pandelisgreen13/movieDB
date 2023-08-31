@@ -60,8 +60,7 @@ class HomeInteractorImpl(
             // Configure how data is loaded by passing additional properties to
             // PagingConfig, such as prefetchDistance.
             PagingConfig(
-                pageSize = 5,
-                maxSize = 20,
+                pageSize = 10,
                 enablePlaceholders = false,
             )
         ) {
