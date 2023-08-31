@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
     compileSdk 34
@@ -57,6 +57,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.google.devtools.ksp:symbol-processing-api:1.9.0-1.0.12'
+
     //Android Libraries
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -79,7 +82,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
     // Room components
     implementation 'androidx.room:room-runtime:2.5.2'
-    kapt 'androidx.room:room-compiler:2.5.2'
+    ksp 'androidx.room:room-compiler:2.5.2'
     //Image Handling
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -88,7 +91,7 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     //hilt
     implementation "com.google.dagger:hilt-android:$dagger_version"
-    kapt "com.google.dagger:hilt-compiler:$dagger_version"
+    ksp "com.google.dagger:hilt-compiler:$dagger_version"
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
