@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -46,7 +44,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ActivityResult
@@ -82,9 +80,11 @@ class DetailsComposeFragment : Fragment() {
                                 onBackPressed()
                             }
                         }
+
                         is DetailsUiState.Loading -> {
                             LoadingCompose()
                         }
+
                         is DetailsUiState.Error -> {
 
                         }
@@ -199,12 +199,9 @@ fun test() {
 
 @Composable
 fun MovieImage(thumbnail: String?) {
-    Image(
-        painter = getImage(thumbnail),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .size(120.dp)
+    AsyncImage(
+        model = thumbnail, contentDescription = "", contentScale = ContentScale.Crop,
+        modifier = Modifier.size(120.dp)
     )
 }
 
@@ -247,15 +244,6 @@ fun ToolbarCompose(
 fun DefaultPreview() {
     MovieDBTheme {
         SuccessCompose {}
-    }
-}
-
-@Composable
-private fun getImage(thumbnail: String?): Painter {
-    return if (thumbnail.isNullOrEmpty() || thumbnail.contains("null")) {
-        painterResource(id = R.mipmap.ic_launcher)
-    } else {
-        rememberImagePainter(thumbnail)
     }
 }
 

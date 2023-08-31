@@ -19,14 +19,12 @@ import closeSoftKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ActivityResult
-import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
 import gr.pchasapis.moviedb.model.data.TheatreDataModel
 import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.base.BaseFragment
-import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 
 
 @AndroidEntryPoint
@@ -34,7 +32,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
-    private var paginationScrollListener: PaginationScrollListener? = null
     private var binding: ActivityHomeBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,30 +64,10 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     private fun initViewModel(binding: ActivityHomeBinding) {
         viewModel = homeViewModel
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
-        viewModel?.getSearchList()?.observe(viewLifecycleOwner) { resultList ->
-            resultList?.let {
-                //  homeRecyclerViewAdapter?.submitData(it)
-            } ?: run {
-                binding.emptyLayout.root.visibility = View.VISIBLE
-            }
-        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel?.movies?.observe(viewLifecycleOwner) { pagingData ->
                 homeRecyclerViewAdapter?.submitData(viewLifecycleOwner.lifecycle, pagingData)
-            }
-        }
-
-        viewModel?.getPaginationStatus()?.observe(viewLifecycleOwner) { value ->
-            value?.let { isPaginationFinished ->
-                paginationScrollListener?.finishedPagination(isPaginationFinished)
-            }
-        }
-
-        viewModel?.getPaginationLoader()?.observe(viewLifecycleOwner) { value ->
-            value?.let { show ->
-                binding.recyclerViewLayout.moreProgressView.visibility =
-                    if (show) View.VISIBLE else View.GONE
             }
         }
 
@@ -181,19 +158,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
                     }
                 })
 
-//            paginationScrollListener = PaginationScrollListener(
-//                    linearLayoutManager,
-//                    {
-//                        if (searchEditText.text.toString().isNotEmpty()) {
-//                            binding?.recyclerViewLayout?.moreProgressView?.visibility = View.VISIBLE
-//                        }
-//                        viewModel?.fetchSearchResult()
-//                    },
-//                    Definitions.PAGINATION_SIZE
-//            )
-//            paginationScrollListener?.let {
-//                binding?.recyclerViewLayout?.homeRecyclerView?.addOnScrollListener(it)
-//            }
             binding?.recyclerViewLayout?.homeRecyclerView?.adapter = homeRecyclerViewAdapter
         }
     }
@@ -207,7 +171,7 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
     private fun fragmentResult() {
         setFragmentResultListener(ActivityResult.DETAILS) { _: String, bundle: Bundle ->
-            viewModel?.updateModel(bundle.getParcelable(BUNDLE.MOVIE_DETAILS))
+            // remove it
         }
     }
 }

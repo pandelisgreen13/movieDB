@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.ui.fragment.favourite
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +47,7 @@ class FavouriteFragment : Fragment() {
         fragmentResult()
     }
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

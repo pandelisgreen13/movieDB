@@ -25,14 +25,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavDirections
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.details.ComposeText
 import gr.pchasapis.moviedb.ui.fragment.details.MovieImage
-import gr.pchasapis.moviedb.ui.fragment.home.HomeFragmentDirections
 
 @Composable
 fun FavouriteRow(
