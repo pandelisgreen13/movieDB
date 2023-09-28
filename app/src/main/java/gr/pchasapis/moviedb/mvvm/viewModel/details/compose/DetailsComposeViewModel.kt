@@ -71,7 +71,7 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
 
 sealed class DetailsUiState {
 
-    object Loading : DetailsUiState()
+    data object Loading : DetailsUiState()
     data class Success(val homeDataModel: HomeDataModel) : DetailsUiState()
-    object Error : DetailsUiState()
+    data object Error : DetailsUiState()
 }

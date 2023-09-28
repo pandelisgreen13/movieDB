@@ -12,20 +12,18 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import closeSoftKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ActivityResult
-import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
 import gr.pchasapis.moviedb.model.data.TheatreDataModel
-import gr.pchasapis.moviedb.mvvm.viewModel.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.adapter.home.HomeRecyclerViewAdapter
 import gr.pchasapis.moviedb.ui.base.BaseFragment
-import gr.pchasapis.moviedb.ui.custom.pagination.PaginationScrollListener
 
 
 @AndroidEntryPoint
@@ -33,7 +31,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private var homeRecyclerViewAdapter: HomeRecyclerViewAdapter? = null
-    private var paginationScrollListener: PaginationScrollListener? = null
     private var binding: ActivityHomeBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +38,11 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         fragmentResult()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = ActivityHomeBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -62,29 +63,18 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
     private fun initViewModel(binding: ActivityHomeBinding) {
         viewModel = homeViewModel
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
-        viewModel?.getSearchList()?.observe(viewLifecycleOwner) { resultList ->
-            resultList?.let {
-                homeRecyclerViewAdapter?.setSearchList(it)
-            } ?: run {
-                binding.emptyLayout.root.visibility = View.VISIBLE
-            }
-        }
 
-        viewModel?.getPaginationStatus()?.observe(viewLifecycleOwner) { value ->
-            value?.let { isPaginationFinished ->
-                paginationScrollListener?.finishedPagination(isPaginationFinished)
-            }
-        }
-
-        viewModel?.getPaginationLoader()?.observe(viewLifecycleOwner) { value ->
-            value?.let { show ->
-                binding.recyclerViewLayout.moreProgressView.visibility = if (show) View.VISIBLE else View.GONE
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel?.movies?.observe(viewLifecycleOwner) { pagingData ->
+                homeRecyclerViewAdapter?.submitData(viewLifecycleOwner.lifecycle, pagingData)
             }
         }
 
         viewModel?.getMovieInTheatre()?.observe(viewLifecycleOwner) { value ->
             value?.let { moviesInTheatre ->
-                val action = HomeFragmentDirections.actionHomeFragmentToTheatreFragment(TheatreDataModel(moviesInTheatre))
+                val action = HomeFragmentDirections.actionHomeFragmentToTheatreFragment(
+                    TheatreDataModel(moviesInTheatre)
+                )
                 findNavController().navigate(action)
             }
         }
@@ -96,7 +86,12 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
             toolbarLayout.backButtonImageView.visibility = View.INVISIBLE
             toolbarLayout.actionButtonImageView.visibility = View.VISIBLE
-            toolbarLayout.actionButtonImageView.setImageDrawable(activity?.let { ContextCompat.getDrawable(it, R.drawable.ic_theatre) })
+            toolbarLayout.actionButtonImageView.setImageDrawable(activity?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.ic_theatre
+                )
+            })
 
             toolbarLayout.actionButtonImageView.setOnClickListener {
                 viewModel?.fetchMovieInTheatre()
@@ -104,10 +99,12 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
 
             searchImageButton.setOnClickListener {
                 if (searchEditText.text.toString().isEmpty()) {
-                    showErrorDialog(getString(R.string.home_empty_field), closeListener = { dialog ->
-                        dialog.dismiss()
-                        viewModel?.genericErrorLiveData?.value = false
-                    })
+                    showErrorDialog(
+                        getString(R.string.home_empty_field),
+                        closeListener = { dialog ->
+                            dialog.dismiss()
+                            viewModel?.genericErrorLiveData?.value = false
+                        })
                 }
                 handleClickSearch()
             }
@@ -116,11 +113,23 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             }
 
             searchEditText.addTextChangedListener(object : TextWatcher {
-                override fun onTextChanged(charSequence: CharSequence, arg1: Int, arg2: Int, arg3: Int) {
+                override fun onTextChanged(
+                    charSequence: CharSequence,
+                    arg1: Int,
+                    arg2: Int,
+                    arg3: Int
+                ) {
                     viewModel?.setQueryText(searchEditText.text?.trim().toString())
                 }
 
-                override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3: Int) {}
+                override fun beforeTextChanged(
+                    arg0: CharSequence,
+                    arg1: Int,
+                    arg2: Int,
+                    arg3: Int
+                ) {
+                }
+
                 override fun afterTextChanged(arg0: Editable) {}
             })
 
@@ -137,26 +146,17 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             val linearLayoutManager = LinearLayoutManager(activity)
             binding?.recyclerViewLayout?.homeRecyclerView?.layoutManager = linearLayoutManager
             homeRecyclerViewAdapter = HomeRecyclerViewAdapter(
-                    onItemClicked = { homeDataModel ->
+                onItemClicked = { homeDataModel ->
 //                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsActivity(homeDataModel)
-                        val action = HomeFragmentDirections.actionHomeFragmentToDetailsComposeFragment2(homeDataModel)
+                    homeDataModel?.let {
+                        val action =
+                            HomeFragmentDirections.actionHomeFragmentToDetailsComposeFragment2(
+                                homeDataModel
+                            )
                         findNavController().navigate(action)
+                    }
+                })
 
-                    })
-
-            paginationScrollListener = PaginationScrollListener(
-                    linearLayoutManager,
-                    {
-                        if (searchEditText.text.toString().isNotEmpty()) {
-                            binding?.recyclerViewLayout?.moreProgressView?.visibility = View.VISIBLE
-                        }
-                        viewModel?.fetchSearchResult()
-                    },
-                    Definitions.PAGINATION_SIZE
-            )
-            paginationScrollListener?.let {
-                binding?.recyclerViewLayout?.homeRecyclerView?.addOnScrollListener(it)
-            }
             binding?.recyclerViewLayout?.homeRecyclerView?.adapter = homeRecyclerViewAdapter
         }
     }
@@ -165,12 +165,12 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         binding?.recyclerViewLayout?.homeRecyclerView?.smoothScrollToPosition(Definitions.FIRST_POSITION)
         binding?.searchEditText?.clearFocus()
         activity?.let { closeSoftKeyboard(it) }
-        viewModel?.searchForResults()
+        viewModel?.searchMovies()
     }
 
     private fun fragmentResult() {
         setFragmentResultListener(ActivityResult.DETAILS) { _: String, bundle: Bundle ->
-            viewModel?.updateModel(bundle.getParcelable(BUNDLE.MOVIE_DETAILS))
+            // remove it
         }
     }
 }

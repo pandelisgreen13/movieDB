@@ -10,7 +10,7 @@ import android.webkit.WebViewClient
 import androidx.activity.addCallback
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,7 +26,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.compose.rememberImagePainter
-import com.google.android.material.composethemeadapter.MdcTheme
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ActivityResult
@@ -35,6 +34,7 @@ import gr.pchasapis.moviedb.databinding.ActivityDetailsBinding
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.ui.base.BaseFragment
+import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<DetailsViewModel>() {
@@ -111,7 +111,7 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             toolbarLayout.actionButtonImageView.visibility = View.VISIBLE
 
             thumbnailImageView.setContent {
-                MdcTheme {
+                MovieDBTheme {
                     Image(
                             painter = getImage(homeDataModel.thumbnail),
                             contentDescription = null,
@@ -122,12 +122,12 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
             toolbarLayout.toolbarTitleTextView.text = homeDataModel.title
             summaryTextView.setContent {
-                MdcTheme {
+                MovieDBTheme {
                     ComposeText(homeDataModel.summary ?: "-", 6, Modifier.padding(bottom = 2.dp))
                 }
             }
             genreTitleTextView.setContent {
-                MdcTheme {
+                MovieDBTheme {
                     ComposeText(
                             text = stringResource(R.string.details_genre),
                             modifier = Modifier.padding(bottom = 2.dp, end = 4.dp))
@@ -135,7 +135,7 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             }
 
             genreTextView.setContent {
-                MdcTheme {
+                MovieDBTheme {
                     ComposeText(
                             text = homeDataModel.genresName ?: "-",
                             maxLines = 2,
