@@ -1,4 +1,4 @@
-package gr.pchasapis.moviedb.mvvm.viewModel.home
+package gr.pchasapis.moviedb.ui.fragment.home
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.common.SingleLiveEvent
-import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel

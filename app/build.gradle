@@ -112,14 +112,14 @@ dependencies {
     // Integration with activities
     implementation platform("androidx.compose:compose-bom:$composeBom")
     // Compose Material Design
-    implementation "androidx.compose.material:material"
+    implementation "androidx.compose.material3:material3"
     // Animations
     implementation "androidx.compose.animation:animation"
     // Tooling support (Previews, etc.)
     debugImplementation  "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.material:material-icons-extended"
     // When using a MDC theme
-    implementation "com.google.android.material:compose-theme-adapter:1.2.1"
+//    implementation "com.google.android.material:compose-theme-adapter-3:1.1.1"
     //compose view model
 
     implementation "androidx.compose.ui:ui"
