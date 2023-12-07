@@ -203,7 +203,8 @@ fun test() {
 fun MovieImage(thumbnail: String?) {
     AsyncImage(
         model = thumbnail, contentDescription = "", contentScale = ContentScale.Crop,
-        modifier = Modifier.size(120.dp)
+        modifier = Modifier.size(120.dp),
+        placeholder = painterResource(id = R.mipmap.ic_launcher)
     )
 }
 

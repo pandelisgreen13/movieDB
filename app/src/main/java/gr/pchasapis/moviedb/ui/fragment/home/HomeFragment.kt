@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.common.ActivityResult
 import gr.pchasapis.moviedb.databinding.ActivityHomeBinding
@@ -40,11 +40,19 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             setContent {
                 MovieDBTheme {
 
-                    val movies = homeViewModel.getMovies().collectAsLazyPagingItems()
-                    HomeScreen(list = movies) {
-                        homeViewModel.setQueryText(it)
-                        homeViewModel.searchMovies()
-                    }
+                    val movies = homeViewModel.getMovies()
+                    HomeScreen(
+                        flow = movies,
+                        textChanged = {
+                            homeViewModel.setQueryText(it)
+                            homeViewModel.searchMovies()
+                        },
+                        onItemClicked = {
+                            val action =
+                                HomeFragmentDirections.actionHomeFragmentToDetailsActivity(it)
+                            findNavController().navigate(action)
+                        }
+                    )
                 }
             }
         }
@@ -56,9 +64,6 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
         initLayout()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
     private fun initViewModel(binding: ActivityHomeBinding) {
 
