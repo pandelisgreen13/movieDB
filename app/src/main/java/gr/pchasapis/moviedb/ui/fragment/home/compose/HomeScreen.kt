@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -95,7 +94,8 @@ fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: () -> Unit
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
             ) {
-                items(messages.itemSnapshotList.items) { favourite ->
+                items(messages.itemCount) {
+                    val favourite = messages[it]!!
                     FavouriteRow(homeDataModel = favourite) {
 
                     }
