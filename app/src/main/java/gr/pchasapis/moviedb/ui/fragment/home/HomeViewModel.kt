@@ -1,6 +1,7 @@
 package gr.pchasapis.moviedb.ui.fragment.home
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -28,7 +29,9 @@ class HomeViewModel @Inject constructor(
 
     private val currentQuery = MutableLiveData("")
 
-    val movies = currentQuery.switchMap {
+    fun getMovies() = movies.asFlow()
+
+   val movies = currentQuery.switchMap {
         if (it.isEmpty()) {
             MutableLiveData()
         } else {

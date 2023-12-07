@@ -79,7 +79,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
     implementation "androidx.fragment:fragment-ktx:1.6.1"
     implementation 'androidx.activity:activity-compose:1.7.2'
-    implementation "androidx.paging:paging-runtime:$paging_version"
+
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+    implementation "androidx.paging:paging-compose:$paging_version"
     //Logging
     implementation "com.jakewharton.timber:timber:5.0.1"
     //Dialogs
@@ -108,7 +110,7 @@ dependencies {
 
     //Componse
 
-    implementation 'androidx.compose.animation:animation-graphics:1.5.0'
+    implementation "androidx.compose.animation:animation-graphics"
     // Integration with activities
     implementation platform("androidx.compose:compose-bom:$composeBom")
     // Compose Material Design
@@ -118,8 +120,7 @@ dependencies {
     // Tooling support (Previews, etc.)
     debugImplementation  "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.material:material-icons-extended"
-    // When using a MDC theme
-//    implementation "com.google.android.material:compose-theme-adapter-3:1.1.1"
+    implementation 'androidx.compose.runtime:runtime-livedata'
     //compose view model
 
     implementation "androidx.compose.ui:ui"
