@@ -36,23 +36,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun HomeScreen(
-    list: LazyPagingItems<HomeDataModel>,
-    textChanged: (String) -> Unit = {}
+    flow: Flow<PagingData<HomeDataModel>>,
+    textChanged: (String) -> Unit = {},
+    onItemClicked: (HomeDataModel) -> Unit = {}
 ) {
     Column(
         Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
     ) {
+        val lazyPagingItems = flow.collectAsLazyPagingItems()
+
         ToolbarCenterAligned {
 
         }
@@ -73,15 +80,16 @@ fun HomeScreen(
         }
 
         HomeList(
-            messages = list
-        ) {}
+            messages = lazyPagingItems,
+            onItemClicked = onItemClicked
+        )
 
     }
 
 }
 
 @Composable
-fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: () -> Unit) {
+fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: (HomeDataModel) -> Unit) {
     when (messages.loadState.refresh) {
         LoadState.Loading -> {
         }
@@ -96,8 +104,8 @@ fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: () -> Unit
             ) {
                 items(messages.itemCount) {
                     val favourite = messages[it]!!
-                    FavouriteRow(homeDataModel = favourite) {
-
+                    FavouriteRow(homeDataModel = favourite) { model ->
+                        onItemClicked(model)
                     }
                 }
             }
@@ -121,7 +129,10 @@ fun PreviewHome() {
                 ratings = "5", title = "Avengers222", releaseDate = "25/5/2019"
             )
         )
-        //HomeScreen(list = listOf())
+        val pagingData = PagingData.from(list)
+// pass pagingData containing fake data to a MutableStateFlow
+        val fakeDataFlow = MutableStateFlow(pagingData)
+        HomeScreen(flow = fakeDataFlow)
     }
 }
 

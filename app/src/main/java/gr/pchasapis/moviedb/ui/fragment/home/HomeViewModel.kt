@@ -31,7 +31,7 @@ class HomeViewModel @Inject constructor(
 
     fun getMovies() = movies.asFlow()
 
-   val movies = currentQuery.switchMap {
+   private val movies = currentQuery.switchMap {
         if (it.isEmpty()) {
             MutableLiveData()
         } else {
