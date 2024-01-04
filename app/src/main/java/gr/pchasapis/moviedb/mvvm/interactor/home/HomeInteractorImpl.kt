@@ -60,8 +60,7 @@ class HomeInteractorImpl(
             // Configure how data is loaded by passing additional properties to
             // PagingConfig, such as prefetchDistance.
             PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
+                pageSize = 20
             )
         ) {
             SearchPagingDataSource(queryText, movieClient, mapper)

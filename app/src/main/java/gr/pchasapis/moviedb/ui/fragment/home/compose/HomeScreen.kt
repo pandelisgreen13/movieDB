@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -73,7 +74,6 @@ fun HomeScreen(
             text = it
 
         }
-
         LaunchedEffect(key1 = text) {
             if (text.isBlank()) return@LaunchedEffect
             delay(2000)
@@ -91,32 +91,44 @@ fun HomeScreen(
 
 @Composable
 fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: (HomeDataModel) -> Unit) {
-    when (messages.loadState.refresh) {
-        LoadState.Loading -> {
-           // CircularProgressIndicator()
+
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
+    ) {
+        items(messages.itemCount) {
+            val favourite = messages[it]!!
+            FavouriteRow(homeDataModel = favourite) { model ->
+                onItemClicked(model)
+            }
         }
 
-        is LoadState.Error -> {
-        }
 
-        is LoadState.NotLoading -> {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
-            ) {
-                items(messages.itemCount,
-                    key = {
-                        messages[it]?.id ?: 0
-                    }) {
-                    val favourite = messages[it]!!
-                    FavouriteRow(homeDataModel = favourite) { model ->
-                        onItemClicked(model)
+        when (messages.loadState.append) {
+            LoadState.Loading -> {
+                item {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Text(text = "Pagination Loading")
+
+                        CircularProgressIndicator(color = Color.White)
                     }
                 }
             }
+
+            is LoadState.Error -> {
+            }
+
+            is LoadState.NotLoading -> {
+
+            }
         }
     }
-
 }
 
 @Preview
