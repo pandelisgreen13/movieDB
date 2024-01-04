@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -92,6 +93,7 @@ fun HomeScreen(
 fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: (HomeDataModel) -> Unit) {
     when (messages.loadState.refresh) {
         LoadState.Loading -> {
+           // CircularProgressIndicator()
         }
 
         is LoadState.Error -> {
@@ -177,7 +179,9 @@ private fun SearchView(
         textStyle = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color.White, unfocusedBorderColor = Color.White
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.White,
+            cursorColor = Color.White,
         ),
         placeholder = {
             Text(text = placeHolder)
