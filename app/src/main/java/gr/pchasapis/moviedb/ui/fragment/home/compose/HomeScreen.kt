@@ -6,8 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -38,14 +40,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
+import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
+import gr.pchasapis.moviedb.ui.fragment.home.HomeUiState
 import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -57,9 +61,9 @@ fun HomeRoute(
     onItemClicked: (String) -> Unit
 ) {
 
-    val movies = homeViewModel.getMovies()
+    val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
-        flow = movies,
+        state = movies,
         textChanged = {
             homeViewModel.setQueryText(it)
             homeViewModel.searchMovies()
@@ -72,7 +76,7 @@ fun HomeRoute(
 
 @Composable
 fun HomeScreen(
-    flow: Flow<PagingData<HomeDataModel>>,
+    state: HomeUiState,
     textChanged: (String) -> Unit = {},
     onItemClicked: (HomeDataModel) -> Unit = {}
 ) {
@@ -81,7 +85,6 @@ fun HomeScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
     ) {
-        val lazyPagingItems = flow.collectAsLazyPagingItems()
 
         ToolbarCenterAligned {
 
@@ -97,53 +100,86 @@ fun HomeScreen(
         }
         LaunchedEffect(key1 = text) {
             if (text.isBlank()) return@LaunchedEffect
-            delay(2000)
+            delay(1000)
             textChanged(text.trim())
         }
 
-        HomeList(
-            messages = lazyPagingItems,
-            onItemClicked = onItemClicked
-        )
+        if (state.isLoading) {
+            Spacer(modifier = Modifier.height(20.dp))
+            CircularProgressIndicator(
+                color = PrimaryDark,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+        }
+
+        state.data?.let {
+            HomeList(
+                messages = it,
+                onItemClicked = onItemClicked
+            )
+        }
+
 
     }
 
 }
 
 @Composable
-fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: (HomeDataModel) -> Unit) {
+fun HomeList(messages: Flow<PagingData<HomeDataModel>>?, onItemClicked: (HomeDataModel) -> Unit) {
+
+    val lazyPagingItems = messages?.collectAsLazyPagingItems()
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
     ) {
-        items(messages.itemCount) {
-            val favourite = messages[it]!!
+        items(lazyPagingItems!!.itemCount) {
+            val favourite = lazyPagingItems[it]!!
             FavouriteRow(homeDataModel = favourite) { model ->
                 onItemClicked(model)
             }
         }
 
-        when {
-            messages.loadState.append is LoadState.Loading -> {
-                item {
+        if (lazyPagingItems.loadState.append is LoadState.Loading) {
+            item {
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        Text(text = "Pagination Loading")
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(text = "Pagination Loading")
 
-                        CircularProgressIndicator(color = Color.White)
-                    }
+                    CircularProgressIndicator(color = Color.White)
                 }
             }
+        }
+        if (lazyPagingItems.loadState.refresh is LoadState.Error) {
+            item {
 
-            messages.itemSnapshotList.size == 0 && messages.loadState.refresh is LoadState.Loading -> {
-                item {
-                    CircularProgressIndicator(color = Color.White)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(text = "initial Error")
+                    
+                }
+            }
+        }
+        if (lazyPagingItems.loadState.append is LoadState.Error) {
+            item {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(text = "Pagination Error")
 
                 }
             }
@@ -169,7 +205,16 @@ fun PreviewHome() {
         val pagingData = PagingData.from(list)
 // pass pagingData containing fake data to a MutableStateFlow
         val fakeDataFlow = MutableStateFlow(pagingData)
-        HomeScreen(flow = fakeDataFlow)
+        HomeScreen(state = HomeUiState(data = fakeDataFlow))
+    }
+}
+
+@Preview
+@Composable
+fun PreviewLoadingHome() {
+    MovieDBTheme {
+
+        HomeScreen(state = HomeUiState(isLoading = true))
     }
 }
 
@@ -183,7 +228,8 @@ private fun ToolbarCenterAligned(onClick: () -> Unit) {
                 onClick.invoke()
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_theatre), contentDescription = null
+                    painter = painterResource(id = R.drawable.ic_theatre),
+                    contentDescription = null
                 )
             }
         },

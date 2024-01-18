@@ -32,19 +32,19 @@ class HomeFragment : BaseFragment<HomeViewModel>() {
             setContent {
                 MovieDBTheme {
 
-                    val movies = homeViewModel.getMovies()
-                    HomeScreen(
-                        flow = movies,
-                        textChanged = {
-                            homeViewModel.setQueryText(it)
-                            homeViewModel.searchMovies()
-                        },
-                        onItemClicked = {
-                            val action =
-                                HomeFragmentDirections.actionHomeFragmentToDetailsActivity(it)
-                            findNavController().navigate(action)
-                        }
-                    )
+                  //  val movies = homeViewModel.getMovies()
+//                    HomeScreen(
+//                        state = movies,
+//                        textChanged = {
+//                            homeViewModel.setQueryText(it)
+//                            homeViewModel.searchMovies()
+//                        },
+//                        onItemClicked = {
+//                            val action =
+//                                HomeFragmentDirections.actionHomeFragmentToDetailsActivity(it)
+//                            findNavController().navigate(action)
+//                        }
+//                    )
                 }
             }
         }
