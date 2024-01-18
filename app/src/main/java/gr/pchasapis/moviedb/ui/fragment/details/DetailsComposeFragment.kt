@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.compose.AsyncImage
@@ -51,11 +53,14 @@ import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ActivityResult
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsComposeViewModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
+import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
+import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeScreen
 
 @AndroidEntryPoint
 class DetailsComposeFragment : Fragment() {
@@ -74,23 +79,7 @@ class DetailsComposeFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MovieDBTheme {
-                    val uiState by detailsViewModel.uiState.collectAsState()
-                    when (uiState) {
-                        is DetailsUiState.Success -> {
-                            val model = (uiState as DetailsUiState.Success).homeDataModel
-                            SuccessCompose(model, detailsViewModel) {
-                                onBackPressed()
-                            }
-                        }
 
-                        is DetailsUiState.Loading -> {
-                            LoadingCompose()
-                        }
-
-                        is DetailsUiState.Error -> {
-
-                        }
-                    }
                 }
             }
         }
@@ -104,6 +93,28 @@ class DetailsComposeFragment : Fragment() {
             setFragmentResult(ActivityResult.DETAILS, bundle)
         }
         findNavController().navigateUp()
+    }
+}
+
+@Composable
+fun DetailsRoute(detailsViewModel: DetailsComposeViewModel = hiltViewModel()) {
+
+    val uiState by detailsViewModel.uiState.collectAsState()
+    when (uiState) {
+        is DetailsUiState.Success -> {
+            val model = (uiState as DetailsUiState.Success).homeDataModel
+            SuccessCompose(model, detailsViewModel) {
+              //  onBackPressed()
+            }
+        }
+
+        is DetailsUiState.Loading -> {
+            LoadingCompose()
+        }
+
+        is DetailsUiState.Error -> {
+
+        }
     }
 }
 

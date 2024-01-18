@@ -37,6 +37,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -45,9 +48,30 @@ import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
+import gr.pchasapis.moviedb.ui.fragment.home.HomeFragmentDirections
+import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import timber.log.Timber
+
+@Composable
+fun HomeRoute(homeViewModel: HomeViewModel = hiltViewModel()) {
+
+    val movies = homeViewModel.getMovies()
+    HomeScreen(
+        flow = movies,
+        textChanged = {
+            homeViewModel.setQueryText(it)
+            homeViewModel.searchMovies()
+        },
+        onItemClicked = {
+//            val action =
+//                HomeFragmentDirections.actionHomeFragmentToDetailsActivity(it)
+//            findNavController().navigate(action)
+        }
+    )
+}
 
 @Composable
 fun HomeScreen(
@@ -103,9 +127,8 @@ fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: (HomeDataM
             }
         }
 
-
-        when (messages.loadState.append) {
-            LoadState.Loading -> {
+        when {
+            messages.loadState.append is LoadState.Loading -> {
                 item {
 
                     Column(
@@ -121,11 +144,11 @@ fun HomeList(messages: LazyPagingItems<HomeDataModel>, onItemClicked: (HomeDataM
                 }
             }
 
-            is LoadState.Error -> {
-            }
+            messages.itemSnapshotList.size == 0 && messages.loadState.refresh is LoadState.Loading -> {
+                item {
+                    CircularProgressIndicator(color = Color.White)
 
-            is LoadState.NotLoading -> {
-
+                }
             }
         }
     }
