@@ -13,7 +13,9 @@ fun AppNavHost(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = Navigation.Home.route) {
         composable(Navigation.Home.route) {
-            HomeRoute()
+            HomeRoute(){
+                navController.navigate(Navigation.Details.route)
+            }
         }
         composable(Navigation.Details.route) {
             DetailsRoute()

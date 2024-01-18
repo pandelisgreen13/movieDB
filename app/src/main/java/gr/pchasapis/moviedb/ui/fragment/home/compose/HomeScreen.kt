@@ -38,8 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -48,15 +46,16 @@ import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
-import gr.pchasapis.moviedb.ui.fragment.home.HomeFragmentDirections
 import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import timber.log.Timber
 
 @Composable
-fun HomeRoute(homeViewModel: HomeViewModel = hiltViewModel()) {
+fun HomeRoute(
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    onItemClicked: (String) -> Unit
+) {
 
     val movies = homeViewModel.getMovies()
     HomeScreen(
@@ -66,9 +65,7 @@ fun HomeRoute(homeViewModel: HomeViewModel = hiltViewModel()) {
             homeViewModel.searchMovies()
         },
         onItemClicked = {
-//            val action =
-//                HomeFragmentDirections.actionHomeFragmentToDetailsActivity(it)
-//            findNavController().navigate(action)
+            onItemClicked(it.toString())
         }
     )
 }
