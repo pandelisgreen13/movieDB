@@ -2,8 +2,10 @@ package gr.pchasapis.moviedb.model.data
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
+@Serializable
 data class HomeDataModel(val id: Int? = null,
                          val mediaType: String? = "",
                          val title: String? = "-",

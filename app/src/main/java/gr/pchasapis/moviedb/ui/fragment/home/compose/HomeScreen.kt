@@ -58,7 +58,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 fun HomeRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    onItemClicked: (String) -> Unit
+    onItemClicked: (HomeDataModel) -> Unit
 ) {
 
     val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -69,7 +69,7 @@ fun HomeRoute(
             homeViewModel.searchMovies()
         },
         onItemClicked = {
-            onItemClicked(it.toString())
+            onItemClicked(it)
         }
     )
 }

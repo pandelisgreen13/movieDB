@@ -44,7 +44,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.compose.AsyncImage
@@ -53,14 +52,11 @@ import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ActivityResult
 import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.model.data.HomeDataModel
-import gr.pchasapis.moviedb.mvvm.viewModel.details.DetailsViewModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsComposeViewModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
-import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
-import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeScreen
 
 @AndroidEntryPoint
 class DetailsComposeFragment : Fragment() {
@@ -97,7 +93,11 @@ class DetailsComposeFragment : Fragment() {
 }
 
 @Composable
-fun DetailsRoute(detailsViewModel: DetailsComposeViewModel = hiltViewModel()) {
+fun DetailsRoute(
+    detailsViewModel: DetailsComposeViewModel = hiltViewModel(),
+    passData: HomeDataModel?
+) {
+    detailsViewModel.setUIModel(passData)
 
     val uiState by detailsViewModel.uiState.collectAsState()
     when (uiState) {
