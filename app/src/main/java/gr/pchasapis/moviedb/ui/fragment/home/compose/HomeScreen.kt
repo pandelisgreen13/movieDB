@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -166,7 +167,7 @@ fun HomeList(messages: Flow<PagingData<HomeDataModel>>?, onItemClicked: (HomeDat
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Text(text = "initial Error")
-                    
+
                 }
             }
         }
@@ -262,10 +263,10 @@ private fun SearchView(
             cursorColor = Color.White,
         ),
         placeholder = {
-            Text(text = placeHolder)
+            Text(text = placeHolder, color = Color.White.copy(alpha = 0.2f))
         },
         trailingIcon = {
-            Icon(Icons.Filled.Search, contentDescription = null)
+            Icon(Icons.Filled.Search, contentDescription = null, tint = Color.White)
         },
     )
 }

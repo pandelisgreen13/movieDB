@@ -21,7 +21,7 @@ fun AppNavHost(navController: NavHostController) {
         composable(
             route = Navigation.Home.route,
         ) {
-            HomeRoute() {
+            HomeRoute {
                 val model = Uri.encode(Gson().toJson(it))
                 navController.navigate("${Navigation.Details.route}/$model")
             }
