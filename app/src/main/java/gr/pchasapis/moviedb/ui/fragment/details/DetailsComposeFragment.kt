@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.compose.AsyncImage
@@ -67,28 +69,13 @@ class DetailsComposeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(requireContext()).apply {
             detailsViewModel.setUIModel(args.homeDataModel)
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MovieDBTheme {
-                    val uiState by detailsViewModel.uiState.collectAsState()
-                    when (uiState) {
-                        is DetailsUiState.Success -> {
-                            val model = (uiState as DetailsUiState.Success).homeDataModel
-                            SuccessCompose(model, detailsViewModel) {
-                                onBackPressed()
-                            }
-                        }
 
-                        is DetailsUiState.Loading -> {
-                            LoadingCompose()
-                        }
-
-                        is DetailsUiState.Error -> {
-
-                        }
-                    }
                 }
             }
         }
@@ -102,6 +89,32 @@ class DetailsComposeFragment : Fragment() {
             setFragmentResult(ActivityResult.DETAILS, bundle)
         }
         findNavController().navigateUp()
+    }
+}
+
+@Composable
+fun DetailsRoute(
+    detailsViewModel: DetailsComposeViewModel = hiltViewModel(),
+    passData: HomeDataModel?
+) {
+    detailsViewModel.setUIModel(passData)
+
+    val uiState by detailsViewModel.uiState.collectAsState()
+    when (uiState) {
+        is DetailsUiState.Success -> {
+            val model = (uiState as DetailsUiState.Success).homeDataModel
+            SuccessCompose(model, detailsViewModel) {
+              //  onBackPressed()
+            }
+        }
+
+        is DetailsUiState.Loading -> {
+            LoadingCompose()
+        }
+
+        is DetailsUiState.Error -> {
+
+        }
     }
 }
 
@@ -201,7 +214,8 @@ fun test() {
 fun MovieImage(thumbnail: String?) {
     AsyncImage(
         model = thumbnail, contentDescription = "", contentScale = ContentScale.Crop,
-        modifier = Modifier.size(120.dp)
+        modifier = Modifier.size(120.dp),
+        placeholder = painterResource(id = R.mipmap.ic_launcher)
     )
 }
 

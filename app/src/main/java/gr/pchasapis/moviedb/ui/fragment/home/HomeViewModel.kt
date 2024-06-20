@@ -1,14 +1,20 @@
 package gr.pchasapis.moviedb.ui.fragment.home
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.common.SingleLiveEvent
+import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,21 +34,22 @@ class HomeViewModel @Inject constructor(
 
     private val currentQuery = MutableLiveData("")
 
-    val movies = currentQuery.switchMap {
-        if (it.isEmpty()) {
-            MutableLiveData()
-        } else {
-            homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
-        }
-    }
+    private val _uiState = MutableStateFlow(HomeUiState())
+
+    val uiState: StateFlow<HomeUiState> = _uiState
 
 
     fun searchMovies() {
         currentQuery.value = queryText
     }
 
-    fun setQueryText(queryText: String) {
-        this.queryText = queryText
+    fun setQueryText(queryText: String) = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true) }
+
+        val resul = homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
+        delay(200)
+
+        _uiState.update { it.copy(isLoading = false, data = resul) }
     }
 
 
@@ -55,3 +62,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 }
+
+data class HomeUiState(
+    val isLoading: Boolean = false,
+    val data: Flow<PagingData<HomeDataModel>>? = null
+)

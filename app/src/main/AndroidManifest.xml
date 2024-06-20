@@ -12,12 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".ui.activity.navigation.NavigationActivity"
-            android:exported="true" />
 
         <activity
-            android:name=".ui.activity.splash.SplashActivity"
+            android:name=".ui.activity.navigation.NavigationActivity"
             android:exported="true"
             android:theme="@style/LauncherTheme">
             <intent-filter>

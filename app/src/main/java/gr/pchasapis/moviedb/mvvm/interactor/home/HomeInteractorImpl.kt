@@ -1,11 +1,8 @@
 package gr.pchasapis.moviedb.mvvm.interactor.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.liveData
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.database.MovieDbDatabase
 import gr.pchasapis.moviedb.model.common.DataResult
@@ -53,19 +50,18 @@ class HomeInteractorImpl(
         }
     }
 
-    override fun flowPaging(queryText: String): LiveData<PagingData<HomeDataModel>> {
+    override suspend fun flowPaging(queryText: String): Flow<PagingData<HomeDataModel>> {
 
 
         return Pager(
             // Configure how data is loaded by passing additional properties to
             // PagingConfig, such as prefetchDistance.
             PagingConfig(
-                pageSize = 10,
-                enablePlaceholders = false,
+                pageSize = 20
             )
         ) {
             SearchPagingDataSource(queryText, movieClient, mapper)
-        }.liveData
+        }.flow
     }
 
     private fun toHomeDataModel(searchResponse: SearchResponse): List<HomeDataModel> {
