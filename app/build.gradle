@@ -4,7 +4,6 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.devtools.ksp'
-apply plugin: "kotlinx-serialization"
 
 
 android {
@@ -142,7 +141,6 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2'
 
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
 
 
 }
