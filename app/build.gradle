@@ -71,16 +71,16 @@ dependencies {
     //Android Libraries
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation "com.google.android.material:material:1.9.0"
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation "com.google.android.material:material:1.12.0"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
-    implementation "androidx.fragment:fragment-ktx:1.6.1"
-    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation "androidx.fragment:fragment-ktx:1.8.0"
+    implementation 'androidx.activity:activity-compose:1.9.0'
 
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-compose:$paging_version"
@@ -89,25 +89,25 @@ dependencies {
     //Dialogs
     implementation "com.afollestad.material-dialogs:core:3.3.0"
     //Network
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
     // Room components
     implementation "androidx.room:room-runtime:${room_version}"
     ksp "androidx.room:room-compiler:${room_version}"
     //Image Handling
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     //ViewPager2
-    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "androidx.viewpager2:viewpager2:1.1.0"
     //hilt
     implementation "com.google.dagger:hilt-android:$dagger_version"
     ksp "com.google.dagger:hilt-compiler:$dagger_version"
 
-    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
 
 
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -135,9 +135,9 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview"
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.2.1"
     testImplementation "org.robolectric:robolectric:4.12"
-    testImplementation "androidx.test:core:1.4.0"
+    testImplementation "androidx.test:core:1.5.0"
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2'
 
 
