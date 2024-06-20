@@ -2,12 +2,12 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.9.10'
+        kotlin_version = '2.0.0'
         nav_version = '2.7.6'
-        dagger_version = '2.48'
+        dagger_version = '2.51.1'
         lifecycle_version = '2.7.0'
         composeBom = '2023.10.01'
-        room_version = "2.5.0"
+        room_version = "2.6.1"
         paging_version = "3.3.0-alpha02"
     }
 
@@ -21,14 +21,14 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$dagger_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 plugins {
-    id 'com.google.devtools.ksp' version '1.9.10-1.0.13'
+    id 'com.google.devtools.ksp' version '2.0.0-1.0.21'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.0'
 }
 
 allprojects {

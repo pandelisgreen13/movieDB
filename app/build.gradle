@@ -4,6 +4,7 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.devtools.ksp'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 
 android {
@@ -37,7 +38,6 @@ android {
 
     buildFeatures {
         // Enables Jetpack Compose for this module
-        compose true
         viewBinding true
     }
 
@@ -46,12 +46,12 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.3'
+    kotlinOptions {
+        jvmTarget = '17'
     }
 
     testOptions {
@@ -66,7 +66,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.google.devtools.ksp:symbol-processing-api:1.9.0-1.0.12'
+    implementation 'com.google.devtools.ksp:symbol-processing-api:2.0.0-1.0.21'
 
     //Android Libraries
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
