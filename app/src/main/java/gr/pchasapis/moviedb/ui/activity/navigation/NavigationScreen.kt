@@ -1,15 +1,15 @@
 package gr.pchasapis.moviedb.ui.activity.navigation
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.compose.runtime.Composable
+import androidx.core.os.BundleCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.google.gson.Gson
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
 import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeRoute
@@ -28,7 +28,7 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
         composable<Navigation.Details>(
-            typeMap = mapOf(typeOf<HomeDataModel>() to ParcelableType)
+            typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
         ) { backStackEntry ->
             val post = backStackEntry.toRoute<Navigation.Details>()
             DetailsRoute(passData = post.model)
@@ -36,25 +36,23 @@ fun AppNavHost(navController: NavHostController) {
     }
 }
 
-val ParcelableType = object : NavType<HomeDataModel>(false) {
-    override fun get(bundle: Bundle, key: String): HomeDataModel? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bundle.getParcelable(key, HomeDataModel::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            bundle.getParcelable(key)
-        }
+
+inline fun <reified T : Parcelable> parcelableType(
+    isNullableAllowed: Boolean = false
+) = object : NavType<T>(isNullableAllowed) {
+    override fun get(bundle: Bundle, key: String): T? {
+        return BundleCompat.getParcelable(bundle, key, T::class.java)
     }
 
-    override fun parseValue(value: String): HomeDataModel {
-        return Json.decodeFromString<HomeDataModel>(value)
+    override fun parseValue(value: String): T {
+        return Json.decodeFromString<T>(value)
     }
 
-    override fun put(bundle: Bundle, key: String, value: HomeDataModel) {
+    override fun put(bundle: Bundle, key: String, value: T) {
         bundle.putParcelable(key, value)
     }
 
-    override fun serializeAsValue(value: HomeDataModel): String {
+    override fun serializeAsValue(value: T): String {
         return Uri.encode(Json.encodeToString(value))
     }
 }
