@@ -5,6 +5,7 @@ apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
 
 android {
@@ -77,6 +78,7 @@ dependencies {
 
     //Android Libraries
     implementation libs.kotlin.stdlib.jdk7
+    implementation libs.kotlin.serialization
     implementation libs.constraintlayout
     implementation libs.core.ktx
     implementation libs.material

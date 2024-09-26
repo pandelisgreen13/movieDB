@@ -12,9 +12,11 @@ gson = "2.11.0"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
-kotlinStdlibJdk7 = "2.0.0"
+kotlinStdlibJdk7 = "2.0.20"
 kotlinxCoroutinesAndroid = "1.8.1"
 kotlinxCoroutinesTest = "1.6.2"
+kotlinSerializationPlugin = "2.0.20"
+kotlinSerialization = "1.7.1"
 lifecycleLivedataKtx = "2.8.6"
 loggingInterceptor = "4.12.0"
 material = "1.12.0"
@@ -27,7 +29,7 @@ picasso = "2.71828"
 retrofit = "2.11.0"
 robolectric = "4.12"
 roomRuntime = "2.6.1"
-symbolProcessingApi = "2.0.0-1.0.21"
+ksp = "2.0.20-1.0.25"
 timber = "5.0.1"
 viewpager2 = "1.1.0"
 
@@ -63,6 +65,7 @@ junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlinStdlibJdk7" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleLivedataKtx" }
@@ -79,15 +82,17 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 room-runtime-ksp = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "symbolProcessingApi" }
+symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 
+
 [plugins]
-ksp-plugin = { id = "com.google.devtools.ksp", version.ref = "symbolProcessingApi" }
+ksp-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinStdlibJdk7" }
+kotlin-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationPlugin" }
 
 
