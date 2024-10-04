@@ -10,7 +10,6 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,29 +25,22 @@ class HomeViewModel @Inject constructor(
     private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> =
         SingleLiveEvent()
 
-    private var queryText = ""
-
-    fun getMovieInTheatre(): SingleLiveEvent<MutableList<MovieDataModel>> {
-        return theatreMutableLiveData
-    }
-
-    private val currentQuery = MutableLiveData("")
-
+    private var queryTextState = ""
+    
     private val _uiState = MutableStateFlow(HomeUiState())
 
     val uiState: StateFlow<HomeUiState> = _uiState
 
 
-    fun searchMovies() {
-        currentQuery.value = queryText
-    }
 
     fun setQueryText(queryText: String) = viewModelScope.launch {
+        if (queryText.trim() == queryTextState){
+            return@launch
+        }
+        queryTextState = queryText
         _uiState.update { it.copy(isLoading = true) }
 
         val resul = homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
-        delay(200)
-
         _uiState.update { it.copy(isLoading = false, data = resul) }
     }
 

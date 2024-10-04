@@ -1,5 +1,3 @@
-
-
 package gr.pchasapis.moviedb.ui.fragment.home.compose
 
 import androidx.compose.foundation.background
@@ -126,15 +124,16 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeList(messages: Flow<PagingData<HomeDataModel>>?, onItemClicked: (HomeDataModel) -> Unit) {
+fun HomeList(messages: Flow<PagingData<HomeDataModel>>, onItemClicked: (HomeDataModel) -> Unit) {
 
-    val lazyPagingItems = messages?.collectAsLazyPagingItems()
+    val lazyPagingItems = messages.collectAsLazyPagingItems()
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
     ) {
-        items(lazyPagingItems!!.itemCount) {
+        items(lazyPagingItems.itemCount
+        ) {
             val favourite = lazyPagingItems[it]!!
             FavouriteRow(homeDataModel = favourite) { model ->
                 onItemClicked(model)
