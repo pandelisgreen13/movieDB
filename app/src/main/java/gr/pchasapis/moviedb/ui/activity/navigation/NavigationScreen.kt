@@ -4,7 +4,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.core.os.BundleCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
+import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeRoute
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -23,9 +27,18 @@ fun AppNavHost(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = Navigation.Home) {
         composable<Navigation.Home> {
-            HomeRoute { movie ->
-                navController.navigate(Navigation.Details(movie))
-            }
+
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+            HomeRoute(
+                movies = movies,
+                onItemClicked = { movie ->
+                    navController.navigate(Navigation.Details(movie))
+                },
+                textChanged = {
+                    homeViewModel.setQueryText(it)
+                })
         }
         composable<Navigation.Details>(
             typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())

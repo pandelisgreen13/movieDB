@@ -26,11 +26,10 @@ class HomeViewModel @Inject constructor(
         SingleLiveEvent()
 
     private var queryTextState = ""
-    
+
     private val _uiState = MutableStateFlow(HomeUiState())
 
     val uiState: StateFlow<HomeUiState> = _uiState
-
 
 
     fun setQueryText(queryText: String) = viewModelScope.launch {
