@@ -41,7 +41,9 @@ fun NewHome(
                             contentDescription = topLevelRoute.route::class.simpleName
                         )
                     },
-                    onClick = { navController.navigate(route = topLevelRoute.route) }
+                    onClick = {
+                        navController.navigate(route = topLevelRoute.route)
+                    }
                 )
             }
         }
