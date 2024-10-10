@@ -27,7 +27,7 @@ fun AppNavHost(navController: NavHostController) {
 
 
     NavHost(navController = navController, startDestination = Navigation.Home) {
-        composable<Navigation.Home> {
+        composable<Navigation.Home>() {
 
             val homeViewModel: HomeViewModel = hiltViewModel()
             val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
