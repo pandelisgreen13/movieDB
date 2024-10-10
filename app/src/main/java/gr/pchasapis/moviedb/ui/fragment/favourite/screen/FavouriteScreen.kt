@@ -20,12 +20,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.fragment.findNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteUiState
+import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteViewModel
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteList
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
+
+@Composable
+fun FavouriteRoute(
+    viewModel: FavouriteViewModel = hiltViewModel(),
+    nextScreen: (HomeDataModel) -> Unit
+) {
+
+    val state = viewModel.state
+
+    FavouriteScreen(state) {
+        nextScreen(it)
+    }
+}
 
 @Composable
 fun FavouriteScreen(
@@ -56,13 +70,6 @@ fun FavouriteScreen(
 private fun ToolbarView() {
     TopAppBar(
         title = { Text(stringResource(id = R.string.favourite_sceen)) },
-        navigationIcon = {
-            IconButton(onClick = {
-              //  findNavController().navigateUp()
-            }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-            }
-        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             navigationIconContentColor = Color.White,

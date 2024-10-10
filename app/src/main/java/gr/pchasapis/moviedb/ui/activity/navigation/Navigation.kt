@@ -12,4 +12,7 @@ sealed class Navigation {
     data class Details(
         val model: HomeDataModel
     )
+
+    @Serializable
+    object Favourites
 }

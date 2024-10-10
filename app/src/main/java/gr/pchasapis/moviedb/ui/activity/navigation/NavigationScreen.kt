@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
+import gr.pchasapis.moviedb.ui.fragment.favourite.screen.FavouriteRoute
 import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeRoute
 import kotlinx.serialization.encodeToString
@@ -45,6 +46,12 @@ fun AppNavHost(navController: NavHostController) {
         ) { backStackEntry ->
             val post = backStackEntry.toRoute<Navigation.Details>()
             DetailsRoute(passData = post.model)
+        }
+
+        composable<Navigation.Favourites> {
+            FavouriteRoute { movie ->
+                navController.navigate(Navigation.Details(movie))
+            }
         }
     }
 }

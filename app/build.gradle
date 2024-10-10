@@ -104,6 +104,7 @@ dependencies {
     implementation libs.logging.interceptor
     // Room components
     implementation libs.room.runtime
+    implementation libs.androidx.material3.adaptive.navigation.suite.android
     ksp libs.room.runtime.ksp
 
     implementation libs.ui.graphics
