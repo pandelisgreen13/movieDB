@@ -104,7 +104,7 @@ dependencies {
     implementation libs.logging.interceptor
     // Room components
     implementation libs.room.runtime
-    implementation libs.androidx.material3.adaptive.navigation.suite.android
+    implementation libs.room.ktx
     ksp libs.room.runtime.ksp
 
     implementation libs.ui.graphics
@@ -141,6 +141,7 @@ dependencies {
     implementation libs.androidx.runtime.livedata
 
     implementation(libs.androidx.navigation.compose)
+    implementation libs.androidx.material3.adaptive.navigation.suite.android
 
     //compose view model
 

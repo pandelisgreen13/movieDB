@@ -82,6 +82,7 @@ picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 room-runtime-ksp = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

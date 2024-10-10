@@ -8,32 +8,48 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.favourite.FavouriteInteractorImpl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl: FavouriteInteractorImpl) : ViewModel() {
+class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl: FavouriteInteractorImpl) :
+    ViewModel() {
 
-    var state by mutableStateOf(FavouriteUiState())
 
-    init {
-        readWatchListFromDatabase()
-    }
+    private val _uiState = MutableStateFlow(FavouriteUiState())
+
+    val uiState: StateFlow<FavouriteUiState> = _uiState
+
+    val response = favouriteInteractorImpl.fetchWatchListFromDatabase().stateIn(
+        viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList(),
+    )
 
     fun readWatchListFromDatabase() {
-        state.loading = true
+        _uiState.update {
+            it.copy(
+                loading = true
+            )
+        }
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { favouriteInteractorImpl.fetchWatchListFromDatabase() }.collect { response ->
-                response.data?.let {
-                    state = state.copy(initialFavourite = it)
-                } ?: response.throwable?.let {
-                    Timber.e(it.toString())
-                }
-                state = state.copy(loading = false)
+            val response = favouriteInteractorImpl.fetchWatchListFromDatabase().stateIn(
+                viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList(),
+            )
+
+            _uiState.update {
+                it.copy(
+                    loading = false,
+                    initialFavourite = response
+                )
             }
         }
     }
@@ -41,9 +57,9 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
 
 
 data class FavouriteUiState(
-        var initialFavourite: List<HomeDataModel> = emptyList(),
-        var loading: Boolean = false
-){
+    var initialFavourite: Flow<List<HomeDataModel>> = MutableStateFlow(arrayListOf()),
+    var loading: Boolean = false
+) {
 
     var favouriteList by mutableStateOf(initialFavourite)
 }

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import gr.pchasapis.moviedb.database.dao.MovieDbTable
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDbTableDao {
@@ -19,7 +20,7 @@ interface MovieDbTableDao {
     fun deleteAll()
 
     @Query("select * from MovieDbTable order by dateAdded DESC")
-    fun loadAll(): List<MovieDbTable>
+    fun loadAll(): Flow<List<MovieDbTable>>
 
     @Query("SELECT isFavourite FROM MovieDbTable WHERE id =:id")
     fun isFavourite(id: Int): Boolean

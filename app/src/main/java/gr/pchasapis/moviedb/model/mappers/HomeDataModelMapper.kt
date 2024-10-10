@@ -17,22 +17,25 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
 
     override fun toHomeDataModelFromTable(databaseList: List<MovieDbTable>): List<HomeDataModel> {
         return databaseList.map { databaseItem ->
-            HomeDataModel(
-                    id = databaseItem.id,
-                    title = databaseItem.title,
-                    mediaType = databaseItem.mediaType,
-                    summary = databaseItem.summary,
-                    thumbnail = databaseItem.thumbnail,
-                    releaseDate = databaseItem.releaseDate,
-                    ratings = databaseItem.ratings,
-                    isFavorite = databaseItem.isFavourite,
-                    genresName = databaseItem.genresName,
-                    videoKey = databaseItem.videoKey,
-                    videoUrl = databaseItem.videoUrl,
-                    dateAdded = databaseItem.dateAdded
-            )
+            mapFromDB(databaseItem)
         }
     }
+
+    fun mapFromDB(databaseItem: MovieDbTable) =
+        HomeDataModel(
+            id = databaseItem.id,
+            title = databaseItem.title,
+            mediaType = databaseItem.mediaType,
+            summary = databaseItem.summary,
+            thumbnail = databaseItem.thumbnail,
+            releaseDate = databaseItem.releaseDate,
+            ratings = databaseItem.ratings,
+            isFavorite = databaseItem.isFavourite,
+            genresName = databaseItem.genresName,
+            videoKey = databaseItem.videoKey,
+            videoUrl = databaseItem.videoUrl,
+            dateAdded = databaseItem.dateAdded
+        )
 
     override suspend fun toHomeDataModelFromResponse(searchResponse: SearchResponse): List<HomeDataModel> {
         return (searchResponse.searchResultsList?.map { searchItem ->
