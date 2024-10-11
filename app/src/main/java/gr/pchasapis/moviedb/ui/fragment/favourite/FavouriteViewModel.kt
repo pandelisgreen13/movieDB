@@ -36,11 +36,11 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
     fun readWatchListFromDatabase() {
 
         viewModelScope.launch {
-            favouriteInteractorImpl.fetchWatchListFromDatabase().collectLatest { res ->
+            favouriteInteractorImpl.fetchWatchListFromDatabase().collectLatest { favourites ->
                 _uiState.update {
                     it.copy(
                         loading = false,
-                        list = res
+                        list = favourites
                     )
                 }
             }

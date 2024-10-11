@@ -240,7 +240,7 @@ fun ToolbarCompose(
             .background(Primary)
     ) {
 
-        ToolbarIcon(R.drawable.ic_arrow_back) {
+        ToolbarIcon {
             onBackIconClicked()
         }
 
@@ -265,6 +265,7 @@ fun DefaultPreview() {
     }
 }
 
+
 @Composable
 fun ComposeText(
     text: String = "-",
@@ -287,7 +288,7 @@ fun ComposeText(
 
 @Composable
 private fun ToolbarIcon(
-    drawable: Int,
+    drawable: Int = R.drawable.ic_arrow_back,
     onIconClicked: () -> Unit
 ) {
     Icon(
