@@ -2,24 +2,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navOptions
 import gr.pchasapis.moviedb.ui.activity.navigation.AppNavHost
 import gr.pchasapis.moviedb.ui.activity.navigation.Navigation
-import timber.log.Timber
 
 @Composable
 fun NewHome(
@@ -41,7 +36,9 @@ fun NewHome(
 
                 item(
                     selected = selected,
-                    alwaysShowLabel = false,
+                    label = {
+                        Text(text = topLevelRoute.label)
+                    },
                     icon = {
                         Icon(
                             imageVector = topLevelRoute.icon,
@@ -52,8 +49,8 @@ fun NewHome(
 
                         navController.navigate(
                             route = topLevelRoute.route
-                        ){
-                            popUpTo(navController.graph.findStartDestination().id){
+                        ) {
+                            popUpTo(navController.graph.findStartDestination().id) {
                                 saveState = true
                             }
                             launchSingleTop = true
