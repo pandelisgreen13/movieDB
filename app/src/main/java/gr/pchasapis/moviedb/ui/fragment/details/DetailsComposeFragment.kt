@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -104,7 +105,7 @@ fun DetailsRoute(
         is DetailsUiState.Success -> {
             val model = (uiState as DetailsUiState.Success).homeDataModel
             SuccessCompose(model, detailsViewModel) {
-              //  onBackPressed()
+                //  onBackPressed()
             }
         }
 
@@ -211,10 +212,13 @@ fun test() {
 }
 
 @Composable
-fun MovieImage(thumbnail: String?) {
+fun MovieImage(
+    thumbnail: String?,
+    size: Dp = 120.dp
+) {
     AsyncImage(
         model = thumbnail, contentDescription = "", contentScale = ContentScale.Crop,
-        modifier = Modifier.size(120.dp),
+        modifier = Modifier.size(size),
         placeholder = painterResource(id = R.mipmap.ic_launcher)
     )
 }

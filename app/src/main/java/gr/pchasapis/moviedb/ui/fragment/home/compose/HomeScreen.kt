@@ -81,9 +81,8 @@ fun HomeScreen(
             .background(MaterialTheme.colorScheme.primary)
     ) {
 
-        ToolbarCenterAligned {
+        ToolbarCenterAligned()
 
-        }
         var text by remember { mutableStateOf("") }
 
         SearchView(
@@ -217,19 +216,9 @@ fun PreviewLoadingHome() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ToolbarCenterAligned(onClick: () -> Unit) {
+private fun ToolbarCenterAligned() {
     CenterAlignedTopAppBar(
         title = { Text(stringResource(id = R.string.home_toolbar_title)) },
-        actions = {
-            IconButton(onClick = {
-                onClick.invoke()
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_theatre),
-                    contentDescription = null
-                )
-            }
-        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             actionIconContentColor = Color.White,
@@ -271,7 +260,7 @@ private fun SearchView(
 @Composable
 fun PreviewToolbar() {
     MovieDBTheme {
-        ToolbarCenterAligned({})
+        ToolbarCenterAligned()
     }
 }
 

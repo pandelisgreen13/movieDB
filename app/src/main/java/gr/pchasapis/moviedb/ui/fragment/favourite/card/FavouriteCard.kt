@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -49,6 +52,25 @@ fun FavouriteRow(
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
         FavouriteContent(homeDataModel = homeDataModel)
+    }
+}
+@Composable
+fun FavouriteGrid(
+    homeDataModel: HomeDataModel,
+    onRowClicked: (HomeDataModel) -> Unit
+) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.clickable {
+            onRowClicked(homeDataModel)
+        },
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+    ) {
+        MovieImage(
+            homeDataModel.thumbnail,
+            size = 200.dp
+        )
     }
 }
 
@@ -104,12 +126,14 @@ fun FavouriteList(
     messages: List<HomeDataModel>,
     onItemClicked: (HomeDataModel) -> Unit
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
+    LazyVerticalGrid(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        columns = GridCells.Adaptive(100.dp)
     ) {
         items(messages) { favourite ->
-            FavouriteRow(homeDataModel = favourite) {
+            FavouriteGrid(homeDataModel = favourite) {
                 onItemClicked.invoke(it)
             }
         }
