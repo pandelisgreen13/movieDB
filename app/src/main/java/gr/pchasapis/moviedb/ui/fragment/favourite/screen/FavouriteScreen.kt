@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteUiState
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteViewModel
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteList
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
@@ -34,7 +35,7 @@ fun FavouriteRoute(
     nextScreen: (HomeDataModel) -> Unit
 ) {
 
-    val state by viewModel.response.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     FavouriteScreen(state) {
         nextScreen(it)
@@ -43,7 +44,7 @@ fun FavouriteRoute(
 
 @Composable
 fun FavouriteScreen(
-    state: List<HomeDataModel>,
+    state: FavouriteUiState,
     action: (HomeDataModel) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -53,6 +54,7 @@ fun FavouriteScreen(
         topBar = {
             ToolbarView(scrollBehavior)
         },
+
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { it ->
 
@@ -85,7 +87,7 @@ private fun ToolbarView(scrollBehavior: TopAppBarScrollBehavior) {
 
 @Composable
 private fun FavouriteMainView(
-    state: List<HomeDataModel>,
+    state: FavouriteUiState,
     modifier: Modifier,
     onItemClicked: (HomeDataModel) -> Unit
 ) {
@@ -94,11 +96,11 @@ private fun FavouriteMainView(
         modifier = modifier,
         color = MaterialTheme.colorScheme.primary
     ) {
-        if (state.isEmpty()) {
-            LoadingErrorCompose(shouldShowError = state.isEmpty())
+        if (state.loading || state.list.isEmpty()) {
+            LoadingErrorCompose(shouldShowError = state.loading.not() && state.list.isEmpty())
         } else {
             FavouriteList(
-                messages = state,
+                messages = state.list,
                 onItemClicked = onItemClicked
             )
         }
