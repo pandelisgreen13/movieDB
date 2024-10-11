@@ -12,10 +12,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,10 +46,14 @@ fun FavouriteScreen(
     state: List<HomeDataModel>,
     action: (HomeDataModel) -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+
     Scaffold(
         topBar = {
-            ToolbarView()
+            ToolbarView(scrollBehavior)
         },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { it ->
 
             FavouriteMainView(
@@ -64,14 +71,15 @@ fun FavouriteScreen(
 
 
 @Composable
-private fun ToolbarView() {
+private fun ToolbarView(scrollBehavior: TopAppBarScrollBehavior) {
     CenterAlignedTopAppBar(
         title = { Text(stringResource(id = R.string.favourite_sceen)) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             navigationIconContentColor = Color.White,
             titleContentColor = Color.White
-        )
+        ),
+        scrollBehavior = scrollBehavior
     )
 }
 
