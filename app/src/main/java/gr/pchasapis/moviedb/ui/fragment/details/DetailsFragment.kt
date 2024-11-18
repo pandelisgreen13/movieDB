@@ -25,7 +25,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.common.ActivityResult
@@ -45,7 +45,11 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
     private val detailsViewModel: DetailsViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = ActivityDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -90,19 +94,19 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             binding.emptyLayout?.root?.visibility = View.VISIBLE
         }
         initViewModelState(binding.loadingLayout, binding.emptyLayout)
-        viewModel?.getDetailsList()?.observe(viewLifecycleOwner, { resultList ->
+        viewModel?.getDetailsList()?.observe(viewLifecycleOwner) { resultList ->
             resultList?.let {
                 updateUi(it)
             } ?: run {
                 binding.emptyLayout?.root?.visibility = View.VISIBLE
             }
-        })
+        }
 
-        viewModel?.getFavourite()?.observe(viewLifecycleOwner, { value ->
+        viewModel?.getFavourite()?.observe(viewLifecycleOwner) { value ->
             value?.let { isFavourite ->
                 binding.toolbarLayout.actionButtonImageView.isSelected = isFavourite
             }
-        })
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -113,9 +117,9 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             thumbnailImageView.setContent {
                 MovieDBTheme {
                     Image(
-                            painter = getImage(homeDataModel.thumbnail),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
+                        painter = getImage(homeDataModel.thumbnail),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
@@ -129,17 +133,19 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
             genreTitleTextView.setContent {
                 MovieDBTheme {
                     ComposeText(
-                            text = stringResource(R.string.details_genre),
-                            modifier = Modifier.padding(bottom = 2.dp, end = 4.dp))
+                        text = stringResource(R.string.details_genre),
+                        modifier = Modifier.padding(bottom = 2.dp, end = 4.dp)
+                    )
                 }
             }
 
             genreTextView.setContent {
                 MovieDBTheme {
                     ComposeText(
-                            text = homeDataModel.genresName ?: "-",
-                            maxLines = 2,
-                            modifier = Modifier.padding(bottom = 2.dp))
+                        text = homeDataModel.genresName ?: "-",
+                        maxLines = 2,
+                        modifier = Modifier.padding(bottom = 2.dp)
+                    )
                 }
             }
 
@@ -163,21 +169,23 @@ class DetailsFragment : BaseFragment<DetailsViewModel>() {
         return if (thumbnail != null && thumbnail.contains("null")) {
             painterResource(id = R.mipmap.ic_launcher)
         } else {
-            rememberImagePainter(thumbnail)
+            rememberAsyncImagePainter(thumbnail)
         }
     }
 
     @Composable
-    private fun ComposeText(text: String = "-",
-                            maxLines: Int = 1,
-                            modifier: Modifier) {
+    private fun ComposeText(
+        text: String = "-",
+        maxLines: Int = 1,
+        modifier: Modifier
+    ) {
         Text(
-                text = text,
-                color = Color.White,
-                fontSize = 12.sp,
-                maxLines = maxLines,
-                overflow = TextOverflow.Ellipsis,
-                modifier = modifier
+            text = text,
+            color = Color.White,
+            fontSize = 12.sp,
+            maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis,
+            modifier = modifier
         )
     }
 }

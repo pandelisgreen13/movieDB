@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -80,22 +81,13 @@ class DetailsComposeFragment : Fragment() {
             }
         }
     }
-
-    private fun onBackPressed() {
-        if (detailsViewModel.hasUserChangeFavourite == true && detailsViewModel.homeDataModel != null) {
-            val bundle = Bundle().apply {
-                putParcelable(BUNDLE.MOVIE_DETAILS, detailsViewModel.homeDataModel)
-            }
-            setFragmentResult(ActivityResult.DETAILS, bundle)
-        }
-        findNavController().navigateUp()
-    }
 }
 
 @Composable
 fun DetailsRoute(
     detailsViewModel: DetailsComposeViewModel = hiltViewModel(),
-    passData: HomeDataModel?
+    passData: HomeDataModel?,
+    onBackIconClicked: () -> Unit
 ) {
     detailsViewModel.setUIModel(passData)
 
@@ -104,7 +96,7 @@ fun DetailsRoute(
         is DetailsUiState.Success -> {
             val model = (uiState as DetailsUiState.Success).homeDataModel
             SuccessCompose(model, detailsViewModel) {
-              //  onBackPressed()
+                onBackIconClicked()
             }
         }
 
@@ -211,10 +203,13 @@ fun test() {
 }
 
 @Composable
-fun MovieImage(thumbnail: String?) {
+fun MovieImage(
+    thumbnail: String?,
+    size: Dp = 120.dp
+) {
     AsyncImage(
         model = thumbnail, contentDescription = "", contentScale = ContentScale.Crop,
-        modifier = Modifier.size(120.dp),
+        modifier = Modifier.size(size),
         placeholder = painterResource(id = R.mipmap.ic_launcher)
     )
 }
@@ -236,7 +231,7 @@ fun ToolbarCompose(
             .background(Primary)
     ) {
 
-        ToolbarIcon(R.drawable.ic_arrow_back) {
+        ToolbarIcon {
             onBackIconClicked()
         }
 
@@ -261,6 +256,7 @@ fun DefaultPreview() {
     }
 }
 
+
 @Composable
 fun ComposeText(
     text: String = "-",
@@ -283,7 +279,7 @@ fun ComposeText(
 
 @Composable
 private fun ToolbarIcon(
-    drawable: Int,
+    drawable: Int = R.drawable.ic_arrow_back,
     onIconClicked: () -> Unit
 ) {
     Icon(

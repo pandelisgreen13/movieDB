@@ -1,5 +1,3 @@
-
-
 package gr.pchasapis.moviedb.ui.fragment.home.compose
 
 import androidx.compose.foundation.background
@@ -39,8 +37,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -50,23 +46,22 @@ import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
 import gr.pchasapis.moviedb.ui.fragment.home.HomeUiState
-import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun HomeRoute(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-    onItemClicked: (HomeDataModel) -> Unit
+    movies: HomeUiState,
+    onItemClicked: (HomeDataModel) -> Unit,
+    textChanged: (String) -> Unit,
 ) {
 
-    val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
+
     HomeScreen(
         state = movies,
         textChanged = {
-            homeViewModel.setQueryText(it)
-            homeViewModel.searchMovies()
+            textChanged.invoke(it)
         },
         onItemClicked = {
             onItemClicked(it)
@@ -86,9 +81,8 @@ fun HomeScreen(
             .background(MaterialTheme.colorScheme.primary)
     ) {
 
-        ToolbarCenterAligned {
+        ToolbarCenterAligned()
 
-        }
         var text by remember { mutableStateOf("") }
 
         SearchView(
@@ -126,15 +120,17 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeList(messages: Flow<PagingData<HomeDataModel>>?, onItemClicked: (HomeDataModel) -> Unit) {
+fun HomeList(messages: Flow<PagingData<HomeDataModel>>, onItemClicked: (HomeDataModel) -> Unit) {
 
-    val lazyPagingItems = messages?.collectAsLazyPagingItems()
+    val lazyPagingItems = messages.collectAsLazyPagingItems()
 
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
     ) {
-        items(lazyPagingItems!!.itemCount) {
+        items(
+            lazyPagingItems.itemCount
+        ) {
             val favourite = lazyPagingItems[it]!!
             FavouriteRow(homeDataModel = favourite) { model ->
                 onItemClicked(model)
@@ -220,19 +216,9 @@ fun PreviewLoadingHome() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ToolbarCenterAligned(onClick: () -> Unit) {
+private fun ToolbarCenterAligned() {
     CenterAlignedTopAppBar(
         title = { Text(stringResource(id = R.string.home_toolbar_title)) },
-        actions = {
-            IconButton(onClick = {
-                onClick.invoke()
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_theatre),
-                    contentDescription = null
-                )
-            }
-        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             actionIconContentColor = Color.White,
@@ -274,7 +260,7 @@ private fun SearchView(
 @Composable
 fun PreviewToolbar() {
     MovieDBTheme {
-        ToolbarCenterAligned({})
+        ToolbarCenterAligned()
     }
 }
 

@@ -1,7 +1,18 @@
 package gr.pchasapis.moviedb.ui.activity.navigation
 
-sealed class Navigation(val route:String) {
+import gr.pchasapis.moviedb.model.data.HomeDataModel
+import kotlinx.serialization.Serializable
 
-    data object Home : Navigation("home")
-    data object Details : Navigation("details")
+sealed class Navigation {
+
+    @Serializable
+    object Home
+
+    @Serializable
+    data class Details(
+        val model: HomeDataModel
+    )
+
+    @Serializable
+    object Favourites
 }

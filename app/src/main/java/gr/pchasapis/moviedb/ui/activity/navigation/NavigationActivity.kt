@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.ui.activity.navigation
 
+import NewHome
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -23,7 +24,7 @@ class NavigationActivity : AppCompatActivity() {
                 ) {
 
                     val navController = rememberNavController()
-                    AppNavHost(navController)
+                    NewHome(navController)
                 }
             }
         }
