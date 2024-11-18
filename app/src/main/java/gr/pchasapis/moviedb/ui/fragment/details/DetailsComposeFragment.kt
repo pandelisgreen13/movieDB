@@ -81,22 +81,13 @@ class DetailsComposeFragment : Fragment() {
             }
         }
     }
-
-    private fun onBackPressed() {
-        if (detailsViewModel.hasUserChangeFavourite == true && detailsViewModel.homeDataModel != null) {
-            val bundle = Bundle().apply {
-                putParcelable(BUNDLE.MOVIE_DETAILS, detailsViewModel.homeDataModel)
-            }
-            setFragmentResult(ActivityResult.DETAILS, bundle)
-        }
-        findNavController().navigateUp()
-    }
 }
 
 @Composable
 fun DetailsRoute(
     detailsViewModel: DetailsComposeViewModel = hiltViewModel(),
-    passData: HomeDataModel?
+    passData: HomeDataModel?,
+    onBackIconClicked: () -> Unit
 ) {
     detailsViewModel.setUIModel(passData)
 
@@ -105,7 +96,7 @@ fun DetailsRoute(
         is DetailsUiState.Success -> {
             val model = (uiState as DetailsUiState.Success).homeDataModel
             SuccessCompose(model, detailsViewModel) {
-                //  onBackPressed()
+                onBackIconClicked()
             }
         }
 

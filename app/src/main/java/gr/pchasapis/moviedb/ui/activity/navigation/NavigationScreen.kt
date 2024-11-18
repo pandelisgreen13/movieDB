@@ -45,7 +45,9 @@ fun AppNavHost(navController: NavHostController) {
             typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
         ) { backStackEntry ->
             val post = backStackEntry.toRoute<Navigation.Details>()
-            DetailsRoute(passData = post.model)
+            DetailsRoute(passData = post.model) {
+                navController.navigateUp()
+            }
         }
 
         composable<Navigation.Favourites> {
@@ -55,7 +57,6 @@ fun AppNavHost(navController: NavHostController) {
         }
     }
 }
-
 
 inline fun <reified T : Parcelable> parcelableType(
     isNullableAllowed: Boolean = false
