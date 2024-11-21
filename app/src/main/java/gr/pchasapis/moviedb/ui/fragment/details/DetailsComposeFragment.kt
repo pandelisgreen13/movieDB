@@ -15,19 +15,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
@@ -42,17 +48,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.fragment.navArgs
 import coil.compose.AsyncImage
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
-import gr.pchasapis.moviedb.common.ActivityResult
-import gr.pchasapis.moviedb.common.BUNDLE
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsComposeViewModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
@@ -91,11 +95,11 @@ fun DetailsRoute(
 ) {
     detailsViewModel.setUIModel(passData)
 
-    val uiState by detailsViewModel.uiState.collectAsState()
+    val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
     when (uiState) {
         is DetailsUiState.Success -> {
-            val model = (uiState as DetailsUiState.Success).homeDataModel
-            SuccessCompose(model, detailsViewModel) {
+            val model = (uiState as DetailsUiState.Success)
+            Details(model, detailsViewModel) {
                 onBackIconClicked()
             }
         }
@@ -129,21 +133,29 @@ fun LoadingCompose() {
 }
 
 @Composable
-private fun SuccessCompose(
-    homeDataModel: HomeDataModel? = null,
+private fun Details(
+    homeDataModel: DetailsUiState.Success,
     viewModel: DetailsComposeViewModel? = null,
     onBackIconClicked: () -> Unit
 ) {
     Surface(
         color = PrimaryDark,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
+
+
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                )
         ) {
 
             ToolbarCompose(
-                title = homeDataModel?.title ?: "",
+                title = "",
+                toolbarColor = Color.Transparent,
                 isFavourite = viewModel?.showFavouriteLiveData?.value ?: false,
                 onBackIconClicked = {
                     onBackIconClicked()
@@ -151,16 +163,73 @@ private fun SuccessCompose(
                 onFavouriteIconClicked = {
                     viewModel?.toggleFavourite()
                 })
-            Spacer(modifier = Modifier.size(14.dp))
-            ContentCompose(homeDataModel)
+
+            AsyncImage(
+                model = homeDataModel.homeDataModel.thumbnail,
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(300.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .align(Alignment.CenterHorizontally),
+                placeholder = painterResource(id = R.mipmap.ic_launcher)
+            )
+
+            ComposeText(
+                text = homeDataModel.homeDataModel.title ?: "-",
+                maxLines = 2,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp)
+            )
+
+            ComposeText(
+                text = homeDataModel.homeDataModel.summary ?: "-",
+                maxLines = 5,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp)
+            )
+
+            LazyRow(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                items(homeDataModel.similarMovies) { item ->
+                    AsyncImage(
+                        model = item.image,
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(150.dp)
+                            .width(80.dp)
+                            .clip(RoundedCornerShape(10.dp)),
+                        placeholder = painterResource(id = R.mipmap.ic_launcher),
+                        error = painterResource(id = R.mipmap.ic_launcher),
+
+                        )
+                }
+            }
+
+            Spacer(Modifier.height(50.dp))
+
         }
     }
 }
 
 @Composable
-fun ContentCompose(homeDataModel: HomeDataModel?) {
+fun ContentCompose(
+    homeDataModel: HomeDataModel?,
+    modifier: Modifier = Modifier
+) {
 
-    Row {
+    Row(modifier) {
 
         MovieImage(
             homeDataModel?.thumbnail
@@ -217,6 +286,8 @@ fun MovieImage(
 @Composable
 fun ToolbarCompose(
     title: String,
+    modifier: Modifier = Modifier,
+    toolbarColor: Color = Primary,
     isFavourite: Boolean = false,
     onBackIconClicked: () -> Unit,
     onFavouriteIconClicked: (() -> Unit)? = null
@@ -224,11 +295,11 @@ fun ToolbarCompose(
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        verticalAlignment = Alignment.Top,
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(Primary)
+            .background(toolbarColor)
     ) {
 
         ToolbarIcon {
@@ -252,7 +323,16 @@ fun ToolbarCompose(
 @Composable
 fun DefaultPreview() {
     MovieDBTheme {
-        SuccessCompose {}
+        Details(
+            DetailsUiState.Success(
+                HomeDataModel(),
+                listOf(
+                    SimilarMoviesModel(),
+                    SimilarMoviesModel(),
+                    SimilarMoviesModel(),
+                )
+            )
+        ) {}
     }
 }
 

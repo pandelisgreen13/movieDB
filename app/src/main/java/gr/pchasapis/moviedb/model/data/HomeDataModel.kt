@@ -22,3 +22,9 @@ data class HomeDataModel(
     var totalPage: Int = 0,
     var dateAdded: Long = 0
 ) : Parcelable
+
+
+data class SimilarMoviesModel(
+    val id: Int = 0,
+    val image: String = ""
+)
