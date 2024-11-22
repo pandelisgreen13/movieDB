@@ -38,12 +38,13 @@ import gr.pchasapis.moviedb.ui.fragment.details.MovieImage
 @Composable
 fun FavouriteRow(
     homeDataModel: HomeDataModel,
+    modifier: Modifier = Modifier,
     onRowClicked: (HomeDataModel) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.clickable {
+        modifier = modifier.clickable {
             onRowClicked(homeDataModel)
         },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),

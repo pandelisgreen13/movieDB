@@ -133,7 +133,10 @@ fun HomeList(messages: Flow<PagingData<HomeDataModel>>, onItemClicked: (HomeData
             }
         ) {
             val favourite = lazyPagingItems[it]!!
-            FavouriteRow(homeDataModel = favourite) { model ->
+            FavouriteRow(
+                homeDataModel = favourite,
+                modifier = Modifier.animateItem()
+            ) { model ->
                 onItemClicked(model)
             }
         }
