@@ -20,7 +20,8 @@ data class HomeDataModel(
     var videoKey: String? = "",
     var page: Int = 0,
     var totalPage: Int = 0,
-    var dateAdded: Long = 0
+    var dateAdded: Long = 0,
+    var thumbnailBig: String? = ""
 ) : Parcelable
 
 

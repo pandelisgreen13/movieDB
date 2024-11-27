@@ -88,6 +88,7 @@ class DetailsInteractorImpl @Inject constructor(
             mediaType = homeDataModel.mediaType ?: "-",
             summary = homeDataModel.summary ?: "-",
             thumbnail = homeDataModel.thumbnail ?: "",
+            thumbnailBig = homeDataModel.thumbnailBig ?: "",
             releaseDate = homeDataModel.releaseDate ?: "-",
             ratings = homeDataModel.ratings ?: "-",
             isFavourite = homeDataModel.isFavorite,
@@ -103,6 +104,7 @@ class DetailsInteractorImpl @Inject constructor(
         movieResponse: MovieResponse
     ): HomeDataModel {
         homeDataModel.thumbnail = "${Definitions.IMAGE_URL_W500}${movieResponse.posterPath}"
+        homeDataModel.thumbnailBig = "${Definitions.IMAGE_URL_W500}${movieResponse.backdropPath}"
         homeDataModel.genresName = movieResponse.genres?.firstOrNull()?.name ?: "-"
         homeDataModel.videoKey = movieResponse.videos?.videoResultList?.firstOrNull()?.key ?: ""
         homeDataModel.videoUrl =
@@ -115,6 +117,7 @@ class DetailsInteractorImpl @Inject constructor(
         tvShowResponse: TvShowResponse
     ): HomeDataModel {
         homeDataModel.thumbnail = "${Definitions.IMAGE_URL_W500}${tvShowResponse.posterPath}"
+        homeDataModel.thumbnailBig = "${Definitions.IMAGE_URL_W500}${tvShowResponse.backdropPath}"
         homeDataModel.genresName = tvShowResponse.genres?.firstOrNull()?.name ?: "-"
         homeDataModel.videoKey = tvShowResponse.videos?.videoResultList?.firstOrNull()?.key ?: ""
         homeDataModel.videoUrl =

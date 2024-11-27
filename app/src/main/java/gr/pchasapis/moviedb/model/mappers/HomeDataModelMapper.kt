@@ -34,7 +34,8 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
             genresName = databaseItem.genresName,
             videoKey = databaseItem.videoKey,
             videoUrl = databaseItem.videoUrl,
-            dateAdded = databaseItem.dateAdded
+            dateAdded = databaseItem.dateAdded,
+            thumbnailBig = databaseItem.thumbnailBig,
         )
 
     override suspend fun toHomeDataModelFromResponse(searchResponse: SearchResponse): List<HomeDataModel> {
@@ -45,6 +46,7 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
                     mediaType = searchItem.mediaType ?: "-",
                     summary = searchItem.overview ?: "-",
                     thumbnail = "${Definitions.IMAGE_URL_W300}${searchItem.posterPath}",
+                    thumbnailBig = "${Definitions.IMAGE_URL_W300}${searchItem.backdropPath}",
                     releaseDate = searchItem.releaseDate ?: searchItem.firstAirDate ?: "-",
                     ratings = (searchItem.voteAverage ?: 0).toString(),
                     page = searchResponse.page ?: 0,

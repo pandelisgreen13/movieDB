@@ -1,13 +1,10 @@
 package gr.pchasapis.moviedb.ui.fragment.details
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,13 +42,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.fragment.navArgs
 import coil.compose.AsyncImage
-import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
@@ -63,29 +54,6 @@ import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 
-@AndroidEntryPoint
-class DetailsComposeFragment : Fragment() {
-
-    private val detailsViewModel: DetailsComposeViewModel by viewModels()
-
-    private val args: DetailsComposeFragmentArgs by navArgs()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            detailsViewModel.setUIModel(args.homeDataModel)
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MovieDBTheme {
-
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun DetailsRoute(
@@ -147,7 +115,6 @@ private fun Details(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 15.dp)
                 .verticalScroll(
                     rememberScrollState()
                 )
@@ -165,13 +132,14 @@ private fun Details(
                 })
 
             AsyncImage(
-                model = homeDataModel.homeDataModel.thumbnail,
+                model = homeDataModel.homeDataModel.thumbnailBig,
                 contentDescription = "",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(300.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .align(Alignment.CenterHorizontally),
+                    .height(300.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .background(Color.Blue),
                 placeholder = painterResource(id = R.mipmap.ic_launcher)
             )
 
@@ -182,7 +150,7 @@ private fun Details(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 20.dp)
+                    .padding(vertical = 20.dp, horizontal = 15.dp)
             )
 
             ComposeText(
@@ -192,7 +160,7 @@ private fun Details(
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp)
+                    .padding(vertical = 5.dp, horizontal = 15.dp)
             )
 
             LazyRow(
@@ -200,6 +168,7 @@ private fun Details(
                     .padding(top = 20.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(horizontal = 15.dp)
             ) {
                 items(homeDataModel.similarMovies) { item ->
                     AsyncImage(
@@ -295,7 +264,7 @@ fun ToolbarCompose(
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
