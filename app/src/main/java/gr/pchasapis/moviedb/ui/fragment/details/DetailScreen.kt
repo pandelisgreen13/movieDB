@@ -1,9 +1,5 @@
 package gr.pchasapis.moviedb.ui.fragment.details
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,8 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,13 +41,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.fragment.navArgs
 import coil.compose.AsyncImage
-import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
@@ -62,30 +52,6 @@ import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
-
-@AndroidEntryPoint
-class DetailsComposeFragment : Fragment() {
-
-    private val detailsViewModel: DetailsComposeViewModel by viewModels()
-
-    private val args: DetailsComposeFragmentArgs by navArgs()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
-            detailsViewModel.setUIModel(args.homeDataModel)
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MovieDBTheme {
-
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun DetailsRoute(
