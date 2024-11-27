@@ -79,7 +79,8 @@ private fun ToolbarView(scrollBehavior: TopAppBarScrollBehavior) {
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             navigationIconContentColor = Color.White,
-            titleContentColor = Color.White
+            titleContentColor = Color.White,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary
         ),
         scrollBehavior = scrollBehavior
     )

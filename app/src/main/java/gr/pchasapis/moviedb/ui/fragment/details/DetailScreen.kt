@@ -241,31 +241,37 @@ private fun BackCard(
                 stringResource(R.string.details_genre),
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                modifier = Modifier.padding(top = 5.dp)
+                modifier = Modifier.padding(top = 5.dp),
+                color = Color.White
             )
             Text(
                 homeDataModel.homeDataModel.genresName.orEmpty(),
-                modifier = Modifier.padding(top = 5.dp)
+                modifier = Modifier.padding(top = 5.dp),
+                color = Color.White
             )
             Text(
                 stringResource(R.string.home_rating),
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                modifier = Modifier.padding(top = 15.dp)
+                modifier = Modifier.padding(top = 15.dp),
+                color = Color.White
             )
             Text(
                 homeDataModel.homeDataModel.ratings.orEmpty(),
-                modifier = Modifier.padding(top = 5.dp)
+                modifier = Modifier.padding(top = 5.dp),
+                color = Color.White
             )
             Text(
                 stringResource(R.string.home_release_data),
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                modifier = Modifier.padding(top = 15.dp)
+                modifier = Modifier.padding(top = 15.dp),
+                color = Color.White
             )
             Text(
                 homeDataModel.homeDataModel.releaseDate.orEmpty(),
-                modifier = Modifier.padding(top = 5.dp)
+                modifier = Modifier.padding(top = 5.dp),
+                color = Color.White
             )
         }
     }
@@ -273,7 +279,7 @@ private fun BackCard(
 
 @Preview(showBackground = true)
 @Composable
-fun test() {
+fun Test() {
     MovieImage(null)
 }
 
