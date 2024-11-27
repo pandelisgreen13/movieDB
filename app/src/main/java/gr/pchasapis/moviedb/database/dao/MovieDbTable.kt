@@ -11,7 +11,6 @@ class MovieDbTable(
         var title: String = "-",
         var summary: String = "-",
         var thumbnail: String = "",
-        var thumbnailBig: String = "",
         var releaseDate: String = "-",
         var ratings: String = "-",
         var isFavourite: Boolean = false,
