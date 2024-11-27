@@ -51,7 +51,10 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
                     }
                 }
 
-                val response = detailsInteractor.getSimilarMovies(id)
+                val response = detailsInteractor.getSimilarMovies(
+                    id = id,
+                    mediaType = homeDataModel?.mediaType.orEmpty()
+                )
                 response.data?.let {
                     _uiState.update { state ->
                         (state as? DetailsUiState.Success)?.copy(

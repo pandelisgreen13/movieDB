@@ -41,9 +41,10 @@ interface MovieApi {
         @Query("api_key") apiKey: String
     ): TheatreResponse
 
-    @GET("movie/{id}/similar")
+    @GET("{type}/{id}/similar")
     suspend fun getSimilarMovies(
         @Path("id") id: Int,
+        @Path("type") type: String,
         @Query("api_key") apiKey: String
     ): SearchResponse
 }

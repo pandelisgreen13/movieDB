@@ -199,8 +199,7 @@ private fun Details(
                             .width(80.dp)
                             .clip(RoundedCornerShape(10.dp)),
                         placeholder = painterResource(id = R.mipmap.ic_launcher),
-                        error = painterResource(id = R.mipmap.ic_launcher),
-
+                        error = painterResource(id = R.mipmap.ic_launcher)
                         )
                 }
             }

@@ -11,5 +11,5 @@ interface DetailsInteractor : MVVMInteractor {
     suspend fun onRetrieveFlowDetails(homeDataModel: HomeDataModel): Flow<DataResult<HomeDataModel>>
     suspend fun onRetrieveDetails(homeDataModel: HomeDataModel): DataResult<HomeDataModel>
     suspend fun updateFavourite(homeDataModel: HomeDataModel?): DataResult<HomeDataModel>
-    suspend fun getSimilarMovies(id: Int): DataResult<List<SimilarMoviesModel>>
+    suspend fun getSimilarMovies(id: Int, mediaType: String): DataResult<List<SimilarMoviesModel>>
 }

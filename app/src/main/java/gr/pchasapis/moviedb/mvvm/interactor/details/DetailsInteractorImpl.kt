@@ -22,9 +22,12 @@ class DetailsInteractorImpl @Inject constructor(
     private val movieDbDatabase: MovieDbDatabase,
 ) : BaseInteractor(), DetailsInteractor {
 
-    override suspend fun getSimilarMovies(id: Int): DataResult<List<SimilarMoviesModel>> {
+    override suspend fun getSimilarMovies(
+        id: Int,
+        mediaType: String
+    ): DataResult<List<SimilarMoviesModel>> {
         return try {
-            val response = movieClient.getSimilarMovies(id)
+            val response = movieClient.getSimilarMovies(id = id, mediaType = mediaType)
             DataResult(response.searchResultsList?.map {
                 SimilarMoviesModel(
                     id = it.id ?: -1,

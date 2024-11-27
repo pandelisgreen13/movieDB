@@ -26,7 +26,8 @@ class MovieClient @Inject constructor(private var movieApi: MovieApi) {
         return movieApi.getMovieTheatreAsync(startDate, endDate, Definitions.API_KEY)
     }
 
-    suspend fun getSimilarMovies(id: Int): SearchResponse {
-        return movieApi.getSimilarMovies(id, Definitions.API_KEY)
+    suspend fun getSimilarMovies(id: Int, mediaType: String): SearchResponse {
+
+        return movieApi.getSimilarMovies(id, mediaType, Definitions.API_KEY)
     }
 }
