@@ -175,7 +175,7 @@ private fun Details(
 
             ComposeText(
                 text = homeDataModel.homeDataModel.summary ?: "-",
-                maxLines = 5,
+                maxLines = 6,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
@@ -183,13 +183,22 @@ private fun Details(
                     .padding(vertical = 10.dp)
             )
 
+            ComposeText(
+                text = stringResource(R.string.similar),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
+            )
+
             LazyRow(
                 modifier = Modifier
-                    .padding(top = 20.dp)
+                    .padding(top = 10.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                items(homeDataModel.similarMovies) { item ->
+                items(homeDataModel.similarMovies, key = { it.id }) { item ->
                     AsyncImage(
                         model = item.image,
                         contentDescription = "",
@@ -200,7 +209,7 @@ private fun Details(
                             .clip(RoundedCornerShape(10.dp)),
                         placeholder = painterResource(id = R.mipmap.ic_launcher),
                         error = painterResource(id = R.mipmap.ic_launcher)
-                        )
+                    )
                 }
             }
 
@@ -227,16 +236,12 @@ private fun BackCard(
                 .fillMaxWidth()
                 .padding(20.dp),
         ) {
-            Text(
-                homeDataModel.homeDataModel.title.orEmpty(),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+
             Text(
                 stringResource(R.string.details_genre),
                 fontWeight = FontWeight.Bold,
                 fontStyle = FontStyle.Italic,
-                modifier = Modifier.padding(top = 15.dp)
+                modifier = Modifier.padding(top = 5.dp)
             )
             Text(
                 homeDataModel.homeDataModel.genresName.orEmpty(),
