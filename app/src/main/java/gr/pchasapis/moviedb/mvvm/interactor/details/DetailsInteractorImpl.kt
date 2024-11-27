@@ -6,6 +6,7 @@ import gr.pchasapis.moviedb.database.dao.MovieDbTable
 import gr.pchasapis.moviedb.model.common.DataResult
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
+import gr.pchasapis.moviedb.model.parsers.genre.GenresItem
 import gr.pchasapis.moviedb.model.parsers.movie.MovieResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
 import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
@@ -45,17 +46,12 @@ class DetailsInteractorImpl @Inject constructor(
         return try {
             val response = when (homeDataModel.mediaType) {
                 Definitions.IS_MOVIE -> movieToHomeDataModel(
-                    homeDataModel, movieClient.getMovieDetailsAsync(
-                        homeDataModel.id
-                            ?: 0
-                    )
+                    homeDataModel = homeDataModel,
+                    movieResponse = movieClient.getMovieDetailsAsync(homeDataModel.id ?: 0)
                 )
 
                 else -> tvShowToHomeDataModel(
-                    homeDataModel, movieClient.getTvShowDetailsAsync(
-                        homeDataModel.id
-                            ?: 0
-                    )
+                    homeDataModel, movieClient.getTvShowDetailsAsync(tvId = homeDataModel.id ?: 0)
                 )
             }
             DataResult(response)
@@ -103,19 +99,24 @@ class DetailsInteractorImpl @Inject constructor(
         movieResponse: MovieResponse
     ): HomeDataModel {
         homeDataModel.thumbnail = "${Definitions.IMAGE_URL_W500}${movieResponse.posterPath}"
-        homeDataModel.genresName = movieResponse.genres?.firstOrNull()?.name ?: "-"
+        homeDataModel.genresName = getGenre(movieResponse.genres)
         homeDataModel.videoKey = movieResponse.videos?.videoResultList?.firstOrNull()?.key ?: ""
         homeDataModel.videoUrl =
             "<html><body><br><iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/${homeDataModel.videoKey}\" frameborder=\"0\" allowfullscreen></iframe></body></html>"
         return homeDataModel
     }
 
+    private fun getGenre(genres: List<GenresItem>?) =
+        genres?.map {
+            it.name.orEmpty()
+        }?.filter { it.isEmpty().not() }?.joinToString("\n") { "${it}" }
+
     private fun tvShowToHomeDataModel(
         homeDataModel: HomeDataModel,
         tvShowResponse: TvShowResponse
     ): HomeDataModel {
         homeDataModel.thumbnail = "${Definitions.IMAGE_URL_W500}${tvShowResponse.posterPath}"
-        homeDataModel.genresName = tvShowResponse.genres?.firstOrNull()?.name ?: "-"
+        homeDataModel.genresName = getGenre(tvShowResponse.genres)
         homeDataModel.videoKey = tvShowResponse.videos?.videoResultList?.firstOrNull()?.key ?: ""
         homeDataModel.videoUrl =
             "<html><body><br><iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/${homeDataModel.videoKey}\" frameborder=\"0\" allowfullscreen></iframe></body></html>"

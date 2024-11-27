@@ -1,5 +1,8 @@
 package gr.pchasapis.moviedb.ui.fragment.details
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +20,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
@@ -26,14 +31,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -130,16 +138,30 @@ private fun Details(
                     viewModel?.toggleFavourite()
                 })
 
-            AsyncImage(
-                model = homeDataModel.homeDataModel.thumbnail,
-                contentDescription = "",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(300.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .align(Alignment.CenterHorizontally),
-                placeholder = painterResource(id = R.mipmap.ic_launcher)
-            )
+            var cardFace by rememberSaveable {
+                mutableStateOf(CardFace.Front)
+            }
+
+            FlipCard(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                cardFace = cardFace,
+                front = {
+                    AsyncImage(
+                        model = homeDataModel.homeDataModel.thumbnail,
+                        contentDescription = "",
+                        contentScale = ContentScale.Fit,
+                        modifier = it
+                            .size(300.dp)
+                            .clip(RoundedCornerShape(10.dp)),
+                        placeholder = painterResource(id = R.mipmap.ic_launcher)
+                    )
+                },
+                back = {
+                    BackCard(it = it, homeDataModel = homeDataModel)
+                }
+            ) {
+                cardFace = cardFace.next
+            }
 
             ComposeText(
                 text = homeDataModel.homeDataModel.title ?: "-",
@@ -190,45 +212,59 @@ private fun Details(
 }
 
 @Composable
-fun ContentCompose(
-    homeDataModel: HomeDataModel?,
-    modifier: Modifier = Modifier
+private fun BackCard(
+    it: Modifier,
+    homeDataModel: DetailsUiState.Success
 ) {
-
-    Row(modifier) {
-
-        MovieImage(
-            homeDataModel?.thumbnail
+    Card(
+        modifier = it.size(300.dp),
+        shape = RoundedCornerShape(50.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Primary
         )
-
+    ) {
         Column(
             modifier = Modifier
-                .height(120.dp)
-                .padding(end = 10.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .padding(20.dp),
         ) {
-            ComposeText(
-                text = homeDataModel?.summary ?: "-",
-                maxLines = 6,
-                modifier = Modifier.padding(bottom = 2.dp)
+            Text(
+                homeDataModel.homeDataModel.title.orEmpty(),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
             )
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ComposeText(
-                    text = stringResource(R.string.details_genre),
-                    modifier = Modifier.padding(bottom = 2.dp, end = 4.dp)
-                )
-
-                ComposeText(
-                    text = homeDataModel?.genresName ?: "-",
-                    maxLines = 2,
-                    modifier = Modifier.padding(bottom = 2.dp)
-                )
-
-            }
+            Text(
+                stringResource(R.string.details_genre),
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                modifier = Modifier.padding(top = 15.dp)
+            )
+            Text(
+                homeDataModel.homeDataModel.genresName.orEmpty(),
+                modifier = Modifier.padding(top = 5.dp)
+            )
+            Text(
+                stringResource(R.string.home_rating),
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                modifier = Modifier.padding(top = 15.dp)
+            )
+            Text(
+                homeDataModel.homeDataModel.ratings.orEmpty(),
+                modifier = Modifier.padding(top = 5.dp)
+            )
+            Text(
+                stringResource(R.string.home_release_data),
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                modifier = Modifier.padding(top = 15.dp)
+            )
+            Text(
+                homeDataModel.homeDataModel.releaseDate.orEmpty(),
+                modifier = Modifier.padding(top = 5.dp)
+            )
         }
-
     }
-
 }
 
 @Preview(showBackground = true)
@@ -372,4 +408,50 @@ private fun IconToggleButtonComposable(
         )
     }
 
+}
+
+@Composable
+fun FlipCard(
+    cardFace: CardFace,
+    front: @Composable (Modifier) -> Unit,
+    modifier: Modifier = Modifier,
+    back: @Composable (Modifier) -> Unit,
+    onClick: (CardFace) -> Unit
+) {
+    val rotation by animateFloatAsState(
+        targetValue = cardFace.angle,
+        animationSpec = tween(
+            durationMillis = 1800,
+            easing = FastOutSlowInEasing,
+        ), label = ""
+    )
+
+    val mod = modifier
+        .graphicsLayer {
+            rotationY = rotation
+            cameraDistance = 12f * density
+        }
+        .clickable {
+            onClick(cardFace)
+        }
+
+    if (rotation <= 90f) {
+        front(mod)
+    } else {
+        back(mod.graphicsLayer(rotationY = 180f))
+    }
+}
+
+enum class CardFace(val angle: Float) {
+    Front(0f) {
+        override val next: CardFace
+            get() = Back
+    },
+
+    Back(180f) {
+        override val next: CardFace
+            get() = Front
+    };
+
+    abstract val next: CardFace
 }
