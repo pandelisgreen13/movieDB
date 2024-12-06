@@ -1,6 +1,8 @@
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.VideoLabel
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -71,4 +73,5 @@ data class TopLevelRoute<T : Any>(val route: T, val icon: ImageVector, val label
 val TOP_LEVEL_ROUTES = listOf(
     TopLevelRoute(route = Navigation.Home, icon = Icons.Default.Home, "Home"),
     TopLevelRoute(route = Navigation.Favourites, icon = Icons.Default.Favorite, "Favourite"),
+    TopLevelRoute(route = Navigation.Theater, icon = Icons.Default.VideoLabel, "Cinema"),
 )

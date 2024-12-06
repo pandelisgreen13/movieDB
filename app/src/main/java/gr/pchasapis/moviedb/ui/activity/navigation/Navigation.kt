@@ -15,4 +15,7 @@ sealed class Navigation {
 
     @Serializable
     object Favourites
+
+    @Serializable
+    object Theater
 }

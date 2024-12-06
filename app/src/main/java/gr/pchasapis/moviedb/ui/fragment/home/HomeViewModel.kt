@@ -1,6 +1,5 @@
 package gr.pchasapis.moviedb.ui.fragment.home
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -33,7 +32,7 @@ class HomeViewModel @Inject constructor(
 
 
     fun setQueryText(queryText: String) = viewModelScope.launch {
-        if (queryText.trim() == queryTextState){
+        if (queryText.trim() == queryTextState) {
             return@launch
         }
         queryTextState = queryText

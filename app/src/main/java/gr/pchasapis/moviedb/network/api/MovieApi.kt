@@ -36,8 +36,8 @@ interface MovieApi {
 
     @GET("discover/movie")
     suspend fun getMovieTheatreAsync(
-        @Query("primary_release_date.gte") startDate: String,
-        @Query("primary_release_date.lte") endDate: String,
+        @Query("primary_release_date.gte") startDate: String?,
+        @Query("primary_release_date.lte") endDate: String?,
         @Query("api_key") apiKey: String
     ): TheatreResponse
 
