@@ -82,7 +82,7 @@ fun Content(list: List<MovieDataModel>) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
         columns = GridCells.Adaptive(100.dp)
     ) {
-        items(list) { item ->
+        items(list, key = { it.id!! }) { item ->
 
             AsyncImage(
                 model = item.thumbnail,
