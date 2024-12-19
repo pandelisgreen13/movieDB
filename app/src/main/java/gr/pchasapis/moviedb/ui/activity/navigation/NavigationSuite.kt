@@ -73,5 +73,5 @@ data class TopLevelRoute<T : Any>(val route: T, val icon: ImageVector, val label
 val TOP_LEVEL_ROUTES = listOf(
     TopLevelRoute(route = Navigation.Home, icon = Icons.Default.Home, "Home"),
     TopLevelRoute(route = Navigation.Favourites, icon = Icons.Default.Favorite, "Favourite"),
-    TopLevelRoute(route = Navigation.Theater, icon = Icons.Default.VideoLabel, "Cinema"),
+    TopLevelRoute(route = Navigation.Theater, icon = Icons.Default.VideoLabel, "Theater"),
 )

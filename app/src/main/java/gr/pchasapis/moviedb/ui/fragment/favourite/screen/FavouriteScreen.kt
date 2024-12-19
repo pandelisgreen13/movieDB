@@ -55,7 +55,7 @@ fun FavouriteScreen(
         topBar = {
             ToolbarView(
                 scrollBehavior = scrollBehavior,
-                text = stringResource(id = R.string.favourite_sceen)
+                text = stringResource(id = R.string.favourite_screen)
             )
         },
 
