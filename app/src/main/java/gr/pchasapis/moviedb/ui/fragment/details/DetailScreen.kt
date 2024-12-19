@@ -192,24 +192,31 @@ private fun Details(
                     .padding(top = 20.dp)
             )
 
-            LazyRow(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                items(homeDataModel.similarMovies, key = { it.id }) { item ->
-                    AsyncImage(
-                        model = item.image,
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .width(80.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        placeholder = painterResource(id = R.mipmap.ic_launcher),
-                        error = painterResource(id = R.mipmap.ic_launcher)
-                    )
+            if (homeDataModel.similarMovies.isEmpty()) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 40.dp)
+                )
+            } else {
+                LazyRow(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(homeDataModel.similarMovies, key = { it.id }) { item ->
+                        AsyncImage(
+                            model = item.image,
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .height(150.dp)
+                                .width(80.dp)
+                                .clip(RoundedCornerShape(10.dp)),
+                            placeholder = painterResource(id = R.mipmap.ic_launcher),
+                            error = painterResource(id = R.mipmap.ic_launcher)
+                        )
+                    }
                 }
             }
 

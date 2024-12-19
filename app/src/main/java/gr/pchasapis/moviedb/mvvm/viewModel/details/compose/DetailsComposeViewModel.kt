@@ -9,6 +9,7 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -50,7 +51,6 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
                         _uiState.value = DetailsUiState.Error
                     }
                 }
-
                 val response = detailsInteractor.getSimilarMovies(
                     id = id,
                     mediaType = homeDataModel?.mediaType.orEmpty()
