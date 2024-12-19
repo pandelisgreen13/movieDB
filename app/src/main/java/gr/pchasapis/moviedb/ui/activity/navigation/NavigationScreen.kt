@@ -18,6 +18,8 @@ import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.FavouriteRoute
 import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeRoute
+import gr.pchasapis.moviedb.ui.fragment.theater.TheaterViewModel
+import gr.pchasapis.moviedb.ui.fragment.theater.TheatreScreen
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
@@ -54,6 +56,13 @@ fun AppNavHost(navController: NavHostController) {
             FavouriteRoute { movie ->
                 navController.navigate(Navigation.Details(movie))
             }
+        }
+        composable<Navigation.Theater> {
+
+            val viewModel: TheaterViewModel = hiltViewModel()
+
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            TheatreScreen(uiState)
         }
     }
 }

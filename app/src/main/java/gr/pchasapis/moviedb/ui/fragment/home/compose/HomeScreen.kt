@@ -25,7 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,7 +81,7 @@ fun HomeScreen(
 
         ToolbarCenterAligned()
 
-        var text by remember { mutableStateOf("") }
+        var text by rememberSaveable { mutableStateOf("") }
 
         SearchView(
             text = text,
@@ -133,7 +133,10 @@ fun HomeList(messages: Flow<PagingData<HomeDataModel>>, onItemClicked: (HomeData
             }
         ) {
             val favourite = lazyPagingItems[it]!!
-            FavouriteRow(homeDataModel = favourite) { model ->
+            FavouriteRow(
+                homeDataModel = favourite,
+                modifier = Modifier.animateItem()
+            ) { model ->
                 onItemClicked(model)
             }
         }

@@ -44,7 +44,7 @@
 
     <fragment
         android:id="@+id/theatreFragment"
-        android:name="gr.pchasapis.moviedb.ui.fragment.theatre.TheatreFragment"
+        android:name="gr.pchasapis.moviedb.ui.fragment.theater.TheatreFragment"
         android:label="TheatreFragment">
 
         <argument

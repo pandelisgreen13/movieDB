@@ -6,19 +6,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailsComposeViewModel @Inject constructor(private val detailsInteractor: DetailsInteractorImpl) : ViewModel() {
+class DetailsComposeViewModel @Inject constructor(private val detailsInteractor: DetailsInteractorImpl) :
+    ViewModel() {
 
-    var homeDataModel: HomeDataModel? = null
+    private var homeDataModel: HomeDataModel? = null
     var hasUserChangeFavourite: Boolean? = false
 
     private var isFavouriteLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -30,21 +34,38 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
 
     private fun fetchDetails() {
         if (homeDataModel == null ||
-                homeDataModel?.id == null ||
-                homeDataModel?.mediaType == null) {
+            homeDataModel?.mediaType == null
+        ) {
             return
         }
 
-        viewModelScope.launch {
-            detailsInteractor.onRetrieveFlowDetails(homeDataModel!!).collect { response ->
+        homeDataModel?.id?.let { id ->
+            viewModelScope.launch {
+                detailsInteractor.onRetrieveFlowDetails(homeDataModel!!).collectLatest { response ->
+                    response.data?.let { data ->
+                        _uiState.update {
+                            DetailsUiState.Success(data)
+                        }
+                        isFavouriteLiveData.value = data.isFavorite
+                    } ?: run {
+                        _uiState.value = DetailsUiState.Error
+                    }
+                }
+                val response = detailsInteractor.getSimilarMovies(
+                    id = id,
+                    mediaType = homeDataModel?.mediaType.orEmpty()
+                )
                 response.data?.let {
-                    _uiState.value = DetailsUiState.Success(it)
-                    isFavouriteLiveData.value = it.isFavorite
-                } ?: run {
-                    _uiState.value = DetailsUiState.Error
+                    _uiState.update { state ->
+                        (state as? DetailsUiState.Success)?.copy(
+                            similarMovies = response.data
+                        ) ?: state
+                    }
                 }
             }
         }
+
+
     }
 
     fun toggleFavourite() {
@@ -55,7 +76,8 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
         val homeModel = homeDataModel
         homeModel?.isFavorite = homeModel?.isFavorite == false
         viewModelScope.launch {
-            val response = withContext(Dispatchers.IO) { detailsInteractor.updateFavourite(homeModel) }
+            val response =
+                withContext(Dispatchers.IO) { detailsInteractor.updateFavourite(homeModel) }
             homeDataModel = response.data
             homeDataModel?.let {
                 isFavouriteLiveData.value = it.isFavorite
@@ -64,6 +86,9 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
     }
 
     fun setUIModel(homeDataModel: HomeDataModel?) {
+        if (this.homeDataModel != null) {
+            return
+        }
         this.homeDataModel = homeDataModel
         fetchDetails()
     }
@@ -72,6 +97,10 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
 sealed class DetailsUiState {
 
     data object Loading : DetailsUiState()
-    data class Success(val homeDataModel: HomeDataModel) : DetailsUiState()
+    data class Success(
+        val homeDataModel: HomeDataModel,
+        val similarMovies: List<SimilarMoviesModel> = emptyList()
+    ) : DetailsUiState()
+
     data object Error : DetailsUiState()
 }
