@@ -10,7 +10,7 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.model.mappers.HomeDataModelMapperImpl
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
-import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
+import gr.pchasapis.moviedb.model.parsers.theatre.MovieNetworkResponse
 import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
 import gr.pchasapis.moviedb.mvvm.interactor.home.paging.SearchPagingDataSource
 import gr.pchasapis.moviedb.network.client.MovieClient
@@ -81,13 +81,14 @@ class HomeInteractorImpl(
         } ?: arrayListOf())
     }
 
-    private fun toMovieDataModel(theatreResponse: TheatreResponse): List<MovieDataModel> {
+    private fun toMovieDataModel(theatreResponse: MovieNetworkResponse): List<MovieDataModel> {
         return (theatreResponse.searchResultsList?.map { movieItem ->
             MovieDataModel(
                 id = movieItem.id,
                 title = movieItem.title ?: "-",
                 summary = movieItem.overview ?: "-",
                 thumbnail = "${Definitions.IMAGE_URL_W300}${movieItem.posterPath}",
+                ratings = (movieItem.voteAverage ?: 0).toString(),
                 releaseDate = movieItem.releaseDate ?: "-"
             )
         } ?: arrayListOf())

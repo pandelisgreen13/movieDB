@@ -2,7 +2,7 @@ package gr.pchasapis.moviedb.network.api
 
 import gr.pchasapis.moviedb.model.parsers.movie.MovieDetailsResponse
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
-import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
+import gr.pchasapis.moviedb.model.parsers.theatre.MovieNetworkResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -39,12 +39,12 @@ interface MovieApi {
         @Query("primary_release_date.gte") startDate: String?,
         @Query("primary_release_date.lte") endDate: String?,
         @Query("api_key") apiKey: String
-    ): TheatreResponse
+    ): MovieNetworkResponse
 
     @GET("movie/popular")
     suspend fun getPopularMovies(
         @Query("api_key") apiKey: String
-    ): MovieDetailsResponse
+    ): MovieNetworkResponse
 
     @GET("{type}/{id}/similar")
     suspend fun getSimilarMovies(

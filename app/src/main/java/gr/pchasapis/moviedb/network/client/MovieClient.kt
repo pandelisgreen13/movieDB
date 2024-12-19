@@ -3,7 +3,7 @@ package gr.pchasapis.moviedb.network.client
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.model.parsers.movie.MovieDetailsResponse
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
-import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
+import gr.pchasapis.moviedb.model.parsers.theatre.MovieNetworkResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
 import gr.pchasapis.moviedb.network.api.MovieApi
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class MovieClient @Inject constructor(private var movieApi: MovieApi) {
         return movieApi.getTvShowDetailsAsync(tvId, Definitions.API_KEY, Definitions.VIDEOS)
     }
 
-    suspend fun getMovieTheatre(startDate: String, endDate: String): TheatreResponse {
+    suspend fun getMovieTheatre(startDate: String, endDate: String): MovieNetworkResponse {
         return movieApi.getMovieTheatreAsync(null, null, Definitions.API_KEY)
     }
 

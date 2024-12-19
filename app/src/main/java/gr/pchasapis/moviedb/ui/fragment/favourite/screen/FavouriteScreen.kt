@@ -47,12 +47,16 @@ fun FavouriteScreen(
     state: FavouriteUiState,
     action: (HomeDataModel) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
 
     Scaffold(
         topBar = {
-            ToolbarView(scrollBehavior)
+            ToolbarView(
+                scrollBehavior = scrollBehavior,
+                text = stringResource(id = R.string.favourite_sceen)
+            )
         },
 
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -73,9 +77,10 @@ fun FavouriteScreen(
 
 
 @Composable
-private fun ToolbarView(scrollBehavior: TopAppBarScrollBehavior) {
+fun ToolbarView(scrollBehavior: TopAppBarScrollBehavior? = null,
+                text: String) {
     CenterAlignedTopAppBar(
-        title = { Text(stringResource(id = R.string.favourite_sceen)) },
+        title = { Text(text) },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             navigationIconContentColor = Color.White,

@@ -60,7 +60,9 @@ fun AppNavHost(navController: NavHostController) {
         composable<Navigation.Theater> {
 
             val viewModel: TheaterViewModel = hiltViewModel()
-            TheatreScreen()
+
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            TheatreScreen(uiState)
         }
     }
 }
