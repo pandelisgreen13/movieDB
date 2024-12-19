@@ -18,6 +18,7 @@ import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.FavouriteRoute
 import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
 import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeRoute
+import gr.pchasapis.moviedb.ui.fragment.theater.TheaterViewModel
 import gr.pchasapis.moviedb.ui.fragment.theater.TheatreScreen
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -57,6 +58,8 @@ fun AppNavHost(navController: NavHostController) {
             }
         }
         composable<Navigation.Theater> {
+
+            val viewModel: TheaterViewModel = hiltViewModel()
             TheatreScreen()
         }
     }

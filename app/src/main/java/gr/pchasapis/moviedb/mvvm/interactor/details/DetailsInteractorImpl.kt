@@ -7,7 +7,7 @@ import gr.pchasapis.moviedb.model.common.DataResult
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.model.parsers.genre.GenresItem
-import gr.pchasapis.moviedb.model.parsers.movie.MovieResponse
+import gr.pchasapis.moviedb.model.parsers.movie.MovieDetailsResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
 import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
 import gr.pchasapis.moviedb.network.client.MovieClient
@@ -99,7 +99,7 @@ class DetailsInteractorImpl @Inject constructor(
 
     private fun movieToHomeDataModel(
         homeDataModel: HomeDataModel,
-        movieResponse: MovieResponse
+        movieResponse: MovieDetailsResponse
     ): HomeDataModel {
         homeDataModel.thumbnail = "${Definitions.IMAGE_URL_W500}${movieResponse.posterPath}"
         homeDataModel.genresName = getGenre(movieResponse.genres)

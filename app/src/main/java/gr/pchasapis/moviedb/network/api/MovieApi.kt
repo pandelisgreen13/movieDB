@@ -1,6 +1,6 @@
 package gr.pchasapis.moviedb.network.api
 
-import gr.pchasapis.moviedb.model.parsers.movie.MovieResponse
+import gr.pchasapis.moviedb.model.parsers.movie.MovieDetailsResponse
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
 import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
@@ -24,7 +24,7 @@ interface MovieApi {
         @Path("movieId") movieId: Int,
         @Query("api_key") apiKey: String,
         @Query("append_to_response") appendToResponse: String
-    ): MovieResponse
+    ): MovieDetailsResponse
 
 
     @GET("tv/{tvId}")
@@ -40,6 +40,11 @@ interface MovieApi {
         @Query("primary_release_date.lte") endDate: String?,
         @Query("api_key") apiKey: String
     ): TheatreResponse
+
+    @GET("movie/popular")
+    suspend fun getPopularMovies(
+        @Query("api_key") apiKey: String
+    ): MovieDetailsResponse
 
     @GET("{type}/{id}/similar")
     suspend fun getSimilarMovies(

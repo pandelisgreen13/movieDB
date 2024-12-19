@@ -1,7 +1,7 @@
 package gr.pchasapis.moviedb.network.client
 
 import gr.pchasapis.moviedb.common.Definitions
-import gr.pchasapis.moviedb.model.parsers.movie.MovieResponse
+import gr.pchasapis.moviedb.model.parsers.movie.MovieDetailsResponse
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
 import gr.pchasapis.moviedb.model.parsers.theatre.TheatreResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
@@ -14,7 +14,7 @@ class MovieClient @Inject constructor(private var movieApi: MovieApi) {
         return movieApi.getSearchAsync(Definitions.API_KEY, queryText, page)
     }
 
-    suspend fun getMovieDetailsAsync(movieId: Int): MovieResponse {
+    suspend fun getMovieDetailsAsync(movieId: Int): MovieDetailsResponse {
         return movieApi.getMovieDetailsAsync(movieId, Definitions.API_KEY, Definitions.VIDEOS)
     }
 
