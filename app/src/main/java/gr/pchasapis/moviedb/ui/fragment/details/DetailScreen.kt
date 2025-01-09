@@ -1,5 +1,10 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class)
+
 package gr.pchasapis.moviedb.ui.fragment.details
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -54,7 +59,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
-import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsComposeViewModel
 import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
@@ -62,8 +66,9 @@ import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 
 @Composable
-fun DetailsRoute(
+fun SharedTransitionScope.DetailsRoute(
     detailsViewModel: DetailsComposeViewModel = hiltViewModel(),
+    animatedVisibilityScope: AnimatedVisibilityScope,
     passData: HomeDataModel?,
     onBackIconClicked: () -> Unit
 ) {
@@ -73,7 +78,11 @@ fun DetailsRoute(
     when (uiState) {
         is DetailsUiState.Success -> {
             val model = (uiState as DetailsUiState.Success)
-            Details(model, detailsViewModel) {
+            Details(
+                homeDataModel = model,
+                viewModel = detailsViewModel,
+                animatedVisibilityScope = animatedVisibilityScope
+            ) {
                 onBackIconClicked()
             }
         }
@@ -107,9 +116,10 @@ fun LoadingCompose() {
 }
 
 @Composable
-private fun Details(
+private fun SharedTransitionScope.Details(
     homeDataModel: DetailsUiState.Success,
     viewModel: DetailsComposeViewModel? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onBackIconClicked: () -> Unit
 ) {
     Surface(
@@ -152,7 +162,14 @@ private fun Details(
                         contentScale = ContentScale.Fit,
                         modifier = it
                             .size(300.dp)
-                            .clip(RoundedCornerShape(10.dp)),
+                            .clip(RoundedCornerShape(10.dp))
+                            .sharedElement(
+                                state = rememberSharedContentState(key = "image/${homeDataModel.homeDataModel.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+//                                boundsTransform = {_,_->
+//                                    tween(1000)
+//                                }
+                            ),
                         placeholder = painterResource(id = R.mipmap.ic_launcher)
                     )
                 },
@@ -171,6 +188,13 @@ private fun Details(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 20.dp)
+                    .sharedElement(
+                        state = rememberSharedContentState(key = "text/${homeDataModel.homeDataModel.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+//                                boundsTransform = {_,_->
+//                                    tween(1000)
+//                                }
+                    )
             )
 
             ComposeText(
@@ -195,7 +219,9 @@ private fun Details(
             if (homeDataModel.similarMovies.isEmpty()) {
                 CircularProgressIndicator(
                     color = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 40.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 40.dp)
                 )
             } else {
                 LazyRow(
@@ -293,11 +319,12 @@ fun Test() {
 @Composable
 fun MovieImage(
     thumbnail: String?,
-    size: Dp = 120.dp
+    size: Dp = 120.dp,
+    modifier: Modifier = Modifier
 ) {
     AsyncImage(
         model = thumbnail, contentDescription = "", contentScale = ContentScale.Crop,
-        modifier = Modifier.size(size),
+        modifier = modifier.size(size),
         placeholder = painterResource(id = R.mipmap.ic_launcher)
     )
 }
@@ -342,16 +369,16 @@ fun ToolbarCompose(
 @Composable
 fun DefaultPreview() {
     MovieDBTheme {
-        Details(
-            DetailsUiState.Success(
-                HomeDataModel(),
-                listOf(
-                    SimilarMoviesModel(),
-                    SimilarMoviesModel(),
-                    SimilarMoviesModel(),
-                )
-            )
-        ) {}
+//        Details(
+//            DetailsUiState.Success(
+//                HomeDataModel(),
+//                listOf(
+//                    SimilarMoviesModel(),
+//                    SimilarMoviesModel(),
+//                    SimilarMoviesModel(),
+//                )
+//            )
+//        ) {}
     }
 }
 

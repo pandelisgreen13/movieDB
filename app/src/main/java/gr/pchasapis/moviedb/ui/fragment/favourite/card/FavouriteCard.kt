@@ -1,5 +1,11 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class)
+
 package gr.pchasapis.moviedb.ui.fragment.favourite.card
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -36,9 +42,10 @@ import gr.pchasapis.moviedb.ui.fragment.details.ComposeText
 import gr.pchasapis.moviedb.ui.fragment.details.MovieImage
 
 @Composable
-fun FavouriteRow(
+fun SharedTransitionScope.FavouriteRow(
     homeDataModel: HomeDataModel,
     modifier: Modifier = Modifier,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onRowClicked: (HomeDataModel) -> Unit
 ) {
     Card(
@@ -49,7 +56,10 @@ fun FavouriteRow(
         },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
-        FavouriteContent(homeDataModel = homeDataModel)
+        FavouriteContent(
+            homeDataModel = homeDataModel,
+            animatedVisibilityScope = animatedVisibilityScope
+        )
     }
 }
 
@@ -74,7 +84,10 @@ fun FavouriteGrid(
 }
 
 @Composable
-fun FavouriteContent(homeDataModel: HomeDataModel) {
+fun SharedTransitionScope.FavouriteContent(
+    homeDataModel: HomeDataModel,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
     // var expanded by rememberSaveable { mutableStateOf(false) }
 
     Row(
@@ -88,7 +101,14 @@ fun FavouriteContent(homeDataModel: HomeDataModel) {
     ) {
 
         MovieImage(
-            homeDataModel.thumbnail
+            homeDataModel.thumbnail,
+            modifier = Modifier.sharedElement(
+                state = rememberSharedContentState(key = "image/${homeDataModel.id}"),
+                animatedVisibilityScope = animatedVisibilityScope,
+//                boundsTransform = {_,_->
+//                    tween(1000)
+//                }
+            )
         )
 
         Column(
@@ -102,7 +122,15 @@ fun FavouriteContent(homeDataModel: HomeDataModel) {
                 maxLines = 2,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 6.dp)
+                modifier = Modifier
+                    .padding(top = 6.dp)
+                    .sharedElement(
+                        state = rememberSharedContentState(key = "text/${homeDataModel.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+//                                boundsTransform = {_,_->
+//                                    tween(1000)
+//                                }
+                    )
             )
 
             ComposeText(
@@ -198,14 +226,17 @@ fun ListPreview() {
 @Composable
 fun CardPreview() {
     MovieDBTheme {
-        FavouriteRow(
-            HomeDataModel(
-                ratings = "5",
-                title = "Avengers",
-                releaseDate = "25/5/2019",
-                id = 5
-            )
-        ) {}
+        SharedTransitionLayout {
+//            FavouriteRow(
+//                HomeDataModel(
+//                    ratings = "5",
+//                    title = "Avengers",
+//                    releaseDate = "25/5/2019",
+//                    id = 5
+//                ),
+//                animatedVisibilityScope = this@
+//            ) {}
+        }
     }
 }
 

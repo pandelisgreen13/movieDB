@@ -1,5 +1,11 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class)
+
 package gr.pchasapis.moviedb.ui.fragment.home.compose
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,8 +55,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun HomeRoute(
+fun SharedTransitionScope.HomeRoute(
     movies: HomeUiState,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onItemClicked: (HomeDataModel) -> Unit,
     textChanged: (String) -> Unit,
 ) {
@@ -58,6 +65,7 @@ fun HomeRoute(
 
     HomeScreen(
         state = movies,
+        animatedVisibilityScope = animatedVisibilityScope,
         textChanged = {
             textChanged.invoke(it)
         },
@@ -68,8 +76,9 @@ fun HomeRoute(
 }
 
 @Composable
-fun HomeScreen(
+fun SharedTransitionScope.HomeScreen(
     state: HomeUiState,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     textChanged: (String) -> Unit = {},
     onItemClicked: (HomeDataModel) -> Unit = {}
 ) {
@@ -108,6 +117,7 @@ fun HomeScreen(
         state.data?.let {
             HomeList(
                 messages = it,
+                animatedVisibilityScope = animatedVisibilityScope,
                 onItemClicked = onItemClicked
             )
         }
@@ -118,7 +128,11 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeList(messages: Flow<PagingData<HomeDataModel>>, onItemClicked: (HomeDataModel) -> Unit) {
+fun SharedTransitionScope.HomeList(
+    messages: Flow<PagingData<HomeDataModel>>,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    onItemClicked: (HomeDataModel) -> Unit
+) {
 
     val lazyPagingItems = messages.collectAsLazyPagingItems()
 
@@ -135,6 +149,7 @@ fun HomeList(messages: Flow<PagingData<HomeDataModel>>, onItemClicked: (HomeData
             val favourite = lazyPagingItems[it]!!
             FavouriteRow(
                 homeDataModel = favourite,
+                animatedVisibilityScope = animatedVisibilityScope,
                 modifier = Modifier.animateItem()
             ) { model ->
                 onItemClicked(model)
@@ -205,7 +220,9 @@ fun PreviewHome() {
         val pagingData = PagingData.from(list)
 // pass pagingData containing fake data to a MutableStateFlow
         val fakeDataFlow = MutableStateFlow(pagingData)
-        HomeScreen(state = HomeUiState(data = fakeDataFlow))
+        SharedTransitionLayout {
+         //   HomeScreen(state = HomeUiState(data = fakeDataFlow))
+        }
     }
 }
 
@@ -214,7 +231,9 @@ fun PreviewHome() {
 fun PreviewLoadingHome() {
     MovieDBTheme {
 
-        HomeScreen(state = HomeUiState(isLoading = true))
+        SharedTransitionLayout {
+         //   HomeScreen(state = HomeUiState(isLoading = true))
+        }
     }
 }
 

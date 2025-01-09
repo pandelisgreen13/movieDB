@@ -3,6 +3,8 @@ package gr.pchasapis.moviedb.ui.activity.navigation
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.core.os.BundleCompat
@@ -24,45 +26,48 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.reflect.typeOf
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppNavHost(navController: NavHostController) {
 
+    SharedTransitionLayout {
+        NavHost(navController = navController, startDestination = Navigation.Home) {
+            composable<Navigation.Home>() {
 
-    NavHost(navController = navController, startDestination = Navigation.Home) {
-        composable<Navigation.Home>() {
+                val homeViewModel: HomeViewModel = hiltViewModel()
+                val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
 
-            val homeViewModel: HomeViewModel = hiltViewModel()
-            val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
+                HomeRoute(
+                    movies = movies,
+                    animatedVisibilityScope = this,
+                    onItemClicked = { movie ->
+                        navController.navigate(Navigation.Details(movie))
+                    },
+                    textChanged = {
+                        homeViewModel.setQueryText(it)
+                    })
+            }
+            composable<Navigation.Details>(
+                typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
+            ) { backStackEntry ->
+                val post = backStackEntry.toRoute<Navigation.Details>()
+                DetailsRoute(passData = post.model, animatedVisibilityScope = this) {
+                    navController.navigateUp()
+                }
+            }
 
-            HomeRoute(
-                movies = movies,
-                onItemClicked = { movie ->
+            composable<Navigation.Favourites> {
+                FavouriteRoute { movie ->
                     navController.navigate(Navigation.Details(movie))
-                },
-                textChanged = {
-                    homeViewModel.setQueryText(it)
-                })
-        }
-        composable<Navigation.Details>(
-            typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
-        ) { backStackEntry ->
-            val post = backStackEntry.toRoute<Navigation.Details>()
-            DetailsRoute(passData = post.model) {
-                navController.navigateUp()
+                }
             }
-        }
+            composable<Navigation.Theater> {
 
-        composable<Navigation.Favourites> {
-            FavouriteRoute { movie ->
-                navController.navigate(Navigation.Details(movie))
+                val viewModel: TheaterViewModel = hiltViewModel()
+
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                TheatreScreen(uiState)
             }
-        }
-        composable<Navigation.Theater> {
-
-            val viewModel: TheaterViewModel = hiltViewModel()
-
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            TheatreScreen(uiState)
         }
     }
 }
