@@ -60,6 +60,7 @@ import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
+import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
 
 @Composable
 fun DetailsRoute(
@@ -83,7 +84,7 @@ fun DetailsRoute(
         }
 
         is DetailsUiState.Error -> {
-
+            LoadingErrorCompose(shouldShowError = true)
         }
     }
 }
@@ -192,10 +193,18 @@ private fun Details(
                     .padding(top = 20.dp)
             )
 
-            if (homeDataModel.similarMovies.isEmpty()) {
+            if (homeDataModel.similarMovies == null) {
                 CircularProgressIndicator(
                     color = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 40.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 40.dp)
+                )
+            } else if (homeDataModel.similarMovies.isEmpty()) {
+                Text(
+                    "Movies not found", modifier = Modifier.padding(top = 10.dp),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Light,
                 )
             } else {
                 LazyRow(

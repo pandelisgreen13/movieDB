@@ -60,7 +60,7 @@ class DetailsInteractorImpl @Inject constructor(
             DataResult(response)
         } catch (t: Throwable) {
             Timber.d(t)
-            DataResult(throwable = t)
+            DataResult(homeDataModel)
         }
     }
 

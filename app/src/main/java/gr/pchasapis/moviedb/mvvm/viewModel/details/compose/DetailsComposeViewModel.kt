@@ -9,7 +9,6 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,32 +35,33 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
         if (homeDataModel == null ||
             homeDataModel?.mediaType == null
         ) {
+            _uiState.value = DetailsUiState.Error
             return
         }
 
         homeDataModel?.id?.let { id ->
             viewModelScope.launch {
+                isFavouriteLiveData.value = homeDataModel!!.isFavorite
+                
                 detailsInteractor.onRetrieveFlowDetails(homeDataModel!!).collectLatest { response ->
                     response.data?.let { data ->
                         _uiState.update {
                             DetailsUiState.Success(data)
                         }
-                        isFavouriteLiveData.value = data.isFavorite
                     } ?: run {
-                        _uiState.value = DetailsUiState.Error
+                        _uiState.value = DetailsUiState.Success(homeDataModel!!)
                     }
                 }
                 val response = detailsInteractor.getSimilarMovies(
                     id = id,
                     mediaType = homeDataModel?.mediaType.orEmpty()
                 )
-                response.data?.let {
-                    _uiState.update { state ->
-                        (state as? DetailsUiState.Success)?.copy(
-                            similarMovies = response.data
-                        ) ?: state
-                    }
+                _uiState.update { state ->
+                    (state as? DetailsUiState.Success)?.copy(
+                        similarMovies = response.data.orEmpty()
+                    ) ?: state
                 }
+
             }
         }
 
@@ -99,7 +99,7 @@ sealed class DetailsUiState {
     data object Loading : DetailsUiState()
     data class Success(
         val homeDataModel: HomeDataModel,
-        val similarMovies: List<SimilarMoviesModel> = emptyList()
+        val similarMovies: List<SimilarMoviesModel>? = null
     ) : DetailsUiState()
 
     data object Error : DetailsUiState()
