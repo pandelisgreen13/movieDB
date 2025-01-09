@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface HomeInteractor : MVVMInteractor {
 
     suspend fun onRetrieveSearchResult(queryText: String, page: Int): Flow<DataResult<List<HomeDataModel>>>
-    suspend fun getMoviesInTheatres():DataResult<List<MovieDataModel>>
+    suspend fun getMoviesInTheatres():DataResult<List<HomeDataModel>>
 
    suspend fun flowPaging(queryText: String): Flow<PagingData<HomeDataModel>>
 }

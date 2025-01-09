@@ -40,7 +40,7 @@ class HomeInteractorImpl(
         }
     }
 
-    override suspend fun getMoviesInTheatres(): DataResult<List<MovieDataModel>> {
+    override suspend fun getMoviesInTheatres(): DataResult<List<HomeDataModel>> {
         return try {
             val response = movieClient.getMovieTheatre(DATE_FROM, DATE_TO)
             DataResult(toMovieDataModel(response))
@@ -81,15 +81,17 @@ class HomeInteractorImpl(
         } ?: arrayListOf())
     }
 
-    private fun toMovieDataModel(theatreResponse: MovieNetworkResponse): List<MovieDataModel> {
+    private fun toMovieDataModel(theatreResponse: MovieNetworkResponse): List<HomeDataModel> {
         return (theatreResponse.searchResultsList?.map { movieItem ->
-            MovieDataModel(
+            HomeDataModel(
                 id = movieItem.id,
                 title = movieItem.title ?: "-",
+                mediaType = "movie",
                 summary = movieItem.overview ?: "-",
                 thumbnail = "${Definitions.IMAGE_URL_W300}${movieItem.posterPath}",
                 ratings = (movieItem.voteAverage ?: 0).toString(),
-                releaseDate = movieItem.releaseDate ?: "-"
+                releaseDate = movieItem.releaseDate ?: "-",
+                isFavorite = movieDbDatabase.movieDbTableDao().isFavourite(movieItem.id ?: 0)
             )
         } ?: arrayListOf())
     }

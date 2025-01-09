@@ -62,7 +62,9 @@ fun AppNavHost(navController: NavHostController) {
             val viewModel: TheaterViewModel = hiltViewModel()
 
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            TheatreScreen(uiState)
+            TheatreScreen(uiState) { movie ->
+                navController.navigate(Navigation.Details(movie))
+            }
         }
     }
 }
