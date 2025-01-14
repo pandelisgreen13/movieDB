@@ -22,7 +22,6 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
     ViewModel() {
 
     private var homeDataModel: HomeDataModel? = null
-    var hasUserChangeFavourite: Boolean? = false
 
     private var isFavouriteLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     val showFavouriteLiveData: LiveData<Boolean>
@@ -72,7 +71,6 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
         if (homeDataModel == null) {
             return
         }
-        hasUserChangeFavourite = true
         val homeModel = homeDataModel
         homeModel?.isFavorite = homeModel?.isFavorite == false
         viewModelScope.launch {
