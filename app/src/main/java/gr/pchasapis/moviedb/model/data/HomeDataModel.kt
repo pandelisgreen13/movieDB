@@ -27,4 +27,13 @@ data class HomeDataModel(
 data class SimilarMoviesModel(
     val id: Int = 0,
     val image: String = ""
-)
+) {
+
+    fun toHomeDataModel(mediaType: String?): HomeDataModel {
+        return HomeDataModel(
+            id = id,
+            thumbnail = image,
+            mediaType = mediaType ?: "movie"
+        )
+    }
+}

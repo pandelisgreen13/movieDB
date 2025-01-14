@@ -101,29 +101,35 @@ class DetailsInteractorImpl @Inject constructor(
         homeDataModel: HomeDataModel,
         movieResponse: MovieDetailsResponse
     ): HomeDataModel {
-        homeDataModel.thumbnail = "${Definitions.IMAGE_URL_W500}${movieResponse.posterPath}"
-        homeDataModel.genresName = getGenre(movieResponse.genres)
-        homeDataModel.videoKey = movieResponse.videos?.videoResultList?.firstOrNull()?.key ?: ""
-        homeDataModel.videoUrl =
-            "<html><body><br><iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/${homeDataModel.videoKey}\" frameborder=\"0\" allowfullscreen></iframe></body></html>"
-        return homeDataModel
+
+        return homeDataModel.copy(
+            releaseDate = movieResponse.releaseDate,
+            ratings = movieResponse.voteAverage.toString(),
+            summary = movieResponse.overview,
+            title = movieResponse.title,
+            thumbnail = "${Definitions.IMAGE_URL_W500}${movieResponse.posterPath}",
+            genresName = getGenre(movieResponse.genres),
+        )
     }
 
     private fun getGenre(genres: List<GenresItem>?) =
         genres?.map {
             it.name.orEmpty()
-        }?.filter { it.isEmpty().not() }?.joinToString("\n") { "${it}" }
+        }?.filter { it.isEmpty().not() }?.joinToString("\n") { it }
 
     private fun tvShowToHomeDataModel(
         homeDataModel: HomeDataModel,
         tvShowResponse: TvShowResponse
     ): HomeDataModel {
-        homeDataModel.thumbnail = "${Definitions.IMAGE_URL_W500}${tvShowResponse.posterPath}"
-        homeDataModel.genresName = getGenre(tvShowResponse.genres)
-        homeDataModel.videoKey = tvShowResponse.videos?.videoResultList?.firstOrNull()?.key ?: ""
-        homeDataModel.videoUrl =
-            "<html><body><br><iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/${homeDataModel.videoKey}\" frameborder=\"0\" allowfullscreen></iframe></body></html>"
-        return homeDataModel
+
+        return homeDataModel.copy(
+            releaseDate = tvShowResponse.firstAirDate,
+            ratings = tvShowResponse.voteAverage.toString(),
+            summary = tvShowResponse.overview,
+            title = tvShowResponse.originalName,
+            thumbnail = "${Definitions.IMAGE_URL_W500}${tvShowResponse.posterPath}",
+            genresName = getGenre(tvShowResponse.genres),
+        )
     }
 
 }

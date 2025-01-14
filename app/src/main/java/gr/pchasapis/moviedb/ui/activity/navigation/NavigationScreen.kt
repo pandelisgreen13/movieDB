@@ -47,7 +47,10 @@ fun AppNavHost(navController: NavHostController) {
             typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
         ) { backStackEntry ->
             val post = backStackEntry.toRoute<Navigation.Details>()
-            DetailsRoute(passData = post.model) {
+            DetailsRoute(passData = post.model,
+                onSimilarClicked = { similarItem ->
+                    navController.navigate(Navigation.Details(similarItem))
+                }) {
                 navController.navigateUp()
             }
         }

@@ -66,6 +66,7 @@ import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
 fun DetailsRoute(
     detailsViewModel: DetailsComposeViewModel = hiltViewModel(),
     passData: HomeDataModel?,
+    onSimilarClicked: (HomeDataModel) -> Unit,
     onBackIconClicked: () -> Unit
 ) {
     detailsViewModel.setUIModel(passData)
@@ -74,7 +75,7 @@ fun DetailsRoute(
     when (uiState) {
         is DetailsUiState.Success -> {
             val model = (uiState as DetailsUiState.Success)
-            Details(model, detailsViewModel) {
+            Details(model, detailsViewModel, onSimilarClicked) {
                 onBackIconClicked()
             }
         }
@@ -109,8 +110,9 @@ fun LoadingCompose() {
 
 @Composable
 private fun Details(
-    homeDataModel: DetailsUiState.Success,
+    model: DetailsUiState.Success,
     viewModel: DetailsComposeViewModel? = null,
+    onSimilarClicked: (HomeDataModel) -> Unit = {},
     onBackIconClicked: () -> Unit
 ) {
     Surface(
@@ -148,7 +150,7 @@ private fun Details(
                 cardFace = cardFace,
                 front = {
                     AsyncImage(
-                        model = homeDataModel.homeDataModel.thumbnail,
+                        model = model.homeDataModel.thumbnail,
                         contentDescription = "",
                         contentScale = ContentScale.Fit,
                         modifier = it
@@ -158,14 +160,14 @@ private fun Details(
                     )
                 },
                 back = {
-                    BackCard(it = it, homeDataModel = homeDataModel)
+                    BackCard(it = it, homeDataModel = model)
                 }
             ) {
                 cardFace = cardFace.next
             }
 
             ComposeText(
-                text = homeDataModel.homeDataModel.title ?: "-",
+                text = model.homeDataModel.title ?: "-",
                 maxLines = 2,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -175,7 +177,7 @@ private fun Details(
             )
 
             ComposeText(
-                text = homeDataModel.homeDataModel.summary ?: "-",
+                text = model.homeDataModel.summary ?: "-",
                 maxLines = 6,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
@@ -193,14 +195,14 @@ private fun Details(
                     .padding(top = 20.dp)
             )
 
-            if (homeDataModel.similarMovies == null) {
+            if (model.similarMovies == null) {
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 40.dp)
                 )
-            } else if (homeDataModel.similarMovies.isEmpty()) {
+            } else if (model.similarMovies.isEmpty()) {
                 Text(
                     "Movies not found", modifier = Modifier.padding(top = 10.dp),
                     fontSize = 14.sp,
@@ -213,7 +215,7 @@ private fun Details(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    items(homeDataModel.similarMovies, key = { it.id }) { item ->
+                    items(model.similarMovies, key = { it.id }) { item ->
                         AsyncImage(
                             model = item.image,
                             contentDescription = "",
@@ -221,7 +223,10 @@ private fun Details(
                             modifier = Modifier
                                 .height(150.dp)
                                 .width(80.dp)
-                                .clip(RoundedCornerShape(10.dp)),
+                                .clip(RoundedCornerShape(10.dp))
+                                .clickable {
+                                    onSimilarClicked(item.toHomeDataModel(model.homeDataModel.mediaType))
+                                },
                             placeholder = painterResource(id = R.mipmap.ic_launcher),
                             error = painterResource(id = R.mipmap.ic_launcher)
                         )
