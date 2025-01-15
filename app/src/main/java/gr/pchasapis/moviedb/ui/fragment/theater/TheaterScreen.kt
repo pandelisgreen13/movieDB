@@ -109,7 +109,6 @@ fun Content(
                     .height(150.dp)
                     .width(80.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(Color.White)
                     .clickable {
                         nextScreen(item)
                     },

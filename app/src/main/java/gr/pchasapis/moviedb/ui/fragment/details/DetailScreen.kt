@@ -27,7 +27,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
@@ -69,7 +72,9 @@ fun DetailsRoute(
     onSimilarClicked: (HomeDataModel) -> Unit,
     onBackIconClicked: () -> Unit
 ) {
-    detailsViewModel.setUIModel(passData)
+    LaunchedEffect(Unit) {
+        detailsViewModel.setUIModel(passData)
+    }
 
     val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
     when (uiState) {
@@ -120,6 +125,8 @@ private fun Details(
         modifier = Modifier.fillMaxSize(),
     ) {
 
+        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
 
         Column(
             modifier = Modifier
@@ -141,50 +148,30 @@ private fun Details(
                     viewModel?.toggleFavourite()
                 })
 
-            var cardFace by rememberSaveable {
-                mutableStateOf(CardFace.Front)
-            }
 
-            FlipCard(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                cardFace = cardFace,
-                front = {
-                    AsyncImage(
-                        model = model.homeDataModel.thumbnail,
-                        contentDescription = "",
-                        contentScale = ContentScale.Fit,
-                        modifier = it
-                            .size(300.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        placeholder = painterResource(id = R.mipmap.ic_launcher)
-                    )
-                },
-                back = {
-                    BackCard(it = it, homeDataModel = model)
+            if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
+                Row {
+                    CardImage(model)
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column {
+                        Title(model)
+
+                        Summary(model = model)
+                    }
                 }
-            ) {
-                cardFace = cardFace.next
+            } else {
+                CardImage(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    model = model
+                )
+
+                Title(model)
+
+                Summary(model)
             }
 
-            ComposeText(
-                text = model.homeDataModel.title ?: "-",
-                maxLines = 2,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 20.dp)
-            )
-
-            ComposeText(
-                text = model.homeDataModel.summary ?: "-",
-                maxLines = 6,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
-            )
 
             ComposeText(
                 text = stringResource(R.string.similar),
@@ -238,6 +225,66 @@ private fun Details(
 
         }
     }
+}
+
+@Composable
+fun CardImage(
+    model: DetailsUiState.Success,
+    modifier: Modifier = Modifier
+) {
+
+    var cardFace by rememberSaveable {
+        mutableStateOf(CardFace.Front)
+    }
+
+    FlipCard(
+        modifier = modifier,
+        cardFace = cardFace,
+        front = {
+            AsyncImage(
+                model = model.homeDataModel.thumbnail,
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                modifier = it
+                    .size(300.dp)
+                    .clip(RoundedCornerShape(10.dp)),
+                placeholder = painterResource(id = R.mipmap.ic_launcher)
+            )
+        },
+        back = {
+            BackCard(it = it, homeDataModel = model)
+        }
+    ) {
+        cardFace = cardFace.next
+    }
+}
+
+@Composable
+private fun Summary(
+    model: DetailsUiState.Success
+) {
+    ComposeText(
+        text = model.homeDataModel.summary ?: "-",
+        maxLines = Int.MAX_VALUE,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Medium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+    )
+}
+
+@Composable
+private fun Title(model: DetailsUiState.Success) {
+    ComposeText(
+        text = model.homeDataModel.title ?: "-",
+        maxLines = 2,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 20.dp)
+    )
 }
 
 @Composable
@@ -361,8 +408,8 @@ fun DefaultPreview() {
                 HomeDataModel(),
                 listOf(
                     SimilarMoviesModel(),
-                    SimilarMoviesModel(),
-                    SimilarMoviesModel(),
+                    SimilarMoviesModel(id = 1),
+                    SimilarMoviesModel(id = 2),
                 )
             )
         ) {}
