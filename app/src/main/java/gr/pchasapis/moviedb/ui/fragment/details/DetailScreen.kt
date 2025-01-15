@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.ui.fragment.details
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -41,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -471,16 +473,22 @@ private fun IconToggleButtonComposable(
             checked = it
         }
     ) {
-        val icon = if (checked) {
-            R.drawable.ic_favourite_selected
-        } else {
-            R.drawable.ic_favourite_un_selected
-        }
+
+        val iconColor by animateColorAsState(
+            label = "border color",
+            targetValue = if (checked) {
+                colorResource(R.color.colorAccent)
+            } else {
+                Color.White
+            },
+            animationSpec = tween(durationMillis = 300)
+
+        )
 
         Icon(
-            painter = painterResource(id = icon),
+            painter = painterResource(id = R.drawable.ic_favourite_un_selected),
             contentDescription = null,
-            tint = Color.Unspecified,
+            tint = iconColor,
             modifier = Modifier
                 .padding(10.dp)
         )
