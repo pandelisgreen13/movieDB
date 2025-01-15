@@ -17,10 +17,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,10 +41,15 @@ fun TheatreScreen(
     modifier: Modifier = Modifier,
     nextScreen: (HomeDataModel) -> Unit
 ) {
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
-            ToolbarView(text = stringResource(R.string.theatre_in_movies))
+            ToolbarView(
+                text = stringResource(R.string.theatre_in_movies),
+                scrollBehavior = scrollBehavior
+            )
         },
 
         modifier = modifier.fillMaxSize(),
@@ -53,6 +61,7 @@ fun TheatreScreen(
                     .fillMaxSize()
                     .consumeWindowInsets(padding)
                     .padding(top = padding.calculateTopPadding())
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
             )
         }
     )
