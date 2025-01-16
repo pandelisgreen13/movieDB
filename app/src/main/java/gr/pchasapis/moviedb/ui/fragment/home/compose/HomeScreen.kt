@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -33,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -250,6 +252,10 @@ private fun SearchView(
             focusedBorderColor = Color.White,
             unfocusedBorderColor = Color.White,
             cursorColor = Color.White,
+            selectionColors = TextSelectionColors(
+                handleColor = colorResource(R.color.colorAccent),
+                backgroundColor = Color(0xFF4286F4).copy(alpha = 0.4f)
+            )
         ),
         placeholder = {
             Text(text = placeHolder, color = Color.White.copy(alpha = 0.2f))
