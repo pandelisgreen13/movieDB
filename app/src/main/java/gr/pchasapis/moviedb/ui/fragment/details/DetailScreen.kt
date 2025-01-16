@@ -239,6 +239,10 @@ fun CardImage(
         mutableStateOf(CardFace.Front)
     }
 
+    val size = remember {
+        300.dp
+    }
+
     FlipCard(
         modifier = modifier,
         cardFace = cardFace,
@@ -248,13 +252,13 @@ fun CardImage(
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 modifier = it
-                    .size(300.dp)
+                    .height(size)
                     .clip(RoundedCornerShape(10.dp)),
                 placeholder = painterResource(id = R.mipmap.ic_launcher)
             )
         },
         back = {
-            BackCard(it = it, homeDataModel = model)
+            BackCard(it = it.size(size), homeDataModel = model)
         }
     ) {
         cardFace = cardFace.next
@@ -295,7 +299,7 @@ private fun BackCard(
     homeDataModel: DetailsUiState.Success
 ) {
     Card(
-        modifier = it.size(300.dp),
+        modifier = it,
         shape = RoundedCornerShape(50.dp),
         colors = CardDefaults.cardColors(
             containerColor = Primary

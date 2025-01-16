@@ -99,6 +99,8 @@ fun Content(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         columns = GridCells.Adaptive(100.dp)
     ) {
+        val shape = RoundedCornerShape(10.dp)
+
         items(list, key = { it.id!! }) { item ->
 
             AsyncImage(
@@ -108,7 +110,8 @@ fun Content(
                 modifier = Modifier
                     .height(150.dp)
                     .width(80.dp)
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(shape)
+                    .shadow(elevation = 8.dp, shape = shape)
                     .clickable {
                         nextScreen(item)
                     },
