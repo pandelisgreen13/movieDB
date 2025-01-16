@@ -43,7 +43,7 @@ fun TheatreScreen(
     nextScreen: (HomeDataModel) -> Unit
 ) {
     val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+        TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
