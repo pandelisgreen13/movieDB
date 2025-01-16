@@ -126,7 +126,7 @@ class DetailsInteractorImpl @Inject constructor(
             releaseDate = tvShowResponse.firstAirDate,
             ratings = tvShowResponse.voteAverage.toString(),
             summary = tvShowResponse.overview,
-            title = tvShowResponse.originalName,
+            title = tvShowResponse.name,
             thumbnail = "${Definitions.IMAGE_URL_W500}${tvShowResponse.posterPath}",
             genresName = getGenre(tvShowResponse.genres),
         )

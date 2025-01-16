@@ -66,6 +66,7 @@ import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
+import isWidthExpanded
 
 @Composable
 fun DetailsRoute(
@@ -151,9 +152,9 @@ private fun Details(
                 })
 
 
-            if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
+            if (windowSizeClass.isWidthExpanded()) {
                 Row {
-                    CardImage(model)
+                    CardImage(model = model, isExpanded = true)
 
                     Spacer(modifier = Modifier.width(10.dp))
 
@@ -232,15 +233,22 @@ private fun Details(
 @Composable
 fun CardImage(
     model: DetailsUiState.Success,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isExpanded: Boolean = false
 ) {
 
     var cardFace by rememberSaveable {
         mutableStateOf(CardFace.Front)
     }
 
+    val cardSize = 300.dp
+
     val size = remember {
-        300.dp
+        if (isExpanded) {
+            200.dp
+        } else {
+            cardSize
+        }
     }
 
     FlipCard(
@@ -252,13 +260,15 @@ fun CardImage(
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 modifier = it
-                    .height(size)
+                    .height(cardSize)
                     .clip(RoundedCornerShape(10.dp)),
                 placeholder = painterResource(id = R.mipmap.ic_launcher)
             )
         },
         back = {
-            BackCard(it = it.size(size), homeDataModel = model)
+            BackCard(it = it
+                .height(cardSize)
+                .width(size), homeDataModel = model)
         }
     ) {
         cardFace = cardFace.next
@@ -300,7 +310,7 @@ private fun BackCard(
 ) {
     Card(
         modifier = it,
-        shape = RoundedCornerShape(50.dp),
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = Primary
         )
