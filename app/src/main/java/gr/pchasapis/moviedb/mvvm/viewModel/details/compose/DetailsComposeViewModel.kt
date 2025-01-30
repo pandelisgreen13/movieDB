@@ -30,37 +30,34 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
     private val _uiState = MutableStateFlow<DetailsUiState>(DetailsUiState.Loading)
     val uiState: StateFlow<DetailsUiState> = _uiState
 
-    private fun fetchDetails() {
-        if (homeDataModel == null ||
-            homeDataModel?.mediaType == null
-        ) {
+    private fun fetchDetails(model: HomeDataModel?) {
+        if (model?.mediaType == null) {
             _uiState.value = DetailsUiState.Error
             return
         }
 
-        homeDataModel?.id?.let { id ->
+        model.id?.let { id ->
             viewModelScope.launch {
-                isFavouriteLiveData.value = homeDataModel!!.isFavorite
-                
-                detailsInteractor.onRetrieveFlowDetails(homeDataModel!!).collectLatest { response ->
+                isFavouriteLiveData.value = model.isFavorite
+
+                detailsInteractor.onRetrieveFlowDetails(model).collectLatest { response ->
                     response.data?.let { data ->
                         _uiState.update {
                             DetailsUiState.Success(data)
                         }
                     } ?: run {
-                        _uiState.value = DetailsUiState.Success(homeDataModel!!)
+                        _uiState.value = DetailsUiState.Success(this@DetailsComposeViewModel.homeDataModel!!)
                     }
                 }
                 val response = detailsInteractor.getSimilarMovies(
                     id = id,
-                    mediaType = homeDataModel?.mediaType.orEmpty()
+                    mediaType = this@DetailsComposeViewModel.homeDataModel?.mediaType.orEmpty()
                 )
                 _uiState.update { state ->
                     (state as? DetailsUiState.Success)?.copy(
                         similarMovies = response.data.orEmpty()
                     ) ?: state
                 }
-
             }
         }
 
@@ -68,11 +65,10 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
     }
 
     fun toggleFavourite() {
-        if (homeDataModel == null) {
-            return
-        }
-        val homeModel = homeDataModel
-        homeModel?.isFavorite = homeModel?.isFavorite == false
+        val homeModel = (uiState.value as? DetailsUiState.Success)?.homeDataModel ?: return
+
+        homeModel.isFavorite = homeModel.isFavorite == false
+
         viewModelScope.launch {
             val response =
                 withContext(Dispatchers.IO) { detailsInteractor.updateFavourite(homeModel) }
@@ -88,7 +84,7 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
             return
         }
         this.homeDataModel = homeDataModel
-        fetchDetails()
+        fetchDetails(homeDataModel)
     }
 }
 

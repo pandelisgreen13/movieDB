@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class DetailsInteractorImpl @Inject constructor(
     private var movieClient: MovieClient,
-    private val movieDbDatabase: MovieDbDatabase,
+    private val movieDbDatabase: MovieDbDatabase
 ) : BaseInteractor(), DetailsInteractor {
 
     override suspend fun getSimilarMovies(

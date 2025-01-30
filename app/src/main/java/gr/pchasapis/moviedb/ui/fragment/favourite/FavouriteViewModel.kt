@@ -46,6 +46,27 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
             }
         }
     }
+
+    fun filterBy(favouriteFilterEvents: FavouriteFilterEvents) {
+        val filteredList = when (favouriteFilterEvents) {
+            FavouriteFilterEvents.ByDateAdded -> {
+                uiState.value.list.sortedByDescending { it.dateAdded }
+            }
+
+            FavouriteFilterEvents.ByName -> {
+                uiState.value.list.sortedBy { it.title }
+            }
+
+            FavouriteFilterEvents.ByRate -> {
+                uiState.value.list.sortedByDescending { it.ratings?.toDouble() ?: 0.0 }
+            }
+        }
+        _uiState.update {
+            it.copy(
+                list = filteredList
+            )
+        }
+    }
 }
 
 
@@ -53,3 +74,10 @@ data class FavouriteUiState(
     val list: List<HomeDataModel> = listOf(),
     val loading: Boolean = true
 )
+
+sealed class FavouriteFilterEvents {
+    data object ByDateAdded : FavouriteFilterEvents()
+    data object ByRate : FavouriteFilterEvents()
+    data object ByName : FavouriteFilterEvents()
+
+}

@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteFilterEvents
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteUiState
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteViewModel
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteList
@@ -44,16 +45,23 @@ fun FavouriteRoute(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    FavouriteScreen(state) {
-        nextScreen(it)
-    }
+    FavouriteScreen(
+        state = state,
+        action = {
+            nextScreen(it)
+        },
+        chipAction = {
+            viewModel.filterBy(it)
+        }
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FavouriteScreen(
     state: FavouriteUiState,
-    action: (HomeDataModel) -> Unit
+    action: (HomeDataModel) -> Unit,
+    chipAction: (FavouriteFilterEvents) -> Unit
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -74,9 +82,15 @@ fun FavouriteScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Chip("Date Added")
-                    Chip("Rate")
-                    Chip("Name")
+                    Chip("Date Added") {
+                        chipAction.invoke(FavouriteFilterEvents.ByDateAdded)
+                    }
+                    Chip("Rate") {
+                        chipAction.invoke(FavouriteFilterEvents.ByRate)
+                    }
+                    Chip("Name") {
+                        chipAction.invoke(FavouriteFilterEvents.ByName)
+                    }
                 }
             }
         },
@@ -100,10 +114,11 @@ fun FavouriteScreen(
 @Composable
 fun Chip(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     AssistChip(
-        onClick = { },
+        onClick = onClick,
         modifier = modifier.padding(horizontal = 2.dp),
         label = {
             Text(
