@@ -495,7 +495,7 @@ private fun IconToggleButtonComposable(
             } else {
                 Color.White
             },
-            animationSpec = tween(durationMillis = 300)
+            animationSpec = tween(durationMillis = 500)
 
         )
 

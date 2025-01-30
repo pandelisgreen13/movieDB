@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -26,11 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.ui.compose.ColorAccent
+import gr.pchasapis.moviedb.ui.compose.Teal200
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteFilterEvents
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteUiState
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteViewModel
@@ -82,13 +86,22 @@ fun FavouriteScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Chip("Date Added") {
+                    Chip(
+                        text = stringResource(R.string.filter_date),
+                        isSelected = state.filterState is FavouriteFilterEvents.ByDateAdded
+                    ) {
                         chipAction.invoke(FavouriteFilterEvents.ByDateAdded)
                     }
-                    Chip("Rate") {
+                    Chip(
+                        stringResource(R.string.filter_rate),
+                        isSelected = state.filterState is FavouriteFilterEvents.ByRate
+                    ) {
                         chipAction.invoke(FavouriteFilterEvents.ByRate)
                     }
-                    Chip("Name") {
+                    Chip(
+                        stringResource(R.string.filter_name),
+                        isSelected = state.filterState is FavouriteFilterEvents.ByName
+                    ) {
                         chipAction.invoke(FavouriteFilterEvents.ByName)
                     }
                 }
@@ -114,16 +127,22 @@ fun FavouriteScreen(
 @Composable
 fun Chip(
     text: String,
+    isSelected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    AssistChip(
+    FilterChip(
         onClick = onClick,
+        colors = FilterChipDefaults.filterChipColors().copy(
+            selectedContainerColor = ColorAccent
+        ),
         modifier = modifier.padding(horizontal = 2.dp),
+        selected = isSelected,
         label = {
             Text(
-                text,
-                color = Color.White
+                text = text,
+                color = Color.White,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
             )
         }
     )

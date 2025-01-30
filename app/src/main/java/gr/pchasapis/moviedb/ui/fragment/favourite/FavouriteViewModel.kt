@@ -63,7 +63,8 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
         }
         _uiState.update {
             it.copy(
-                list = filteredList
+                list = filteredList,
+                filterState= favouriteFilterEvents
             )
         }
     }
@@ -72,6 +73,7 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
 
 data class FavouriteUiState(
     val list: List<HomeDataModel> = listOf(),
+    val filterState: FavouriteFilterEvents = FavouriteFilterEvents.ByDateAdded,
     val loading: Boolean = true
 )
 
