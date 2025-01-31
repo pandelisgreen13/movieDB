@@ -1,6 +1,7 @@
 package gr.pchasapis.moviedb.model.data
 
 import android.os.Parcelable
+import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteFilterEvents
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -22,6 +23,23 @@ data class HomeDataModel(
     var totalPage: Int = 0,
     var dateAdded: Long = 0
 ) : Parcelable
+
+fun List<HomeDataModel>.filterFavourites(favouriteFilterEvents: FavouriteFilterEvents): List<HomeDataModel> {
+
+    return when (favouriteFilterEvents) {
+        FavouriteFilterEvents.ByDateAdded -> {
+            this.sortedByDescending { it.dateAdded }
+        }
+
+        FavouriteFilterEvents.ByName -> {
+            this.sortedBy { it.title }
+        }
+
+        FavouriteFilterEvents.ByRate -> {
+            this.sortedByDescending { it.ratings?.toDouble() ?: 0.0 }
+        }
+    }
+}
 
 
 data class SimilarMoviesModel(
