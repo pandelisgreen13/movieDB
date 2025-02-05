@@ -17,7 +17,7 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.FavouriteRoute
 import gr.pchasapis.moviedb.ui.fragment.home.HomeViewModel
-import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeRoute
+import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeScreen
 import gr.pchasapis.moviedb.ui.fragment.theater.TheaterViewModel
 import gr.pchasapis.moviedb.ui.fragment.theater.TheatreScreen
 import kotlinx.serialization.encodeToString
@@ -34,8 +34,8 @@ fun AppNavHost(navController: NavHostController) {
             val homeViewModel: HomeViewModel = hiltViewModel()
             val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
 
-            HomeRoute(
-                movies = movies,
+            HomeScreen(
+                state = movies,
                 onItemClicked = { movie ->
                     navController.navigate(Navigation.Details(movie))
                 },
@@ -47,7 +47,10 @@ fun AppNavHost(navController: NavHostController) {
             typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
         ) { backStackEntry ->
             val post = backStackEntry.toRoute<Navigation.Details>()
-            DetailsRoute(passData = post.model) {
+            DetailsRoute(passData = post.model,
+                onSimilarClicked = { similarItem ->
+                    navController.navigate(Navigation.Details(similarItem))
+                }) {
                 navController.navigateUp()
             }
         }
@@ -62,7 +65,9 @@ fun AppNavHost(navController: NavHostController) {
             val viewModel: TheaterViewModel = hiltViewModel()
 
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            TheatreScreen(uiState)
+            TheatreScreen(uiState) { movie ->
+                navController.navigate(Navigation.Details(movie))
+            }
         }
     }
 }

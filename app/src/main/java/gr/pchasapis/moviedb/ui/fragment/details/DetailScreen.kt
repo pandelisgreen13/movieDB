@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.ui.fragment.details
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -27,7 +28,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -51,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
@@ -60,20 +65,25 @@ import gr.pchasapis.moviedb.mvvm.viewModel.details.compose.DetailsUiState
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
+import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
+import isWidthExpanded
 
 @Composable
 fun DetailsRoute(
     detailsViewModel: DetailsComposeViewModel = hiltViewModel(),
     passData: HomeDataModel?,
+    onSimilarClicked: (HomeDataModel) -> Unit,
     onBackIconClicked: () -> Unit
 ) {
-    detailsViewModel.setUIModel(passData)
+    LaunchedEffect(Unit) {
+        detailsViewModel.setUIModel(passData)
+    }
 
     val uiState by detailsViewModel.uiState.collectAsStateWithLifecycle()
     when (uiState) {
         is DetailsUiState.Success -> {
             val model = (uiState as DetailsUiState.Success)
-            Details(model, detailsViewModel) {
+            Details(model, detailsViewModel, onSimilarClicked) {
                 onBackIconClicked()
             }
         }
@@ -83,7 +93,7 @@ fun DetailsRoute(
         }
 
         is DetailsUiState.Error -> {
-
+            LoadingErrorCompose(shouldShowError = true)
         }
     }
 }
@@ -108,14 +118,17 @@ fun LoadingCompose() {
 
 @Composable
 private fun Details(
-    homeDataModel: DetailsUiState.Success,
+    model: DetailsUiState.Success,
     viewModel: DetailsComposeViewModel? = null,
+    onSimilarClicked: (HomeDataModel) -> Unit = {},
     onBackIconClicked: () -> Unit
 ) {
     Surface(
         color = PrimaryDark,
         modifier = Modifier.fillMaxSize(),
     ) {
+
+        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
 
         Column(
@@ -138,50 +151,30 @@ private fun Details(
                     viewModel?.toggleFavourite()
                 })
 
-            var cardFace by rememberSaveable {
-                mutableStateOf(CardFace.Front)
-            }
 
-            FlipCard(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                cardFace = cardFace,
-                front = {
-                    AsyncImage(
-                        model = homeDataModel.homeDataModel.thumbnail,
-                        contentDescription = "",
-                        contentScale = ContentScale.Fit,
-                        modifier = it
-                            .size(300.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        placeholder = painterResource(id = R.mipmap.ic_launcher)
-                    )
-                },
-                back = {
-                    BackCard(it = it, homeDataModel = homeDataModel)
+            if (windowSizeClass.isWidthExpanded()) {
+                Row {
+                    CardImage(model = model, isExpanded = true)
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Column {
+                        Title(model)
+
+                        Summary(model = model)
+                    }
                 }
-            ) {
-                cardFace = cardFace.next
+            } else {
+                CardImage(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    model = model
+                )
+
+                Title(model)
+
+                Summary(model)
             }
 
-            ComposeText(
-                text = homeDataModel.homeDataModel.title ?: "-",
-                maxLines = 2,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 20.dp)
-            )
-
-            ComposeText(
-                text = homeDataModel.homeDataModel.summary ?: "-",
-                maxLines = 6,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
-            )
 
             ComposeText(
                 text = stringResource(R.string.similar),
@@ -192,10 +185,18 @@ private fun Details(
                     .padding(top = 20.dp)
             )
 
-            if (homeDataModel.similarMovies.isEmpty()) {
+            if (model.similarMovies == null) {
                 CircularProgressIndicator(
                     color = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 40.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 40.dp)
+                )
+            } else if (model.similarMovies.isEmpty()) {
+                Text(
+                    "Movies not found", modifier = Modifier.padding(top = 10.dp),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Light,
                 )
             } else {
                 LazyRow(
@@ -204,7 +205,7 @@ private fun Details(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    items(homeDataModel.similarMovies, key = { it.id }) { item ->
+                    items(model.similarMovies, key = { it.id }) { item ->
                         AsyncImage(
                             model = item.image,
                             contentDescription = "",
@@ -212,7 +213,10 @@ private fun Details(
                             modifier = Modifier
                                 .height(150.dp)
                                 .width(80.dp)
-                                .clip(RoundedCornerShape(10.dp)),
+                                .clip(RoundedCornerShape(10.dp))
+                                .clickable {
+                                    onSimilarClicked(item.toHomeDataModel(model.homeDataModel.mediaType))
+                                },
                             placeholder = painterResource(id = R.mipmap.ic_launcher),
                             error = painterResource(id = R.mipmap.ic_launcher)
                         )
@@ -227,13 +231,86 @@ private fun Details(
 }
 
 @Composable
+fun CardImage(
+    model: DetailsUiState.Success,
+    modifier: Modifier = Modifier,
+    isExpanded: Boolean = false
+) {
+
+    var cardFace by rememberSaveable {
+        mutableStateOf(CardFace.Front)
+    }
+
+    val cardSize = 300.dp
+
+    val size = remember {
+        if (isExpanded) {
+            200.dp
+        } else {
+            cardSize
+        }
+    }
+
+    FlipCard(
+        modifier = modifier,
+        cardFace = cardFace,
+        front = {
+            AsyncImage(
+                model = model.homeDataModel.thumbnail,
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                modifier = it
+                    .height(cardSize)
+                    .clip(RoundedCornerShape(10.dp)),
+                placeholder = painterResource(id = R.mipmap.ic_launcher)
+            )
+        },
+        back = {
+            BackCard(it = it
+                .height(cardSize)
+                .width(size), homeDataModel = model)
+        }
+    ) {
+        cardFace = cardFace.next
+    }
+}
+
+@Composable
+private fun Summary(
+    model: DetailsUiState.Success
+) {
+    ComposeText(
+        text = model.homeDataModel.summary ?: "-",
+        maxLines = Int.MAX_VALUE,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Medium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
+    )
+}
+
+@Composable
+private fun Title(model: DetailsUiState.Success) {
+    ComposeText(
+        text = model.homeDataModel.title ?: "-",
+        maxLines = 2,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 20.dp)
+    )
+}
+
+@Composable
 private fun BackCard(
     it: Modifier,
     homeDataModel: DetailsUiState.Success
 ) {
     Card(
-        modifier = it.size(300.dp),
-        shape = RoundedCornerShape(50.dp),
+        modifier = it,
+        shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
             containerColor = Primary
         )
@@ -347,8 +424,8 @@ fun DefaultPreview() {
                 HomeDataModel(),
                 listOf(
                     SimilarMoviesModel(),
-                    SimilarMoviesModel(),
-                    SimilarMoviesModel(),
+                    SimilarMoviesModel(id = 1),
+                    SimilarMoviesModel(id = 2),
                 )
             )
         ) {}
@@ -410,16 +487,22 @@ private fun IconToggleButtonComposable(
             checked = it
         }
     ) {
-        val icon = if (checked) {
-            R.drawable.ic_favourite_selected
-        } else {
-            R.drawable.ic_favourite_un_selected
-        }
+
+        val iconColor by animateColorAsState(
+            label = "border color",
+            targetValue = if (checked) {
+                colorResource(R.color.colorAccent)
+            } else {
+                Color.White
+            },
+            animationSpec = tween(durationMillis = 500)
+
+        )
 
         Icon(
-            painter = painterResource(id = icon),
+            painter = painterResource(id = R.drawable.ic_favourite_un_selected),
             contentDescription = null,
-            tint = Color.Unspecified,
+            tint = iconColor,
             modifier = Modifier
                 .padding(10.dp)
         )

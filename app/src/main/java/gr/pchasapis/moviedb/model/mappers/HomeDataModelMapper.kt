@@ -21,7 +21,7 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
         }
     }
 
-    fun mapFromDB(databaseItem: MovieDbTable) =
+    private fun mapFromDB(databaseItem: MovieDbTable) =
         HomeDataModel(
             id = databaseItem.id,
             title = databaseItem.title,

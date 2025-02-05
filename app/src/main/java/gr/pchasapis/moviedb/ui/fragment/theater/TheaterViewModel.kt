@@ -40,6 +40,6 @@ class TheaterViewModel @Inject constructor(
 }
 
 data class TheaterUiState(
-    val list: List<MovieDataModel> = listOf(),
+    val list: List<HomeDataModel> = listOf(),
     val loading: Boolean = true
 )

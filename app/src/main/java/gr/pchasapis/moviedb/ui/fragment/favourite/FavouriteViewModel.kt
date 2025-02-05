@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import gr.pchasapis.moviedb.model.data.HomeDataModel
+import gr.pchasapis.moviedb.model.data.filterFavourites
 import gr.pchasapis.moviedb.mvvm.interactor.favourite.FavouriteInteractorImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,10 +41,19 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
                 _uiState.update {
                     it.copy(
                         loading = false,
-                        list = favourites
+                        list = favourites.filterFavourites(uiState.value.filterState)
                     )
                 }
             }
+        }
+    }
+
+    fun filterBy(favouriteFilterEvents: FavouriteFilterEvents) {
+        _uiState.update {
+            it.copy(
+                list = uiState.value.list.filterFavourites(favouriteFilterEvents),
+                filterState = favouriteFilterEvents
+            )
         }
     }
 }
@@ -51,5 +61,13 @@ class FavouriteViewModel @Inject constructor(private val favouriteInteractorImpl
 
 data class FavouriteUiState(
     val list: List<HomeDataModel> = listOf(),
+    val filterState: FavouriteFilterEvents = FavouriteFilterEvents.ByDateAdded,
     val loading: Boolean = true
 )
+
+sealed class FavouriteFilterEvents {
+    data object ByDateAdded : FavouriteFilterEvents()
+    data object ByRate : FavouriteFilterEvents()
+    data object ByName : FavouriteFilterEvents()
+
+}

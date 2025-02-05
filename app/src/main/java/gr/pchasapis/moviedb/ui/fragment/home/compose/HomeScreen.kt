@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -21,6 +23,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,30 +48,14 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
+import gr.pchasapis.moviedb.ui.fragment.favourite.screen.ToolbarView
 import gr.pchasapis.moviedb.ui.fragment.home.HomeUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-@Composable
-fun HomeRoute(
-    movies: HomeUiState,
-    onItemClicked: (HomeDataModel) -> Unit,
-    textChanged: (String) -> Unit,
-) {
 
-
-    HomeScreen(
-        state = movies,
-        textChanged = {
-            textChanged.invoke(it)
-        },
-        onItemClicked = {
-            onItemClicked(it)
-        }
-    )
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     state: HomeUiState,
@@ -78,8 +67,13 @@ fun HomeScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
     ) {
+        val scrollBehavior =
+            TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-        ToolbarCenterAligned()
+        ToolbarView(
+            scrollBehavior = scrollBehavior,
+            text = stringResource(id = R.string.home_toolbar_title)
+        )
 
         var text by rememberSaveable { mutableStateOf("") }
 
@@ -108,7 +102,8 @@ fun HomeScreen(
         state.data?.let {
             HomeList(
                 messages = it,
-                onItemClicked = onItemClicked
+                onItemClicked = onItemClicked,
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
             )
         }
 
@@ -118,13 +113,20 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeList(messages: Flow<PagingData<HomeDataModel>>, onItemClicked: (HomeDataModel) -> Unit) {
+fun HomeList(
+    messages: Flow<PagingData<HomeDataModel>>,
+    onItemClicked: (HomeDataModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     val lazyPagingItems = messages.collectAsLazyPagingItems()
 
-    LazyColumn(
+    LazyVerticalGrid(
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(horizontal = 14.dp, vertical = 14.dp),
+        columns = GridCells.Adaptive(300.dp),
+        modifier = modifier
     ) {
         items(
             lazyPagingItems.itemCount,
@@ -250,6 +252,10 @@ private fun SearchView(
             focusedBorderColor = Color.White,
             unfocusedBorderColor = Color.White,
             cursorColor = Color.White,
+            selectionColors = TextSelectionColors(
+                handleColor = colorResource(R.color.colorAccent),
+                backgroundColor = Color(0xFF4286F4).copy(alpha = 0.4f)
+            )
         ),
         placeholder = {
             Text(text = placeHolder, color = Color.White.copy(alpha = 0.2f))

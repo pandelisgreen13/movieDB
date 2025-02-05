@@ -28,5 +28,8 @@
     <string name="favourite_empty_list">No favourite at this moment</string>
     <string name="favourite_screen">Favourites</string>
     <string name="similar">Similar Movies</string>
+    <string name="filter_date">Date Added</string>
+    <string name="filter_rate">Rate</string>
+    <string name="filter_name">Name</string>
 
 </resources>

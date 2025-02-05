@@ -9,7 +9,6 @@ import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.mvvm.interactor.details.DetailsInteractorImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -23,7 +22,6 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
     ViewModel() {
 
     private var homeDataModel: HomeDataModel? = null
-    var hasUserChangeFavourite: Boolean? = false
 
     private var isFavouriteLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     val showFavouriteLiveData: LiveData<Boolean>
@@ -32,35 +30,33 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
     private val _uiState = MutableStateFlow<DetailsUiState>(DetailsUiState.Loading)
     val uiState: StateFlow<DetailsUiState> = _uiState
 
-    private fun fetchDetails() {
-        if (homeDataModel == null ||
-            homeDataModel?.mediaType == null
-        ) {
+    private fun fetchDetails(model: HomeDataModel?) {
+        if (model?.mediaType == null) {
+            _uiState.value = DetailsUiState.Error
             return
         }
 
-        homeDataModel?.id?.let { id ->
+        model.id?.let { id ->
             viewModelScope.launch {
-                detailsInteractor.onRetrieveFlowDetails(homeDataModel!!).collectLatest { response ->
+                isFavouriteLiveData.value = model.isFavorite
+
+                detailsInteractor.onRetrieveFlowDetails(model).collectLatest { response ->
                     response.data?.let { data ->
                         _uiState.update {
                             DetailsUiState.Success(data)
                         }
-                        isFavouriteLiveData.value = data.isFavorite
                     } ?: run {
-                        _uiState.value = DetailsUiState.Error
+                        _uiState.value = DetailsUiState.Success(this@DetailsComposeViewModel.homeDataModel!!)
                     }
                 }
                 val response = detailsInteractor.getSimilarMovies(
                     id = id,
-                    mediaType = homeDataModel?.mediaType.orEmpty()
+                    mediaType = this@DetailsComposeViewModel.homeDataModel?.mediaType.orEmpty()
                 )
-                response.data?.let {
-                    _uiState.update { state ->
-                        (state as? DetailsUiState.Success)?.copy(
-                            similarMovies = response.data
-                        ) ?: state
-                    }
+                _uiState.update { state ->
+                    (state as? DetailsUiState.Success)?.copy(
+                        similarMovies = response.data.orEmpty()
+                    ) ?: state
                 }
             }
         }
@@ -69,12 +65,10 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
     }
 
     fun toggleFavourite() {
-        if (homeDataModel == null) {
-            return
-        }
-        hasUserChangeFavourite = true
-        val homeModel = homeDataModel
-        homeModel?.isFavorite = homeModel?.isFavorite == false
+        val homeModel = (uiState.value as? DetailsUiState.Success)?.homeDataModel ?: return
+
+        homeModel.isFavorite = homeModel.isFavorite == false
+
         viewModelScope.launch {
             val response =
                 withContext(Dispatchers.IO) { detailsInteractor.updateFavourite(homeModel) }
@@ -90,7 +84,7 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
             return
         }
         this.homeDataModel = homeDataModel
-        fetchDetails()
+        fetchDetails(homeDataModel)
     }
 }
 
@@ -99,7 +93,7 @@ sealed class DetailsUiState {
     data object Loading : DetailsUiState()
     data class Success(
         val homeDataModel: HomeDataModel,
-        val similarMovies: List<SimilarMoviesModel> = emptyList()
+        val similarMovies: List<SimilarMoviesModel>? = null
     ) : DetailsUiState()
 
     data object Error : DetailsUiState()

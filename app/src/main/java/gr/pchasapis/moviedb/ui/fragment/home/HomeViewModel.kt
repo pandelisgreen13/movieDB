@@ -4,9 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import gr.pchasapis.moviedb.common.SingleLiveEvent
 import gr.pchasapis.moviedb.model.data.HomeDataModel
-import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl
 import gr.pchasapis.moviedb.mvvm.viewModel.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +18,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val homeInteractor: HomeInteractorImpl
 ) : BaseViewModel() {
-
-    private var theatreMutableLiveData: SingleLiveEvent<MutableList<MovieDataModel>> =
-        SingleLiveEvent()
 
     private var queryTextState = ""
 
@@ -40,16 +35,6 @@ class HomeViewModel @Inject constructor(
 
         val resul = homeInteractor.flowPaging(queryText).cachedIn(viewModelScope)
         _uiState.update { it.copy(isLoading = false, data = resul) }
-    }
-
-
-    fun fetchMovieInTheatre() {
-        loadingLiveData.value = true
-        uiScope.launch {
-            val response = homeInteractor.getMoviesInTheatres()
-            loadingLiveData.value = false
-            theatreMutableLiveData.value = response.data?.toMutableList()
-        }
     }
 }
 
