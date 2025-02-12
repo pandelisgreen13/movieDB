@@ -5,10 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -20,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
@@ -62,53 +68,65 @@ fun HomeScreen(
     textChanged: (String) -> Unit = {},
     onItemClicked: (HomeDataModel) -> Unit = {}
 ) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
-    ) {
-        val scrollBehavior =
-            TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-        ToolbarView(
-            scrollBehavior = scrollBehavior,
-            text = stringResource(id = R.string.home_toolbar_title)
-        )
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-        var text by rememberSaveable { mutableStateOf("") }
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeContent,
+        containerColor = MaterialTheme.colorScheme.primary,
+        topBar = {
+            Column {
+                ToolbarView(
+                    scrollBehavior = scrollBehavior,
+                    text = stringResource(id = R.string.home_toolbar_title)
+                )
 
-        SearchView(
-            text = text,
-            placeHolder = "Search it"
+                var text by rememberSaveable { mutableStateOf("") }
+
+                SearchView(
+                    text = text,
+                    placeHolder = "Search it"
+                ) {
+                    text = it
+
+                }
+                LaunchedEffect(key1 = text) {
+                    if (text.isBlank()) return@LaunchedEffect
+                    delay(1000)
+                    textChanged(text.trim())
+                }
+            }
+        }
+    ) { inner ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(inner)
         ) {
-            text = it
+
+
+            if (state.isLoading) {
+                Spacer(modifier = Modifier.height(20.dp))
+                CircularProgressIndicator(
+                    color = PrimaryDark,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+
+            }
+
+            state.data?.let {
+                HomeList(
+                    messages = it,
+                    onItemClicked = onItemClicked,
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                )
+            }
+
 
         }
-        LaunchedEffect(key1 = text) {
-            if (text.isBlank()) return@LaunchedEffect
-            delay(1000)
-            textChanged(text.trim())
-        }
-
-        if (state.isLoading) {
-            Spacer(modifier = Modifier.height(20.dp))
-            CircularProgressIndicator(
-                color = PrimaryDark,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-
-        }
-
-        state.data?.let {
-            HomeList(
-                messages = it,
-                onItemClicked = onItemClicked,
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-            )
-        }
-
-
     }
+
 
 }
 
@@ -142,6 +160,15 @@ fun HomeList(
                 onItemClicked(model)
             }
         }
+
+        item {
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets.systemBars
+                )
+            )
+        }
+
 
         if (lazyPagingItems.loadState.append is LoadState.Loading) {
             item {
@@ -237,13 +264,14 @@ private fun ToolbarCenterAligned() {
 private fun SearchView(
     text: String,
     placeHolder: String = "",
+    modifier: Modifier = Modifier,
     textChange: (String) -> Unit
 ) {
 
     TextField(
         value = text,
         onValueChange = textChange,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 15.dp),
         textStyle = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
