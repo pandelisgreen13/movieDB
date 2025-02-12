@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -34,7 +37,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.ColorAccent
-import gr.pchasapis.moviedb.ui.compose.Teal200
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteFilterEvents
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteUiState
 import gr.pchasapis.moviedb.ui.fragment.favourite.FavouriteViewModel
@@ -73,6 +75,7 @@ fun FavouriteScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.primary,
+        contentWindowInsets = WindowInsets.safeContent,
         topBar = {
             Column {
                 ToolbarView(
@@ -109,14 +112,13 @@ fun FavouriteScreen(
         },
 
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        content = { it ->
+        content = { innerPadding ->
 
             FavouriteMainView(
                 state,
                 modifier = Modifier
                     .fillMaxSize()
-                    .consumeWindowInsets(it)
-                    .padding(top = it.calculateTopPadding())
+                    .padding(innerPadding)
             ) { model ->
                 action.invoke(model)
             }
