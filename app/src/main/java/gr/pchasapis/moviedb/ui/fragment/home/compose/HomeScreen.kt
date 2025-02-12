@@ -3,17 +3,30 @@ package gr.pchasapis.moviedb.ui.fragment.home.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.layout.windowInsetsStartWidth
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -74,9 +87,12 @@ fun HomeScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeContent,
+        modifier = Modifier.imePadding(),
         containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
-            Column {
+            Column(
+                modifier = Modifier.fillMaxWidth().safeDrawingPadding()
+            ) {
                 ToolbarView(
                     scrollBehavior = scrollBehavior,
                     text = stringResource(id = R.string.home_toolbar_title)
@@ -159,14 +175,6 @@ fun HomeList(
             ) { model ->
                 onItemClicked(model)
             }
-        }
-
-        item {
-            Spacer(
-                Modifier.windowInsetsBottomHeight(
-                    WindowInsets.systemBars
-                )
-            )
         }
 
 
@@ -273,7 +281,8 @@ private fun SearchView(
         onValueChange = textChange,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 15.dp),
+            .padding(horizontal = 15.dp)
+        ,
         textStyle = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
