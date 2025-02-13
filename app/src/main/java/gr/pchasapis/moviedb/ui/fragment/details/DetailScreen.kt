@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.ui.fragment.details
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -42,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,7 +58,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
@@ -66,7 +68,6 @@ import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.Primary
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
-import isWidthExpanded
 
 @Composable
 fun DetailsRoute(
@@ -135,6 +136,7 @@ private fun Details(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 15.dp)
+                .safeDrawingPadding()
                 .verticalScroll(
                     rememberScrollState()
                 )
@@ -151,8 +153,10 @@ private fun Details(
                     viewModel?.toggleFavourite()
                 })
 
+            val orientation = LocalConfiguration.current.orientation
 
-            if (windowSizeClass.isWidthExpanded()) {
+
+            if ( orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Row {
                     CardImage(model = model, isExpanded = true)
 
