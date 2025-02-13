@@ -13,8 +13,7 @@ hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
 kotlinStdlibJdk7 = "2.1.0"
-kotlinxCoroutinesAndroid = "1.8.1"
-kotlinxCoroutinesTest = "1.6.2"
+kotlinxCoroutinesAndroid = "1.10.1"
 kotlinSerializationPlugin = "2.0.20"
 kotlinSerialization = "1.7.1"
 lifecycleLivedataKtx = "2.8.7"
@@ -65,7 +64,7 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlinStdlibJdk7" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
 kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleLivedataKtx" }
