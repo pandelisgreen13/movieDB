@@ -1,8 +1,8 @@
 [versions]
 activityCompose = "1.9.3"
 coilCompose = "2.7.0"
-composeBom = "2024.12.01"
-constraintlayout = "2.1.4"
+composeBom = "2025.02.00"
+constraintlayout = "2.2.0"
 core = "3.3.0"
 coreKtx = "1.15.0"
 coreVersion = "1.6.1"
