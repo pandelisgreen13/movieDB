@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.ui.fragment.home.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -54,6 +57,7 @@ import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.ToolbarView
 import gr.pchasapis.moviedb.ui.fragment.home.HomeUiState
+import isHeightCompact
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,6 +74,9 @@ fun HomeScreen(
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
+
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
     Scaffold(
         contentWindowInsets = WindowInsets.safeContent,
         modifier = Modifier
@@ -82,10 +89,23 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .safeDrawingPadding()
             ) {
-                ToolbarView(
-                    scrollBehavior = scrollBehavior,
-                    text = stringResource(id = R.string.home_toolbar_title)
-                )
+
+                val configuration = LocalConfiguration.current
+                when {
+                    configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+                            && windowSizeClass.isHeightCompact() -> {
+                        // empty
+                    }
+
+                    else -> {
+
+                        ToolbarView(
+                            scrollBehavior = scrollBehavior,
+                            text = stringResource(id = R.string.home_toolbar_title)
+                        )
+                    }
+                }
+
 
                 var text by rememberSaveable { mutableStateOf("") }
 
