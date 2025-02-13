@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -78,7 +79,7 @@ fun HomeScreen(
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     Scaffold(
-        contentWindowInsets = WindowInsets.safeContent,
+        contentWindowInsets = WindowInsets.safeDrawing,
         modifier = Modifier
             .consumeWindowInsets(PaddingValues(bottom = 100.dp))
             .imePadding(),
