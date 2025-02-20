@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TheaterTableDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertModel(movieDbTable: TheaterDbTable)
-    
+
     @Query("DELETE FROM TheaterDbTable")
     fun deleteAll()
 
     @Query("select * from TheaterDbTable order by dateAdded DESC")
-    fun loadAll(): Flow<List<MovieDbTable>>
+    fun loadAll(): Flow<List<TheaterDbTable>>
 
 }

@@ -94,6 +94,7 @@ androidx-material3-adaptive-navigation-suite-android = { group = "androidx.compo
 
 [plugins]
 ksp-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "roomRuntime" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinStdlibJdk7" }
 kotlin-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationPlugin" }
 

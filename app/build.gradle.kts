@@ -7,6 +7,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("androidx.room")
 }
 
 
@@ -64,6 +65,7 @@ android {
             isIncludeAndroidResources = true
         }
     }
+
     namespace = "gr.pchasapis.moviedb"
 
     packagingOptions {
@@ -71,7 +73,13 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
 }
+
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
