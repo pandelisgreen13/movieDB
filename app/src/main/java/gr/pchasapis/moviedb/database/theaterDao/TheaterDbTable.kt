@@ -1,10 +1,10 @@
-package gr.pchasapis.moviedb.database.dao
+package gr.pchasapis.moviedb.database.theaterDao
 
 import androidx.room.Entity
 import gr.pchasapis.moviedb.database.base.BaseMovieEntity
 
-@Entity(tableName = "MovieDbTable")
-class MovieDbTable(
+@Entity(tableName = "TheaterDbTable")
+class TheaterDbTable (
     id: Int,
     mediaType: String = "",
     title: String = "-",
