@@ -1,17 +1,20 @@
 package gr.pchasapis.moviedb.mvvm.interactor.home
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
+import gr.pchasapis.moviedb.database.theaterDao.TheaterDbTable
 import gr.pchasapis.moviedb.model.common.DataResult
 import gr.pchasapis.moviedb.model.data.HomeDataModel
-import gr.pchasapis.moviedb.model.data.MovieDataModel
-import gr.pchasapis.moviedb.mvvm.interactor.base.MVVMInteractor
 import kotlinx.coroutines.flow.Flow
 
-interface HomeInteractor : MVVMInteractor {
+interface HomeInteractor {
 
-    suspend fun onRetrieveSearchResult(queryText: String, page: Int): Flow<DataResult<List<HomeDataModel>>>
-    suspend fun getMoviesInTheatres():DataResult<List<HomeDataModel>>
+    suspend fun onRetrieveSearchResult(
+        queryText: String,
+        page: Int
+    ): Flow<DataResult<List<HomeDataModel>>>
 
-   suspend fun flowPaging(queryText: String): Flow<PagingData<HomeDataModel>>
+    suspend fun getMoviesInTheatres(): DataResult<List<HomeDataModel>>
+
+    suspend fun flowPaging(queryText: String): Flow<PagingData<HomeDataModel>>
+    suspend fun flowTheater(queryText: String): Flow<PagingData<TheaterDbTable>>
 }

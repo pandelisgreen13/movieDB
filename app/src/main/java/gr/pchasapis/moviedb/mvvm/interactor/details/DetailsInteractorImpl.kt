@@ -9,7 +9,6 @@ import gr.pchasapis.moviedb.model.data.SimilarMoviesModel
 import gr.pchasapis.moviedb.model.parsers.genre.GenresItem
 import gr.pchasapis.moviedb.model.parsers.movie.MovieDetailsResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
-import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
 import gr.pchasapis.moviedb.network.client.MovieClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -20,7 +19,7 @@ import javax.inject.Inject
 class DetailsInteractorImpl @Inject constructor(
     private var movieClient: MovieClient,
     private val movieDbDatabase: MovieDbDatabase
-) : BaseInteractor(), DetailsInteractor {
+) : DetailsInteractor {
 
     override suspend fun getSimilarMovies(
         id: Int,
