@@ -21,41 +21,51 @@ class TheaterRemoteMediator(
     private val database: MovieDbDatabase
 ) : RemoteMediator<Int, TheaterDbTable>() {
 
+    private var currentPage: Int = 1
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, TheaterDbTable>
     ): MediatorResult {
         return try {
-            val loadKey = when (loadType) {
-                LoadType.REFRESH -> STARTING_PAGE_INDEX
-                // In this example, you never need to prepend, since REFRESH
-                // will always load the first page in the list. Immediately
-                // return, reporting end of pagination.
-                LoadType.PREPEND ->
-                    return MediatorResult.Success(endOfPaginationReached = true)
+//            val loadKey:Int? = when (loadType) {
+//                LoadType.REFRESH -> 1
+//                // In this example, you never need to prepend, since REFRESH
+//                // will always load the first page in the list. Immediately
+//                // return, reporting end of pagination.
+//                LoadType.PREPEND ->{
+//                    null
+//                    return MediatorResult.Success(endOfPaginationReached = true)
+//                    }
+//
+//                LoadType.APPEND -> {
+//                    val lastItem = state.firstItemOrNull()
+//
+//                    if (lastItem == null) {
+//                        return MediatorResult.Success(
+//                            endOfPaginationReached = true
+//                        )
+//                    }
+//
+//                    if (lastItem.page == lastItem.totalPage) {
+//                        null
+//                    } else {
+//                        currentPage = currentPage.plus(1)
+//                    }
+//                }
+//            }
 
-                LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
-
-                    if (lastItem == null) {
-                        return MediatorResult.Success(
-                            endOfPaginationReached = true
-                        )
-                    }
-
-                    if (lastItem.page == lastItem.totalPage) {
-                        null
-                    } else {
-                        lastItem.page + 1
-                    }
-                }
+            val key = if (loadType == LoadType.REFRESH) {
+                1
+            } else {
+                currentPage = currentPage.plus(1)
             }
 
-            if (loadKey == null) {
+            if (key == 5) {
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
 
-            val response = movieClient.getMovieTheatre(page = loadKey)
+            val response = movieClient.getMovieTheatre(page = key as Int)
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -64,10 +74,11 @@ class TheaterRemoteMediator(
                 database.theaterDbTableDao()
                     .upsertAll(toDatabaseModel(response))
             }
+            val endPagination = response.searchResultsList?.isNotEmpty() == true
+                    || response.page == response.totalPages
 
             MediatorResult.Success(
-                endOfPaginationReached = response.searchResultsList?.isNotEmpty() == true
-                        || response.page == response.totalPages
+                endOfPaginationReached = response.page == 5
             )
         } catch (e: Exception) {
             MediatorResult.Error(e)

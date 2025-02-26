@@ -70,7 +70,7 @@ class HomeInteractorImpl(
         return Pager(
             // Configure how data is loaded by passing additional properties to
             // PagingConfig, such as prefetchDistance.
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = 10),
             remoteMediator = TheaterRemoteMediator(movieClient, mapper, movieDbDatabase)
         ) {
             movieDbDatabase.theaterDbTableDao().pagingSource()

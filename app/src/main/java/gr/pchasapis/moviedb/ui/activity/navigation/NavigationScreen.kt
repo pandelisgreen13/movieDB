@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import androidx.paging.compose.collectAsLazyPagingItems
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.FavouriteRoute
@@ -65,7 +66,10 @@ fun AppNavHost(navController: NavHostController) {
             val viewModel: TheaterViewModel = hiltViewModel()
 
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            TheatreScreen(uiState) { movie ->
+
+            val lazyPagingItems = uiState.list?.collectAsLazyPagingItems()
+
+            TheatreScreen(lazyPagingItems) { movie ->
                 navController.navigate(Navigation.Details(movie))
             }
         }

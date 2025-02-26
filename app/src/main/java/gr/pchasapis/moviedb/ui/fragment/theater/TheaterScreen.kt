@@ -27,19 +27,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.ToolbarView
-import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TheatreScreen(
-    uiState: TheaterUiState,
+    uiState: LazyPagingItems<HomeDataModel>?,
     modifier: Modifier = Modifier,
     nextScreen: (HomeDataModel) -> Unit
 ) {
@@ -73,7 +72,7 @@ fun TheatreScreen(
 
 @Composable
 private fun TheatreMainView(
-    state: TheaterUiState,
+    state: LazyPagingItems<HomeDataModel>?,
     modifier: Modifier,
     nextScreen: (HomeDataModel) -> Unit
 ) {
@@ -82,53 +81,57 @@ private fun TheatreMainView(
         modifier = modifier,
         color = MaterialTheme.colorScheme.primary
     ) {
-        if (state.loading || state.list == null) {
-            LoadingErrorCompose(shouldShowError = state.loading.not() && state.list == null)
+        if (state == null) {
+            LoadingErrorCompose(shouldShowError = false)
         } else {
-            Content(state.list, nextScreen)
+            Content(state, nextScreen)
         }
     }
 }
 
 @Composable
 fun Content(
-    list: Flow<PagingData<HomeDataModel>>,
+    list: LazyPagingItems<HomeDataModel>,
     nextScreen: (HomeDataModel) -> Unit
 ) {
 
-
-    val lazyPagingItems = list.collectAsLazyPagingItems()
-    LazyVerticalGrid(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        columns = GridCells.Adaptive(100.dp)
-    ) {
-        val shape = RoundedCornerShape(10.dp)
-
-        items(
-            lazyPagingItems.itemCount,
-            key = {
-                lazyPagingItems[it]?.id!!
-            }
+    if (list.loadState.refresh is LoadState.Loading || list.itemCount == 0) {
+        LoadingErrorCompose()
+    } else {
+        LazyVerticalGrid(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            columns = GridCells.Adaptive(100.dp)
         ) {
-            val item = lazyPagingItems[it]!!
-            AsyncImage(
-                model = item.thumbnail,
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(150.dp)
-                    .width(80.dp)
-                    .clip(shape)
-                    .shadow(elevation = 8.dp, shape = shape)
-                    .clickable {
-                        nextScreen(item)
-                    },
-                placeholder = painterResource(id = R.mipmap.ic_launcher),
-                error = painterResource(id = R.mipmap.ic_launcher)
-            )
-        }
+            val shape = RoundedCornerShape(10.dp)
 
+            items(
+                list.itemCount,
+                key = {
+                    " ${list[it]?.id ?: -1}  ${list[it]?.thumbnail}"
+                }
+            ) {
+                val item = list[it] ?: return@items
+                AsyncImage(
+                    model = item.thumbnail,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .width(80.dp)
+                        .clip(shape)
+                        .shadow(elevation = 8.dp, shape = shape)
+                        .clickable {
+                            nextScreen(item)
+                        },
+                    placeholder = painterResource(id = R.mipmap.ic_launcher),
+                    error = painterResource(id = R.mipmap.ic_launcher)
+                )
+            }
+
+        }
     }
+
+
 }
