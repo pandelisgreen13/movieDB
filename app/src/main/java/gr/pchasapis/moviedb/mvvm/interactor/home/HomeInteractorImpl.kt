@@ -66,7 +66,7 @@ class HomeInteractorImpl(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override suspend fun flowTheater(queryText: String): Flow<PagingData<TheaterDbTable>> {
+    override fun flowTheater(): Pager<Int, TheaterDbTable> {
         return Pager(
             // Configure how data is loaded by passing additional properties to
             // PagingConfig, such as prefetchDistance.
@@ -74,7 +74,7 @@ class HomeInteractorImpl(
             remoteMediator = TheaterRemoteMediator(movieClient, mapper, movieDbDatabase)
         ) {
             movieDbDatabase.theaterDbTableDao().pagingSource()
-        }.flow
+        }
     }
 
     private fun toHomeDataModel(searchResponse: SearchResponse): List<HomeDataModel> {

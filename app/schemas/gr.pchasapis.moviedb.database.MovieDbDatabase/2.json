@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "89e5240f3f28a582e88121334a92752c",
+    "identityHash": "677dc7e1d9c28718c202f641ac853b37",
     "entities": [
       {
         "tableName": "MovieDbTable",
@@ -98,8 +98,22 @@
       },
       {
         "tableName": "TheaterDbTable",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `mediaType` TEXT NOT NULL, `title` TEXT NOT NULL, `summary` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `releaseDate` TEXT NOT NULL, `ratings` TEXT NOT NULL, `isFavourite` INTEGER NOT NULL, `genresName` TEXT NOT NULL, `videoUrl` TEXT NOT NULL, `videoKey` TEXT NOT NULL, `genre` TEXT NOT NULL, `dateAdded` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`page` INTEGER NOT NULL DEFAULT 0, `totalPage` INTEGER NOT NULL DEFAULT 0, `id` INTEGER NOT NULL, `mediaType` TEXT NOT NULL, `title` TEXT NOT NULL, `summary` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `releaseDate` TEXT NOT NULL, `ratings` TEXT NOT NULL, `isFavourite` INTEGER NOT NULL, `genresName` TEXT NOT NULL, `videoUrl` TEXT NOT NULL, `videoKey` TEXT NOT NULL, `genre` TEXT NOT NULL, `dateAdded` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "page",
+            "columnName": "page",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "totalPage",
+            "columnName": "totalPage",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
           {
             "fieldPath": "id",
             "columnName": "id",
@@ -192,7 +206,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '89e5240f3f28a582e88121334a92752c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '677dc7e1d9c28718c202f641ac853b37')"
     ]
   }
 }

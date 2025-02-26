@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.mvvm.interactor.home
 
+import androidx.paging.Pager
 import androidx.paging.PagingData
 import gr.pchasapis.moviedb.database.theaterDao.TheaterDbTable
 import gr.pchasapis.moviedb.model.common.DataResult
@@ -16,5 +17,5 @@ interface HomeInteractor {
     suspend fun getMoviesInTheatres(): DataResult<List<HomeDataModel>>
 
     suspend fun flowPaging(queryText: String): Flow<PagingData<HomeDataModel>>
-    suspend fun flowTheater(queryText: String): Flow<PagingData<TheaterDbTable>>
+    fun flowTheater(): Pager<Int, TheaterDbTable>
 }

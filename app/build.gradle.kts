@@ -115,6 +115,7 @@ dependencies {
     // Room components
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.room.paging)
     ksp(libs.room.runtime.ksp)
 
     implementation(libs.ui.graphics)

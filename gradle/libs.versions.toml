@@ -83,6 +83,7 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 room-runtime-ksp = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+room-paging = { module = "androidx.room:room-paging", version.ref = "roomRuntime" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics" }

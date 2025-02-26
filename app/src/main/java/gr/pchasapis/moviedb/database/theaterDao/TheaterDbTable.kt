@@ -1,5 +1,6 @@
 package gr.pchasapis.moviedb.database.theaterDao
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import gr.pchasapis.moviedb.database.base.BaseMovieEntity
 
@@ -18,8 +19,8 @@ class TheaterDbTable(
     videoKey: String = "",
     genre: String = "",
     dateAdded: Long = 0,
-    val page: Int = 0,
-    val totalPage: Int = 0
+    @ColumnInfo(defaultValue = "0") val page: Int = 0,
+    @ColumnInfo(defaultValue = "0") val totalPage: Int = 0
 ) : BaseMovieEntity(
     id = id,
     mediaType = mediaType,
