@@ -19,6 +19,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -34,6 +36,8 @@ import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.LoadingErrorCompose
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.ToolbarView
+import timber.log.Timber
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,7 +113,7 @@ fun Content(
             items(
                 list.itemCount,
                 key = {
-                    " ${list[it]?.id ?: -1}  ${list[it]?.thumbnail}"
+                    " ${list[it]?.id}  ${list[it]?.thumbnail}"
                 }
             ) {
                 val item = list[it] ?: return@items

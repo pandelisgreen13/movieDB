@@ -7,17 +7,21 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import gr.pchasapis.moviedb.database.dao.MovieDbTable
 import gr.pchasapis.moviedb.database.dao.MovieDbTableDao
+import gr.pchasapis.moviedb.database.keysDao.RemoteKey
+import gr.pchasapis.moviedb.database.keysDao.RemoteKeyDao
 import gr.pchasapis.moviedb.database.theaterDao.TheaterDbTable
 import gr.pchasapis.moviedb.database.theaterDao.TheaterTableDao
 
 @Database(
     entities = [
         MovieDbTable::class,
-        TheaterDbTable::class
+        TheaterDbTable::class,
+        RemoteKey::class
     ],
-    version = 2,
+    version = 3,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3)
     ]
 )
 abstract class MovieDbDatabase : RoomDatabase() {
@@ -39,4 +43,5 @@ abstract class MovieDbDatabase : RoomDatabase() {
 
     abstract fun movieDbTableDao(): MovieDbTableDao
     abstract fun theaterDbTableDao(): TheaterTableDao
+    abstract fun remoteKeyDao(): RemoteKeyDao
 }

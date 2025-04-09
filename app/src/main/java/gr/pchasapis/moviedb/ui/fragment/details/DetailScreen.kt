@@ -425,7 +425,7 @@ fun DefaultPreview() {
     MovieDBTheme {
         Details(
             DetailsUiState.Success(
-                HomeDataModel(),
+                HomeDataModel(0),
                 listOf(
                     SimilarMoviesModel(),
                     SimilarMoviesModel(id = 1),

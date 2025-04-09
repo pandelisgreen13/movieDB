@@ -19,9 +19,9 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
     HomeDataModelMapper {
 
     override fun toHomeDataModelFromTheater(response: MovieNetworkResponse): List<HomeDataModel> {
-        return (response.searchResultsList?.map { movieItem ->
+        return (response.searchResultsList?.filter { it.id != null }?.map { movieItem ->
             HomeDataModel(
-                id = movieItem.id,
+                id = movieItem.id!!,
                 title = movieItem.title ?: "-",
                 mediaType = "movie",
                 summary = movieItem.overview ?: "-",
@@ -57,9 +57,9 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
         )
 
     override suspend fun toHomeDataModelFromResponse(searchResponse: SearchResponse): List<HomeDataModel> {
-        return (searchResponse.searchResultsList?.map { searchItem ->
+        return (searchResponse.searchResultsList?.filter { it.id != null }?.map { searchItem ->
             HomeDataModel(
-                id = searchItem.id,
+                id = searchItem.id!!,
                 title = searchItem.title ?: searchItem.name ?: searchItem.originalName ?: "-",
                 mediaType = searchItem.mediaType ?: "-",
                 summary = searchItem.overview ?: "-",
