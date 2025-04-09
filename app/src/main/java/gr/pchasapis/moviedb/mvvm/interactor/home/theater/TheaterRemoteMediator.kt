@@ -54,15 +54,15 @@ class TheaterRemoteMediator(
 
                     Timber.d("pagination -> keys database $${daoKey}")
 
-                    if (lastItem == null) {
-                        return MediatorResult.Success(
-                            endOfPaginationReached = true
-                        )
-                    }
+//                    if (lastItem == null) {
+//                        return MediatorResult.Success(
+//                            endOfPaginationReached = true
+//                        )
+//                    }
 
                     Timber.d("pagination -> firstItem $${state.firstItemOrNull()!!.page}")
-                    Timber.d("pagination -> lastItem $${lastItem.page}")
-                    Timber.d("pagination -> lastItem $${lastItem.title}")
+                    Timber.d("pagination -> lastItem $${lastItem?.page}")
+                    Timber.d("pagination -> lastItem $${lastItem?.title}")
 
 //
 //                    if (lastItem.page == lastItem.totalPage) {
@@ -71,17 +71,13 @@ class TheaterRemoteMediator(
 //                        lastItem.page + 1
 //                    }
 
-                    if (lastItem.page == lastItem.totalPage) {
-                        null
-                    } else {
-                        daoKey.last().nextKey + 1
-                    }
+                    daoKey.last().nextKey + 1
                 }
             }
 
             Timber.d("pagination loadKey: -> $loadKey")
 
-            if (loadKey == null || loadKey > 4) {
+            if (loadKey > 4) {
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
 
@@ -126,7 +122,8 @@ class TheaterRemoteMediator(
                 releaseDate = model.releaseDate ?: "-",
                 ratings = (model.voteAverage ?: 0).toString(),
                 page = response.page ?: 0,
-                totalPage = response.totalPages ?: 0
+                totalPage = response.totalPages ?: 0,
+                dateAdded = System.currentTimeMillis()
             )
         } ?: listOf()
     }

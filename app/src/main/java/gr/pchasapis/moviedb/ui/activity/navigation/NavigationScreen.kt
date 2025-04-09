@@ -48,7 +48,8 @@ fun AppNavHost(navController: NavHostController) {
             typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
         ) { backStackEntry ->
             val post = backStackEntry.toRoute<Navigation.Details>()
-            DetailsRoute(passData = post.model,
+            DetailsRoute(
+                passData = post.model,
                 onSimilarClicked = { similarItem ->
                     navController.navigate(Navigation.Details(similarItem))
                 }) {
@@ -69,8 +70,12 @@ fun AppNavHost(navController: NavHostController) {
 
             val lazyPagingItems = uiState.list?.collectAsLazyPagingItems()
 
-            TheatreScreen(lazyPagingItems) { movie ->
-                navController.navigate(Navigation.Details(movie))
+            TheatreScreen(
+                lazyPagingItems,
+                nextScreen = { movie ->
+                    navController.navigate(Navigation.Details(movie))
+                }) {
+                viewModel.deleteDatabase()
             }
         }
     }

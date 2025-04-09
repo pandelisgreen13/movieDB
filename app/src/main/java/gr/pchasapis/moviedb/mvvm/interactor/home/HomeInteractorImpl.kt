@@ -26,6 +26,10 @@ class HomeInteractorImpl(
     private val mapper: HomeDataModelMapperImpl
 ) : HomeInteractor {
 
+    fun deleteDatabase() {
+        movieDbDatabase.theaterDbTableDao().deleteAll()
+    }
+
     override suspend fun onRetrieveSearchResult(
         queryText: String,
         page: Int

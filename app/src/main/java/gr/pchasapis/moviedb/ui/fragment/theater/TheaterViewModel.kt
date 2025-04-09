@@ -56,6 +56,10 @@ class TheaterViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteDatabase() {
+        homeInteractor.deleteDatabase()
+    }
 }
 
 data class TheaterUiState(
