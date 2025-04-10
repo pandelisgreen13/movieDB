@@ -47,7 +47,7 @@ class TheaterRemoteMediator(
                 }
 
                 LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
+
 
                     val daoKey = database.remoteKeyDao().loadAll()
 
@@ -59,10 +59,7 @@ class TheaterRemoteMediator(
 //                            endOfPaginationReached = true
 //                        )
 //                    }
-
-                    Timber.d("pagination -> firstItem $${state.firstItemOrNull()!!.page}")
-                    Timber.d("pagination -> lastItem $${lastItem?.page}")
-                    Timber.d("pagination -> lastItem $${lastItem?.title}")
+                    Timber.d("pagination -> firstItem $${state.firstItemOrNull()?.page}")
 
 //
 //                    if (lastItem.page == lastItem.totalPage) {
@@ -91,7 +88,7 @@ class TheaterRemoteMediator(
 
                 Timber.d("pagination save page: -> ${response.page}")
                 Timber.d("pagination =====================  page: ${response.page}   =============================================")
-                database.theaterDbTableDao().upsertAll(toDatabaseModel(response))
+                database.theaterDbTableDao().insertAll(toDatabaseModel(response))
                 response.page.let { page ->
                     database.remoteKeyDao().insertOrReplace(
                         RemoteKey(

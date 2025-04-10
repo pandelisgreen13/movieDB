@@ -21,5 +21,5 @@ interface RemoteKeyDao {
     fun deleteAll()
 
     @Query("select * from RemoteKey")
-    fun loadAll(): List<RemoteKey>
+    suspend fun loadAll(): List<RemoteKey>
 }
