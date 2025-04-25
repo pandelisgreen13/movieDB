@@ -27,7 +27,7 @@ pagingRuntimeKtx = "3.3.5"
 picasso = "2.71828"
 retrofit = "2.11.0"
 robolectric = "4.12"
-roomRuntime = "2.6.1"
+roomDB = "2.6.1"
 ksp = "2.1.0-1.0.29"
 timber = "5.0.1"
 viewpager2 = "1.1.0"
@@ -41,6 +41,7 @@ androidx-core-test = { module = "androidx.test:core", version.ref = "coreVersion
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "roomDB" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
@@ -80,10 +81,10 @@ paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.re
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
-room-runtime-ksp = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
-room-paging = { module = "androidx.room:room-paging", version.ref = "roomRuntime" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomDB" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomDB" }
+room-runtime-ksp = { module = "androidx.room:room-compiler", version.ref = "roomDB" }
+room-paging = { module = "androidx.room:room-paging", version.ref = "roomDB" }
 symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
@@ -95,7 +96,7 @@ androidx-material3-adaptive-navigation-suite-android = { group = "androidx.compo
 
 [plugins]
 ksp-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-room = { id = "androidx.room", version.ref = "roomRuntime" }
+room = { id = "androidx.room", version.ref = "roomDB" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinStdlibJdk7" }
 kotlin-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationPlugin" }
 

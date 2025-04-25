@@ -33,7 +33,6 @@ class TheaterViewModel @Inject constructor(
 
     private fun fetchMovieInTheatre() {
         viewModelScope.launch {
-            //  val response = homeInteractor.getMoviesInTheatres()
             val response = homeInteractor.flowTheater().flow
                 .map { pagingData ->
                     pagingData.map {

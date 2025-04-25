@@ -17,5 +17,5 @@ interface HomeInteractor {
     suspend fun getMoviesInTheatres(): DataResult<List<HomeDataModel>>
 
     suspend fun flowPaging(queryText: String): Flow<PagingData<HomeDataModel>>
-    fun flowTheater(): Pager<Int, TheaterDbTable>
+    suspend fun flowTheater(): Pager<Int, TheaterDbTable>
 }

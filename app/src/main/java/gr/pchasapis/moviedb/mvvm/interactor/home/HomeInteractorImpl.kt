@@ -70,7 +70,7 @@ class HomeInteractorImpl(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun flowTheater(): Pager<Int, TheaterDbTable> {
+    override suspend fun flowTheater(): Pager<Int, TheaterDbTable> {
         return Pager(
             // Configure how data is loaded by passing additional properties to
             // PagingConfig, such as prefetchDistance.

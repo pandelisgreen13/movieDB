@@ -57,9 +57,9 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
         )
 
     override suspend fun toHomeDataModelFromResponse(searchResponse: SearchResponse): List<HomeDataModel> {
-        return (searchResponse.searchResultsList?.filter { it.id != null }?.map { searchItem ->
+        return (searchResponse.searchResultsList?.map { searchItem ->
             HomeDataModel(
-                id = searchItem.id!!,
+                id = searchItem.id,
                 title = searchItem.title ?: searchItem.name ?: searchItem.originalName ?: "-",
                 mediaType = searchItem.mediaType ?: "-",
                 summary = searchItem.overview ?: "-",

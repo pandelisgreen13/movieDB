@@ -8,7 +8,7 @@ buildscript {
         classpath(libs.gradle.kotlin)
         classpath(libs.gradle.hilt)
         classpath(libs.gradle.safe.args)
-        classpath("androidx.room:room-gradle-plugin:2.6.1")
+        classpath(libs.androidx.room.gradle.plugin)
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
