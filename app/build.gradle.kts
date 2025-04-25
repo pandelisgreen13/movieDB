@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -68,7 +70,7 @@ android {
 
     namespace = "gr.pchasapis.moviedb"
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
