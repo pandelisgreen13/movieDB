@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 data class HomeDataModel(
-    val id: Int? = null,
+    val id: Int,
     val mediaType: String? = "",
     val title: String? = "-",
     val summary: String? = "-",

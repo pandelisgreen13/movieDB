@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import androidx.paging.compose.collectAsLazyPagingItems
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.fragment.details.DetailsRoute
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.FavouriteRoute
@@ -47,7 +48,8 @@ fun AppNavHost(navController: NavHostController) {
             typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
         ) { backStackEntry ->
             val post = backStackEntry.toRoute<Navigation.Details>()
-            DetailsRoute(passData = post.model,
+            DetailsRoute(
+                passData = post.model,
                 onSimilarClicked = { similarItem ->
                     navController.navigate(Navigation.Details(similarItem))
                 }) {
@@ -65,8 +67,15 @@ fun AppNavHost(navController: NavHostController) {
             val viewModel: TheaterViewModel = hiltViewModel()
 
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            TheatreScreen(uiState) { movie ->
-                navController.navigate(Navigation.Details(movie))
+
+            val lazyPagingItems = uiState.list?.collectAsLazyPagingItems()
+
+            TheatreScreen(
+                lazyPagingItems,
+                nextScreen = { movie ->
+                    navController.navigate(Navigation.Details(movie))
+                }) {
+                viewModel.deleteDatabase()
             }
         }
     }

@@ -15,7 +15,7 @@ data class SearchItem(@SerializedName("first_air_date") val firstAirDate: String
                       @SerializedName("vote_average") val voteAverage: Double? = null,
                       @SerializedName("popularity") val popularity: Double? = null,
                       @SerializedName("name") val name: String? = null,
-                      @SerializedName("id") val id: Int? = null,
+                      @SerializedName("id") val id: Int,
                       @SerializedName("vote_count") val voteCount: Int? = null,
                       @SerializedName("original_title") val originalTitle: String? = null,
                       @SerializedName("video") val video: Boolean? = null,

@@ -14,7 +14,7 @@ data class MovieDetailsResponse(@SerializedName("original_language") val origina
                                 @SerializedName("revenue") val revenue: Long? = null,
                                 @SerializedName("genres") val genres: List<GenresItem>? = null,
                                 @SerializedName("popularity") val popularity: Double? = null,
-                                @SerializedName("id") val id: Int? = null,
+                                @SerializedName("id") val id: Int,
                                 @SerializedName("vote_count") val voteCount: Int? = null,
                                 @SerializedName("budget") val budget: Long? = null,
                                 @SerializedName("overview") val overview: String? = null,

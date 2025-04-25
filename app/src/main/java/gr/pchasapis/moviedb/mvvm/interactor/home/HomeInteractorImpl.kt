@@ -1,18 +1,19 @@
 package gr.pchasapis.moviedb.mvvm.interactor.home
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import gr.pchasapis.moviedb.common.Definitions
 import gr.pchasapis.moviedb.database.MovieDbDatabase
+import gr.pchasapis.moviedb.database.theaterDao.TheaterDbTable
 import gr.pchasapis.moviedb.model.common.DataResult
 import gr.pchasapis.moviedb.model.data.HomeDataModel
-import gr.pchasapis.moviedb.model.data.MovieDataModel
 import gr.pchasapis.moviedb.model.mappers.HomeDataModelMapperImpl
 import gr.pchasapis.moviedb.model.parsers.search.SearchResponse
 import gr.pchasapis.moviedb.model.parsers.theatre.MovieNetworkResponse
-import gr.pchasapis.moviedb.mvvm.interactor.base.BaseInteractor
 import gr.pchasapis.moviedb.mvvm.interactor.home.paging.SearchPagingDataSource
+import gr.pchasapis.moviedb.mvvm.interactor.home.theater.TheaterRemoteMediator
 import gr.pchasapis.moviedb.network.client.MovieClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,7 +24,11 @@ class HomeInteractorImpl(
     private var movieClient: MovieClient,
     private val movieDbDatabase: MovieDbDatabase,
     private val mapper: HomeDataModelMapperImpl
-) : BaseInteractor(), HomeInteractor {
+) : HomeInteractor {
+
+    fun deleteDatabase() {
+        movieDbDatabase.theaterDbTableDao().deleteAll()
+    }
 
     override suspend fun onRetrieveSearchResult(
         queryText: String,
@@ -42,7 +47,7 @@ class HomeInteractorImpl(
 
     override suspend fun getMoviesInTheatres(): DataResult<List<HomeDataModel>> {
         return try {
-            val response = movieClient.getMovieTheatre(DATE_FROM, DATE_TO)
+            val response = movieClient.getMovieTheatre()
             DataResult(toMovieDataModel(response))
         } catch (t: Throwable) {
             Timber.d(t)
@@ -62,6 +67,18 @@ class HomeInteractorImpl(
         ) {
             SearchPagingDataSource(queryText, movieClient, mapper)
         }.flow
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override suspend fun flowTheater(): Pager<Int, TheaterDbTable> {
+        return Pager(
+            // Configure how data is loaded by passing additional properties to
+            // PagingConfig, such as prefetchDistance.
+            config = PagingConfig(pageSize = 10),
+            remoteMediator = TheaterRemoteMediator(movieClient, mapper, movieDbDatabase)
+        ) {
+            movieDbDatabase.theaterDbTableDao().pagingSource()
+        }
     }
 
     private fun toHomeDataModel(searchResponse: SearchResponse): List<HomeDataModel> {

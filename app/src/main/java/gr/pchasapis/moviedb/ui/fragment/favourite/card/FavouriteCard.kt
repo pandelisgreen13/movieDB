@@ -142,7 +142,7 @@ fun FavouriteList(
 @Composable
 fun LoadingErrorCompose(shouldShowError: Boolean = false) {
     Surface(
-        color = PrimaryDark,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.fillMaxSize()
     ) {
         Column(

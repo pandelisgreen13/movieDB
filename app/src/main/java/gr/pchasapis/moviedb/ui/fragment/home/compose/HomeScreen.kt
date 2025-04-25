@@ -1,14 +1,19 @@
 package gr.pchasapis.moviedb.ui.fragment.home.compose
 
-import androidx.compose.foundation.background
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -20,9 +25,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -50,6 +58,7 @@ import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.ToolbarView
 import gr.pchasapis.moviedb.ui.fragment.home.HomeUiState
+import isHeightCompact
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,53 +71,88 @@ fun HomeScreen(
     textChanged: (String) -> Unit = {},
     onItemClicked: (HomeDataModel) -> Unit = {}
 ) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
-    ) {
-        val scrollBehavior =
-            TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-        ToolbarView(
-            scrollBehavior = scrollBehavior,
-            text = stringResource(id = R.string.home_toolbar_title)
-        )
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-        var text by rememberSaveable { mutableStateOf("") }
 
-        SearchView(
-            text = text,
-            placeHolder = "Search it"
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
+        modifier = Modifier
+            .consumeWindowInsets(PaddingValues(bottom = 100.dp))
+            .imePadding(),
+        containerColor = MaterialTheme.colorScheme.primary,
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .safeDrawingPadding()
+            ) {
+
+                val configuration = LocalConfiguration.current
+                when {
+                    configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+                            && windowSizeClass.isHeightCompact() -> {
+                        // empty
+                    }
+
+                    else -> {
+
+                        ToolbarView(
+                            scrollBehavior = scrollBehavior,
+                            text = stringResource(id = R.string.home_toolbar_title)
+                        )
+                    }
+                }
+
+
+                var text by rememberSaveable { mutableStateOf("") }
+
+                SearchView(
+                    text = text,
+                    placeHolder = "Search it"
+                ) {
+                    text = it
+
+                }
+                LaunchedEffect(key1 = text) {
+                    if (text.isBlank()) return@LaunchedEffect
+                    delay(1000)
+                    textChanged(text.trim())
+                }
+            }
+        }
+    ) { inner ->
+        Column(
+            Modifier.padding(inner)
         ) {
-            text = it
+
+
+            if (state.isLoading) {
+                Spacer(modifier = Modifier.height(20.dp))
+                CircularProgressIndicator(
+                    color = PrimaryDark,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+
+            }
+
+            state.data?.let {
+                HomeList(
+                    messages = it,
+                    onItemClicked = onItemClicked,
+                    modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+
+                )
+            }
+
 
         }
-        LaunchedEffect(key1 = text) {
-            if (text.isBlank()) return@LaunchedEffect
-            delay(1000)
-            textChanged(text.trim())
-        }
-
-        if (state.isLoading) {
-            Spacer(modifier = Modifier.height(20.dp))
-            CircularProgressIndicator(
-                color = PrimaryDark,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-
-        }
-
-        state.data?.let {
-            HomeList(
-                messages = it,
-                onItemClicked = onItemClicked,
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-            )
-        }
-
-
     }
+
 
 }
 
@@ -142,6 +186,7 @@ fun HomeList(
                 onItemClicked(model)
             }
         }
+
 
         if (lazyPagingItems.loadState.append is LoadState.Loading) {
             item {
@@ -237,13 +282,14 @@ private fun ToolbarCenterAligned() {
 private fun SearchView(
     text: String,
     placeHolder: String = "",
+    modifier: Modifier = Modifier,
     textChange: (String) -> Unit
 ) {
 
     TextField(
         value = text,
         onValueChange = textChange,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 15.dp),
         textStyle = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
