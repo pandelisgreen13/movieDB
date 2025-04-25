@@ -48,25 +48,10 @@ class TheaterRemoteMediator(
 
                 LoadType.APPEND -> {
 
-
                     val daoKey = database.remoteKeyDao().loadAll()
 
-
                     Timber.d("pagination -> keys database $${daoKey}")
-
-//                    if (lastItem == null) {
-//                        return MediatorResult.Success(
-//                            endOfPaginationReached = true
-//                        )
-//                    }
                     Timber.d("pagination -> firstItem $${state.firstItemOrNull()?.page}")
-
-//
-//                    if (lastItem.page == lastItem.totalPage) {
-//                        null
-//                    } else {
-//                        lastItem.page + 1
-//                    }
 
                     daoKey.last().nextKey + 1
                 }
@@ -74,7 +59,7 @@ class TheaterRemoteMediator(
 
             Timber.d("pagination loadKey: -> $loadKey")
 
-            if (loadKey > 4) {
+            if (loadKey > 3) {
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
 
@@ -109,16 +94,16 @@ class TheaterRemoteMediator(
     }
 
     private fun toDatabaseModel(response: MovieNetworkResponse): List<TheaterDbTable> {
-        return response.searchResultsList?.filter { it.id != null }?.map { model ->
+        return response.searchResultsList?.map { model ->
             TheaterDbTable(
-                id = model.id!!,
+                id = model.id,
                 title = model.title ?: "-",
                 mediaType = "movie",
                 summary = model.overview ?: "-",
                 thumbnail = model.posterPath ?: "",
                 releaseDate = model.releaseDate ?: "-",
                 ratings = (model.voteAverage ?: 0).toString(),
-                page = response.page ?: 0,
+                page = response.page,
                 totalPage = response.totalPages ?: 0,
                 dateAdded = System.currentTimeMillis()
             )

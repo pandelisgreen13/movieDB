@@ -129,8 +129,6 @@ private fun Details(
         modifier = Modifier.fillMaxSize(),
     ) {
 
-        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-
 
         Column(
             modifier = Modifier
