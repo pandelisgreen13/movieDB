@@ -19,9 +19,9 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
     HomeDataModelMapper {
 
     override fun toHomeDataModelFromTheater(response: MovieNetworkResponse): List<HomeDataModel> {
-        return (response.searchResultsList?.filter { it.id != null }?.map { movieItem ->
+        return (response.searchResultsList?.map { movieItem ->
             HomeDataModel(
-                id = movieItem.id!!,
+                id = movieItem.id,
                 title = movieItem.title ?: "-",
                 mediaType = "movie",
                 summary = movieItem.overview ?: "-",
