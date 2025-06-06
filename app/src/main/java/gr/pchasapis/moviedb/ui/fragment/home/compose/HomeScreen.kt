@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -55,7 +54,7 @@ import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
 import gr.pchasapis.moviedb.ui.compose.PrimaryDark
-import gr.pchasapis.moviedb.ui.fragment.favourite.card.FavouriteRow
+import gr.pchasapis.moviedb.ui.fragment.favourite.card.HomeItem
 import gr.pchasapis.moviedb.ui.fragment.favourite.screen.ToolbarView
 import gr.pchasapis.moviedb.ui.fragment.home.HomeUiState
 import isHeightCompact
@@ -179,7 +178,7 @@ fun HomeList(
             }
         ) {
             val favourite = lazyPagingItems[it]!!
-            FavouriteRow(
+            HomeItem(
                 homeDataModel = favourite,
                 modifier = Modifier.animateItem()
             ) { model ->

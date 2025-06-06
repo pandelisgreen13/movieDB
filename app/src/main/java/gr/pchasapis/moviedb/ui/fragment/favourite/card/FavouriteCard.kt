@@ -31,12 +31,13 @@ import androidx.compose.ui.unit.sp
 import gr.pchasapis.moviedb.R
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
-import gr.pchasapis.moviedb.ui.compose.PrimaryDark
 import gr.pchasapis.moviedb.ui.fragment.details.ComposeText
 import gr.pchasapis.moviedb.ui.fragment.details.MovieImage
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
-fun FavouriteRow(
+fun HomeItem(
     homeDataModel: HomeDataModel,
     modifier: Modifier = Modifier,
     onRowClicked: (HomeDataModel) -> Unit
@@ -49,7 +50,7 @@ fun FavouriteRow(
         },
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
-        FavouriteContent(homeDataModel = homeDataModel)
+        HomeContent(homeDataModel = homeDataModel)
     }
 }
 
@@ -74,7 +75,7 @@ fun FavouriteGrid(
 }
 
 @Composable
-fun FavouriteContent(homeDataModel: HomeDataModel) {
+fun HomeContent(homeDataModel: HomeDataModel) {
     // var expanded by rememberSaveable { mutableStateOf(false) }
 
     Row(
@@ -122,7 +123,7 @@ fun FavouriteContent(homeDataModel: HomeDataModel) {
 
 @Composable
 fun FavouriteList(
-    messages: List<HomeDataModel>,
+    messages: PersistentList<HomeDataModel>,
     onItemClicked: (HomeDataModel) -> Unit
 ) {
     LazyVerticalGrid(
@@ -164,7 +165,7 @@ fun LoadingErrorCompose(shouldShowError: Boolean = false) {
 @Composable
 fun ListPreview() {
     MovieDBTheme {
-        val list = arrayListOf(
+        val list = persistentListOf(
             HomeDataModel(
                 ratings = "5",
                 title = "Avengers",
@@ -198,7 +199,7 @@ fun ListPreview() {
 @Composable
 fun CardPreview() {
     MovieDBTheme {
-        FavouriteRow(
+        HomeItem(
             HomeDataModel(
                 ratings = "5",
                 title = "Avengers",

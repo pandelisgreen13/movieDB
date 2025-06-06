@@ -108,8 +108,10 @@ dependencies {
     implementation(libs.timber)
     // Dialogs
     implementation(libs.dialogCore)
-    // Network
+
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.collections.immutable)
+    // Network
     implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

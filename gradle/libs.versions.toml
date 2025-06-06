@@ -1,21 +1,22 @@
 [versions]
 activityCompose = "1.10.1"
 coilCompose = "2.7.0"
-composeBom = "2025.05.01"
+composeBom = "2025.06.00"
 constraintlayout = "2.2.1"
 core = "3.3.0"
 coreKtx = "1.16.0"
 coreVersion = "1.6.1"
-fragmentKtx = "1.8.7"
+fragmentKtx = "1.8.8"
 gradle = "8.8.2"
 gson = "2.11.0"
 hiltAndroid = "2.56"
 hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
 kotlinStdlibJdk7 = "2.1.20"
+kotlinxCollectionsImmutable = "0.4.0"
 kotlinxCoroutinesAndroid = "1.10.1"
 kotlinSerialization = "1.8.0"
-lifecycleLivedataKtx = "2.9.0"
+lifecycleLivedataKtx = "2.9.1"
 loggingInterceptor = "4.12.0"
 material = "1.12.0"
 mockitoKotlin = "5.4.0"
@@ -63,6 +64,7 @@ hilt-ksp-android = { module = "com.google.dagger:hilt-compiler", version.ref = "
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlinStdlibJdk7" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
 kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerialization" }
