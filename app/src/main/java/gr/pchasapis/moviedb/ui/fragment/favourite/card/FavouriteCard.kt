@@ -132,7 +132,7 @@ fun FavouriteList(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         columns = GridCells.Adaptive(100.dp)
     ) {
-        items(messages, key = { favourite -> favourite.id!! }) { favourite ->
+        items(messages, key = { favourite -> favourite.id }) { favourite ->
             FavouriteGrid(homeDataModel = favourite) {
                 onItemClicked.invoke(it)
             }

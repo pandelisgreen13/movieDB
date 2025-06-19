@@ -174,7 +174,7 @@ fun HomeList(
         items(
             lazyPagingItems.itemCount,
             key = {
-                lazyPagingItems[it]?.id!!
+                lazyPagingItems.peek(it)?.id ?: "null at $it"
             }
         ) {
             val favourite = lazyPagingItems[it]!!
