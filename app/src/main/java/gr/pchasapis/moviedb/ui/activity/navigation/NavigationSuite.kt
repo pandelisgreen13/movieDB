@@ -1,3 +1,5 @@
+package gr.pchasapis.moviedb.ui.activity.navigation
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -14,8 +16,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import gr.pchasapis.moviedb.ui.activity.navigation.AppNavHost
-import gr.pchasapis.moviedb.ui.activity.navigation.Navigation
 
 @Composable
 fun NewHome(
