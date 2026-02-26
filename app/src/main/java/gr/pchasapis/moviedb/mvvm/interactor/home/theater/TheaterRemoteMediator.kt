@@ -95,6 +95,7 @@ class TheaterRemoteMediator(
 
     private fun toDatabaseModel(response: MovieNetworkResponse): List<TheaterDbTable> {
         return response.searchResultsList?.map { model ->
+            Timber.d("pagination save page: -> id: ${model.id} title: ${model.title}")
             TheaterDbTable(
                 id = model.id,
                 title = model.title ?: "-",

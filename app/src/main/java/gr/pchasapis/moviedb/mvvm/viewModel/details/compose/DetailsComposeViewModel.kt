@@ -32,11 +32,13 @@ class DetailsComposeViewModel @Inject constructor(private val detailsInteractor:
 
     private fun fetchDetails(model: HomeDataModel?) {
         if (model?.mediaType == null) {
-            _uiState.value = DetailsUiState.Error
+            _uiState.update {
+                DetailsUiState.Error
+            }
             return
         }
 
-        model.id?.let { id ->
+        model.id.let { id ->
             viewModelScope.launch {
                 isFavouriteLiveData.value = model.isFavorite
 

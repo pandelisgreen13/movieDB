@@ -1,3 +1,7 @@
+import com.android.build.api.dsl.Packaging
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -12,11 +16,11 @@ plugins {
 
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "gr.pchasapis.moviedb"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -49,14 +53,13 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0"
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
 
     testOptions {
@@ -68,7 +71,7 @@ android {
 
     namespace = "gr.pchasapis.moviedb"
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -106,8 +109,10 @@ dependencies {
     implementation(libs.timber)
     // Dialogs
     implementation(libs.dialogCore)
-    // Network
+
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.collections.immutable)
+    // Network
     implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

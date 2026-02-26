@@ -41,7 +41,7 @@ class DetailsInteractorImpl @Inject constructor(
     override suspend fun onRetrieveFlowDetails(homeDataModel: HomeDataModel): Flow<DataResult<HomeDataModel>> {
         return flow {
             emit(onRetrieveDetails(homeDataModel))
-        }.distinctUntilChanged()
+        }
     }
 
     override suspend fun onRetrieveDetails(homeDataModel: HomeDataModel): DataResult<HomeDataModel> {
