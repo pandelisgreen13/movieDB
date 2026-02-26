@@ -19,7 +19,7 @@ plugins {
     alias(libs.plugins.ksp.plugin)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization.plugin)
-
+    alias(libs.plugins.detekt)
 }
 
 allprojects {

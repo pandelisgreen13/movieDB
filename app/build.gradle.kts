@@ -12,6 +12,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("androidx.room")
+    alias(libs.plugins.detekt)
 }
 
 
@@ -83,6 +84,12 @@ android {
 
 }
 
+detekt {
+    toolVersion = libs.versions.detekt.get()
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    allRules = false
+}
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -161,6 +168,8 @@ dependencies {
     implementation(libs.androidx.ui)
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
+
+    detektPlugins(libs.detekt.compose)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockito.kotlin)
