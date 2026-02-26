@@ -55,7 +55,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
 
-    }
+     }
 
     kotlin {
         compilerOptions {
@@ -88,7 +88,9 @@ detekt {
     toolVersion = libs.versions.detekt.get()
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
+    autoCorrect = true
     allRules = false
+    parallel = true
 }
 
 dependencies {
@@ -170,6 +172,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
 
     detektPlugins(libs.detekt.compose)
+    detektPlugins(libs.detekt.format)
+    detektPlugins(libs.detekt.rulesLibraries)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockito.kotlin)

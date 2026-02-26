@@ -240,11 +240,14 @@ fun PreviewHome() {
         val list = arrayListOf(
             HomeDataModel(
                 ratings = "5", title = "Avengers", releaseDate = "25/5/2019", id = 5
-            ), HomeDataModel(
+            ),
+                HomeDataModel(
                 ratings = "5", title = "Avengers222", releaseDate = "25/5/2019", id = 6
-            ), HomeDataModel(
+            ),
+                HomeDataModel(
                 ratings = "5", title = "Avengers222", releaseDate = "25/5/2019", id = 7
-            ), HomeDataModel(
+            ),
+                HomeDataModel(
                 ratings = "5", title = "Avengers222", releaseDate = "25/5/2019", id = 8
             )
         )

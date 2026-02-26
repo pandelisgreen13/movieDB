@@ -65,8 +65,9 @@ open class BaseViewModel : ViewModel(), CoroutineScope {
         } else {
             genericErrorLiveData.value = true
         }
-        if (isShowEmptyView)
+        if (isShowEmptyView) {
             emptyLiveData.value = true
+        }
     }
 
     private fun isNetworkError(throwable: Throwable): Boolean {

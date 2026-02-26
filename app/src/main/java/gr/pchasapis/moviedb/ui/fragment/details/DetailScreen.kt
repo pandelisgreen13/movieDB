@@ -30,7 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -149,12 +148,13 @@ private fun Details(
                 },
                 onFavouriteIconClicked = {
                     viewModel?.toggleFavourite()
-                })
+                }
+            )
 
             val orientation = LocalConfiguration.current.orientation
 
 
-            if ( orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Row {
                     CardImage(model = model, isExpanded = true)
 
@@ -268,9 +268,12 @@ fun CardImage(
             )
         },
         back = {
-            BackCard(it = it
+            BackCard(
+                it = it
                 .height(cardSize)
-                .width(size), homeDataModel = model)
+                .width(size),
+                    homeDataModel = model
+            )
         }
     ) {
         cardFace = cardFace.next
@@ -525,7 +528,8 @@ fun FlipCard(
         animationSpec = tween(
             durationMillis = 1800,
             easing = FastOutSlowInEasing,
-        ), label = ""
+        ),
+            label = ""
     )
 
     val mod = modifier

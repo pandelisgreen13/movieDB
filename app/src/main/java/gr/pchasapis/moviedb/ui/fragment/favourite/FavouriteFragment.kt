@@ -14,12 +14,10 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.common.ActivityResult
 import gr.pchasapis.moviedb.databinding.FavouriteFragmentBinding
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
-import gr.pchasapis.moviedb.ui.fragment.favourite.screen.FavouriteScreen
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @AndroidEntryPoint

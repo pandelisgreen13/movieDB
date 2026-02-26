@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */ /**
+ */
+/**
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like
  * navigation and Snackbar messages.
  *
@@ -36,7 +37,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 class SingleLiveEvent<T> : MutableLiveData<T?>() {
     private val mPending = AtomicBoolean(false)
     @MainThread
-
     override fun observe(owner: LifecycleOwner, observer: Observer<in T?>) {
         if (hasActiveObservers()) {
             Timber.tag(TAG).w("Multiple observers registered but only one will be notified of changes.")

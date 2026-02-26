@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import gr.pchasapis.moviedb.ui.base.BaseFragment
 import gr.pchasapis.moviedb.ui.compose.MovieDBTheme
-import gr.pchasapis.moviedb.ui.fragment.home.compose.HomeScreen
 
 
 @AndroidEntryPoint

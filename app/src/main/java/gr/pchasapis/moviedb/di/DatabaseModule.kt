@@ -20,7 +20,8 @@ object DatabaseModule {
     fun provideDatabase(@ApplicationContext appContext: Context): MovieDbDatabase {
         return Room.databaseBuilder(
                 appContext.applicationContext,
-                MovieDbDatabase::class.java, DATABASE_NAME)
+                MovieDbDatabase::class.java, DATABASE_NAME
+        )
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build()

@@ -1,7 +1,6 @@
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.VideoLabel
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text

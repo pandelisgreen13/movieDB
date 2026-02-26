@@ -50,7 +50,7 @@ class TheaterRemoteMediator(
 
                     val daoKey = database.remoteKeyDao().loadAll()
 
-                    Timber.d("pagination -> keys database $${daoKey}")
+                    Timber.d("pagination -> keys database $$daoKey")
                     Timber.d("pagination -> firstItem $${state.firstItemOrNull()?.page}")
 
                     daoKey.last().nextKey + 1
