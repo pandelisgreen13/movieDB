@@ -2,7 +2,6 @@ package gr.pchasapis.moviedb.common.application
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-import gr.pchasapis.moviedb.BuildConfig
 import timber.log.Timber
 
 @HiltAndroidApp
@@ -14,8 +13,6 @@ class MovieApplication : Application() {
     }
 
     private fun initTimberLogging() {
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
+        Timber.plant(Timber.DebugTree())
     }
 }
