@@ -121,9 +121,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.collections.immutable)
     // Network
-    implementation(libs.gson)
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.retrofit.kotlin.serialize)
     implementation(libs.logging.interceptor)
     // Room components
     implementation(libs.room.runtime)

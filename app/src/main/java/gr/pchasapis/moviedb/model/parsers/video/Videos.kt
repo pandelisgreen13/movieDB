@@ -1,5 +1,8 @@
 package gr.pchasapis.moviedb.model.parsers.video
 
-import com.google.gson.annotations.SerializedName
 
-data class Videos(@SerializedName("results") val videoResultList: List<VideoResultsItem>? = null)
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Videos(@SerialName("results") val videoResultList: List<VideoResultsItem>? = null)
