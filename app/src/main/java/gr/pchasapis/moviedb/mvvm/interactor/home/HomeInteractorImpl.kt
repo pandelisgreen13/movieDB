@@ -82,7 +82,8 @@ class HomeInteractorImpl(
     }
 
     private fun toHomeDataModel(searchResponse: SearchResponse): List<HomeDataModel> {
-        return (searchResponse.searchResultsList?.map { searchItem ->
+        return (
+            searchResponse.searchResultsList?.map { searchItem ->
             HomeDataModel(
                 id = searchItem.id,
                 title = searchItem.title ?: searchItem.name ?: searchItem.originalName ?: "-",
@@ -95,11 +96,13 @@ class HomeInteractorImpl(
                 totalPage = searchResponse.totalPages ?: 0,
                 isFavorite = movieDbDatabase.movieDbTableDao().isFavourite(searchItem.id ?: 0)
             )
-        } ?: arrayListOf())
+        } ?: arrayListOf()
+        )
     }
 
     private fun toMovieDataModel(theatreResponse: MovieNetworkResponse): List<HomeDataModel> {
-        return (theatreResponse.searchResultsList?.map { movieItem ->
+        return (
+            theatreResponse.searchResultsList?.map { movieItem ->
             HomeDataModel(
                 id = movieItem.id,
                 title = movieItem.title ?: "-",
@@ -110,7 +113,8 @@ class HomeInteractorImpl(
                 releaseDate = movieItem.releaseDate ?: "-",
                 isFavorite = movieDbDatabase.movieDbTableDao().isFavourite(movieItem.id ?: 0)
             )
-        } ?: arrayListOf())
+        } ?: arrayListOf()
+        )
     }
 
     companion object {

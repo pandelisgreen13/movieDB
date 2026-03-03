@@ -19,7 +19,8 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
     HomeDataModelMapper {
 
     override fun toHomeDataModelFromTheater(response: MovieNetworkResponse): List<HomeDataModel> {
-        return (response.searchResultsList?.map { movieItem ->
+        return (
+            response.searchResultsList?.map { movieItem ->
             HomeDataModel(
                 id = movieItem.id,
                 title = movieItem.title ?: "-",
@@ -30,7 +31,8 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
                 releaseDate = movieItem.releaseDate ?: "-",
                 isFavorite = movieDbDatabase.movieDbTableDao().isFavourite(movieItem.id ?: 0)
             )
-        } ?: arrayListOf())
+        } ?: arrayListOf()
+        )
     }
 
 
@@ -57,7 +59,8 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
         )
 
     override suspend fun toHomeDataModelFromResponse(searchResponse: SearchResponse): List<HomeDataModel> {
-        return (searchResponse.searchResultsList?.map { searchItem ->
+        return (
+            searchResponse.searchResultsList?.map { searchItem ->
             HomeDataModel(
                 id = searchItem.id,
                 title = searchItem.title ?: searchItem.name ?: searchItem.originalName ?: "-",
@@ -70,6 +73,7 @@ class HomeDataModelMapperImpl @Inject constructor(private val movieDbDatabase: M
                 totalPage = searchResponse.totalPages ?: 0,
                 isFavorite = movieDbDatabase.movieDbTableDao().isFavourite(searchItem.id ?: 0)
             )
-        } ?: arrayListOf())
+        } ?: arrayListOf()
+        )
     }
 }

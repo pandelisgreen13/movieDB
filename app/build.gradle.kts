@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
@@ -12,6 +11,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("androidx.room")
+    alias(libs.plugins.detekt)
 }
 
 
@@ -54,7 +54,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
 
-    }
+     }
 
     kotlin {
         compilerOptions {
@@ -83,6 +83,14 @@ android {
 
 }
 
+detekt {
+    toolVersion = libs.versions.detekt.get()
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    allRules = false
+    parallel = true
+}
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
@@ -161,6 +169,10 @@ dependencies {
     implementation(libs.androidx.ui)
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
+
+    detektPlugins(libs.detekt.compose)
+    detektPlugins(libs.detekt.format)
+    detektPlugins(libs.detekt.rulesLibraries)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockito.kotlin)

@@ -5,7 +5,8 @@ import gr.pchasapis.moviedb.model.parsers.common.CommonResponse
 import gr.pchasapis.moviedb.model.parsers.genre.GenresItem
 import gr.pchasapis.moviedb.model.parsers.video.Videos
 
-data class MovieDetailsResponse(@SerializedName("original_language") val originalLanguage: String? = null,
+data class MovieDetailsResponse(
+    @SerializedName("original_language") val originalLanguage: String? = null,
                                 @SerializedName("imdb_id") val imdbId: String? = null,
                                 @SerializedName("videos") val videos: Videos? = null,
                                 @SerializedName("video") val video: Boolean? = null,
@@ -26,4 +27,5 @@ data class MovieDetailsResponse(@SerializedName("original_language") val origina
                                 @SerializedName("tagline") val tagline: String? = null,
                                 @SerializedName("adult") val adult: Boolean? = null,
                                 @SerializedName("homepage") val homepage: String? = null,
-                                @SerializedName("status") val status: String? = null) : CommonResponse()
+                                @SerializedName("status") val status: String? = null
+) : CommonResponse()

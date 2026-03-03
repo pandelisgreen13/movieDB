@@ -30,7 +30,7 @@ fun AppNavHost(navController: NavHostController) {
 
 
     NavHost(navController = navController, startDestination = Navigation.Home) {
-        composable<Navigation.Home>() {
+        composable<Navigation.Home> {
 
             val homeViewModel: HomeViewModel = hiltViewModel()
             val movies by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -42,7 +42,8 @@ fun AppNavHost(navController: NavHostController) {
                 },
                 textChanged = {
                     homeViewModel.setQueryText(it)
-                })
+                }
+            )
         }
         composable<Navigation.Details>(
             typeMap = mapOf(typeOf<HomeDataModel>() to parcelableType<HomeDataModel>())
@@ -52,7 +53,8 @@ fun AppNavHost(navController: NavHostController) {
                 passData = post.model,
                 onSimilarClicked = { similarItem ->
                     navController.navigate(Navigation.Details(similarItem))
-                }) {
+                }
+            ) {
                 navController.navigateUp()
             }
         }
@@ -74,7 +76,8 @@ fun AppNavHost(navController: NavHostController) {
                 lazyPagingItems,
                 nextScreen = { movie ->
                     navController.navigate(Navigation.Details(movie))
-                }) {
+                }
+            ) {
                 viewModel.deleteDatabase()
             }
         }

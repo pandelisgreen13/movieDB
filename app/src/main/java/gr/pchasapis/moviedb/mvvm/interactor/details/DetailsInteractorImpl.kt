@@ -11,7 +11,6 @@ import gr.pchasapis.moviedb.model.parsers.movie.MovieDetailsResponse
 import gr.pchasapis.moviedb.model.parsers.tv.TvShowResponse
 import gr.pchasapis.moviedb.network.client.MovieClient
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
@@ -27,12 +26,14 @@ class DetailsInteractorImpl @Inject constructor(
     ): DataResult<List<SimilarMoviesModel>> {
         return try {
             val response = movieClient.getSimilarMovies(id = id, mediaType = mediaType)
-            DataResult(response.searchResultsList?.map {
+            DataResult(
+                response.searchResultsList?.map {
                 SimilarMoviesModel(
                     id = it.id ?: -1,
                     image = "${Definitions.IMAGE_URL_W500}${it.posterPath}"
                 )
-            })
+            }
+            )
         } catch (t: Throwable) {
             DataResult(throwable = t)
         }

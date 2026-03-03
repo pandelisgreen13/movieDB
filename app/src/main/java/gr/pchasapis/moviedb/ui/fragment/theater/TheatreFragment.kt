@@ -39,8 +39,8 @@ class TheatreFragment : Fragment() {
         toolbarLayout.backButtonImageView.visibility = View.VISIBLE
         toolbarLayout.actionButtonImageView.visibility = View.INVISIBLE
         toolbarLayout.backButtonImageView.setOnClickListener {
-            val navHost= parentFragmentManager.findFragmentById(R.id.nav_host_fragment)
-            val backStackEntryCount = navHost?.parentFragmentManager?.backStackEntryCount?:0
+            val navHost = parentFragmentManager.findFragmentById(R.id.nav_host_fragment)
+            val backStackEntryCount = navHost?.parentFragmentManager?.backStackEntryCount ?: 0
 
             findNavController().navigateUp()
         }

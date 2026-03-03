@@ -5,7 +5,8 @@ import gr.pchasapis.moviedb.model.parsers.common.CommonResponse
 import gr.pchasapis.moviedb.model.parsers.genre.GenresItem
 import gr.pchasapis.moviedb.model.parsers.video.Videos
 
-data class TvShowResponse(@SerializedName("videos") val videos: Videos? = null,
+data class TvShowResponse(
+    @SerializedName("videos") val videos: Videos? = null,
                           @SerializedName("type") val type: String? = null,
                           @SerializedName("backdrop_path") val backdropPath: String? = null,
                           @SerializedName("genres") val genres: List<GenresItem>? = null,
@@ -20,4 +21,5 @@ data class TvShowResponse(@SerializedName("videos") val videos: Videos? = null,
                           @SerializedName("vote_average") val voteAverage: Double? = null,
                           @SerializedName("name") val name: String? = null,
                           @SerializedName("homepage") val homepage: String? = null,
-                          @SerializedName("status") val status: String? = null) : CommonResponse()
+                          @SerializedName("status") val status: String? = null
+) : CommonResponse()

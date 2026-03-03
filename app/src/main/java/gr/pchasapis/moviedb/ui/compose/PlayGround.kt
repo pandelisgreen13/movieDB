@@ -82,8 +82,10 @@ fun CardContent(name: String) {
             )
             if (expanded) {
                 Text(
-                        text = ("Composem ipsum color sit lazy, " +
-                                "padding theme elit, sed do bouncy. ").repeat(4),
+                        text = (
+                            "Composem ipsum color sit lazy, " +
+                                "padding theme elit, sed do bouncy. "
+                        ).repeat(4),
                 )
             }
         }
@@ -101,9 +103,11 @@ fun CardContent(name: String) {
     }
 }
 
-@Preview(showBackground = true,
+@Preview(
+    showBackground = true,
         uiMode = UI_MODE_NIGHT_NO,
-        name = "Text preview")
+        name = "Text preview"
+)
 @Composable
 private fun MyApp() {
     MovieDBTheme {
@@ -140,7 +144,7 @@ fun OnboardingScreen(onContinueClicked: () -> Unit) {
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun OnboardingPreview() {
-    MovieDBTheme() {
+    MovieDBTheme {
         Greetings()
     }
 }

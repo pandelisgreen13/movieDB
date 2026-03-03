@@ -4,8 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import gr.pchasapis.moviedb.model.data.HomeDataModel
 import gr.pchasapis.moviedb.model.mappers.HomeDataModelMapperImpl
-import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl.Companion.DATE_FROM
-import gr.pchasapis.moviedb.mvvm.interactor.home.HomeInteractorImpl.Companion.DATE_TO
 import gr.pchasapis.moviedb.network.client.MovieClient
 import retrofit2.HttpException
 import java.io.IOException
