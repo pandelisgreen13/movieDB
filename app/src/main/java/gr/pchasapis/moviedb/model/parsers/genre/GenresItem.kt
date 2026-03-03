@@ -1,8 +1,10 @@
 package gr.pchasapis.moviedb.model.parsers.genre
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class GenresItem(
-    @SerializedName("name") val name: String? = null,
-					  @SerializedName("id") val id: Int? = null
+    @SerialName("name") val name: String? = null,
+    @SerialName("id") val id: Int? = null
 )
